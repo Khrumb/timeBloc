@@ -74,7 +74,7 @@ body {
 }
 
 .navbar.top.menu{
-  background:url(../img/navbar_menu_button.png) no-repeat center top;
+  background:url(../assets/navbar_menu_button.png) no-repeat center top;
   background-size: contain;
   position:relative;
   width:10%;

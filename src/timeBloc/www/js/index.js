@@ -40,6 +40,7 @@ var app = {
 	        //uiControl.populate();
 					setTimeout(function () {
 						blocFeed.setup();
+						//alert("setup called");
 					}, 700);
 	        //userBloc.setup(1);
 	    },
@@ -62,6 +63,9 @@ var app = {
 						case 'personalPage':
 							personalPage.taredown();
 							break;
+						case 'bloc':
+							bloc.taredown();
+							break;
 						case 'dialog':
 							uiControl.select(-2);
 							break;
@@ -78,6 +82,9 @@ var app = {
 							break;
 						case 'personalPage':
 								personalPage.setup();
+								break;
+						case 'bloc':
+								bloc.setup(0);
 								break;
 						default:
 							blocFeed.setup();
@@ -124,29 +131,39 @@ var dataManager = {
   populateDB:function(tx) {
 
     //remove after live host server
-    tx.executeSql('DROP TABLE IF EXISTS personal');
     tx.executeSql('DROP TABLE IF EXISTS user');
     tx.executeSql('DROP TABLE IF EXISTS bloc');
-    tx.executeSql('DROP TABLE IF EXISTS follower_list');
+		tx.executeSql('DROP TABLE IF EXISTS bloc_temp');
+		tx.executeSql('DROP TABLE IF EXISTS picture');
+		tx.executeSql('DROP TABLE IF EXISTS personal');
 		tx.executeSql('DROP TABLE IF EXISTS weight_list');
+    tx.executeSql('DROP TABLE IF EXISTS follower_list');
+		tx.executeSql('DROP TABLE IF EXISTS permission_list');
+
+
 
     tx.executeSql('CREATE TABLE IF NOT EXISTS personal (session_key Primary Key ASC, uid Refrences USER uid)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS user (uid Primary Key ASC, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground)');
-    tx.executeSql('CREATE TABLE IF NOT EXISTS bloc (bid Primary Key ASC, uid Refrences USER uid, message, posted_time)');
+
+		tx.executeSql('CREATE TABLE IF NOT EXISTS bloc_temp (bid Primary Key ASC, uid Refrences USER uid, message, posted_time)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS follower_list (uid Refrences USER uid, fuid Refrences USER uid, date_followed)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS weight_list (uid Refrences USER uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS picture (pid Primary Key, uid Refrences USER uid, bid Refrences bloc bid, data)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS permission_list (plid Primary Key, uid Refrences USER uid, bid Refrences bloc bid, permission_level, date_added)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS bloc (bid Primary Key, uid Refrences USER uid, plid References permission_list(plid), title, pid References picture(pid))');
+
 
 	  //temp inserts
     //template for regex: tx.executeSql('INSERT INTO personal(session_key, uid) VALUES (<session_id>, <uid>)');
     tx.executeSql('INSERT INTO personal(session_key, uid) VALUES (1, 1)');
 
-		//tx.executeSql('INSERT INTO User(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (<uid> , <weight_0>, <weight_1>, <weight_2>, <weight_3>, <weight_4>, <weight_5>, <weight_6>)');
+		//tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (<uid> , <weight_0>, <weight_1>, <weight_2>, <weight_3>, <weight_4>, <weight_5>, <weight_6>)');
 		tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (0, 1, 1, 1, 1, 1, 1, 1)');
 		tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (1, 0.1, 0.5, 0.8, 0.6, 0.4, 0.8, 0.6)');
 		tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (2, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, -1)');
 		tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (3, 0.1, 0.25, 0.65, 1, -1, -1, -1)');
 
-    //template for regex: tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (<uid>, "<username>", "<display_name>", "<bio>", "<theme>", "<birthday>", "<location>", "<date_joined>", "img/<uid>_profile_picture.jpg", "img/<uid>_profile_background.jpg")');
+    //template for regex: tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (<seq#>, "<username>", "<display_name>", "<bio>", "<theme>", "<birthday>", "<location>", "<date_joined>", "img/<uid>_profile_picture.jpg", "img/<uid>_profile_background.jpg")');
     tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (1, "hyte", "John Gregg", "Lead Programmer on timeBloc.", "dark", "January, 5th", "WV - USA", "<date_joined>", "img/1_profile_picture.jpg", "img/1_profile_background.jpg")');
     tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (2, "the_reelist_condor", "Connor Thomas", "BYU. Also a noob.", "dark", "December, 4th", "UT - USA", "<date_joined>", "img/2_profile_picture.jpg", "img/2_profile_background.jpg")');
     tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (3, "serbian_slayer", "Brane Pantovic", "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.", "light", "March, 14th", "NY - USA","<date_joined>", "img/3_profile_picture.jpg", "img/3_profile_background.jpg")');
@@ -160,28 +177,41 @@ var dataManager = {
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 3, 1, "<date_joined>")');
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 3, 2, "<date_joined>")');
 
+
+		//tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (<seq#>, <uid>, <bid>, <imagedata>)');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (1, 3, 1, "img/1_bloc_bg.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (2, 3, 1, "img/2_bloc_bg.jpg")');
+
+
+
+		//tx.executeSql('INSERT INTO permission_list(pl_id, uid, bid, date_added) VALUES (<seq#>, <uid>, <bid>, <permission_level>, <current_data>)');
+		tx.executeSql('INSERT INTO permission_list(plid, uid, bid, permission_level, date_added) VALUES (0, 3, 0, 5 ,"-Null-")');
+
+		//tx.executeSql('INSERT INTO bloc(bid, uid, pl_id, title, pid) VALUES (<seq#>, <uid>, <pl_id>, "<title>",  <pid> )');
+		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, pid) VALUES (0, 3, 0, "Movie Night",  2 )');
+
     //template for regex: tx.executeSql('INSERT INTO bloc(bid, userID, message) VALUES (<bid>, "<username>", "<message>")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (0, 0, "Oldest")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (1, 0, "Max Length is 23 Characters")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (2, 0, "PlaceHolder")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (3, 1, "This works somtimes")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (4, 0, "PlaceHolder")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (5, 3, "That moment when...")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (6, 2, "BYU eats dicks!")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (7, 2, "We also drank Grape Juice")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (8, 2, "I made a thing")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (9, 3, "Butt Empire")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (10, 2, "BYU eats BIG dicks!")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (11, 3, "~something in serbian~")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (12, 1, "Max Length is 23 Characters")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (13, 0, "PlaceHolder")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (14, 1, "I am a post.")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (15, 3, "Posts Dont exist?")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (16, 1, "I have to write 20...")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (17, 2, "HOT Mormom Singles!")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (18, 3, "Vroom Vroom")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (19, 2, "Insightful Questions?")');
-    tx.executeSql('INSERT INTO bloc(bid, uid, message) VALUES (20, 1, "This works somtimes")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (0, 0, "Oldest")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (1, 0, "Max Length is 23 Characters")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (2, 0, "PlaceHolder")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (3, 1, "This works somtimes")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (4, 0, "PlaceHolder")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (5, 3, "That moment when...")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (6, 2, "BYU eats dicks!")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (7, 2, "We also drank Grape Juice")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (8, 2, "I made a thing")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (9, 3, "Butt Empire")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (10, 2, "BYU eats BIG dicks!")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (11, 3, "~something in serbian~")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (12, 1, "Max Length is 23 Characters")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (13, 0, "PlaceHolder")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (14, 1, "I am a post.")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (15, 3, "Posts Dont exist?")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (16, 1, "I have to write 20...")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (17, 2, "HOT Mormom Singles!")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (18, 3, "Vroom Vroom")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (19, 2, "Insightful Questions?")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (20, 1, "This works somtimes")');
 
   },
 
@@ -369,7 +399,7 @@ var sidebar = {
   init: function() {
     touches = event.touches;
     first_touch = touches[0].pageX;
-    width = document.body.clientWidth *0.7;
+    //width = document.body.clientWidth *0.7;
   },
 
   slide: function() {
@@ -428,7 +458,6 @@ var blocFeed ={
   setupCallBack:function() {
 		uiControl.turnItemOn("blocFeed");
 		document.getElementById("userBloc").style.display = "block";
-
     document.getElementById("blocFeed").style['z-index'] = page_log.length+1;
   },
 
@@ -443,7 +472,7 @@ var blocFeed ={
   },
 
   getBlocs:function(tx){
-    tx.executeSql('SELECT * FROM BLOC', [], blocFeed.generateFeed, dataManager.errorCB);
+    tx.executeSql('SELECT * FROM bloc_temp', [], blocFeed.generateFeed, dataManager.errorCB);
   },
 
   generateFeed:function(tx, results) {
@@ -523,6 +552,7 @@ var userBloc = {
 
 		setupCallBack:function(){
 			document.getElementById("userBloc").style.display = "block";
+			document.getElementById("userBloc").style.left = "0%";
 			document.getElementById("userBloc").style['z-index'] = page_log.length+4;
 			uiControl.turnItemOn("userBloc");
 		},
@@ -970,6 +1000,7 @@ var calander = {
 
 	sideGrab:function() {
 		touches = event.touches[0];
+		calander.c_pos = 0;
 		if(calander.slide_animation != null){
 			clearInterval(calander.slide_animation);
 		}
@@ -979,6 +1010,7 @@ var calander = {
 
 	slideUpdater:function() {
 		//document.getElementById("calander").style["-webkit-transform"] = "translateX(" + (touches.pageX -width)+ "px)";
+		//uiControl.updateDebugger("xPos",(touches.pageX -width));
 		document.getElementById("userBloc").style["-webkit-transform"] = "translateX(" + (touches.pageX -width)+ "px)";
 	},
 
@@ -1031,20 +1063,138 @@ var calander = {
 
 var bloc = {
 
-	setup:function() {
-		personalPage.setupCallBack();
+	id: 0,
+	c_bloc: null,
+
+	c_pos:0,
+	slide_step:0,
+	container_animation: null,
+
+	setup:function(id) {
+		uiControl.turnCurrentItemOff();
+
+		db.transaction(bloc.getSetupInfo, dataManager.errorCB);
+		bloc.id = id;
+
+	},
+
+	getSetupInfo:function(tx) {
+		tx.executeSql('SELECT * FROM bloc where bid = '+ bloc.id, [], bloc.setupBloc, dataManager.errorCB);
+	},
+
+	setupBloc:function(tx, results) {
+		bloc.c_bloc = results.rows.item(0);
+		document.getElementById("bloc_title").textContent = bloc.c_bloc.title;
+		tx.executeSql('SELECT * FROM picture where pid = '+ bloc.c_bloc.pid, [], bloc.setupPictures, dataManager.errorCB);
+	},
+
+	setupPictures:function(tx, results) {
+		document.getElementById("bloc_bg").src = results.rows.item(0).data;
+		bloc.setupCallBack();
 	},
 
 	setupCallBack:function(){
-		document.getElementById("bloc").style['z-index'] = page_log.length+2;
-		uiControl.turnItemOn("bloc");
+		setTimeout(function () {
+			document.getElementById("bloc").style['z-index'] = page_log.length+5;
+			uiControl.turnItemOn("bloc");
+		}, 200);
 	},
 
 	taredown:function() {
 		uiControl.turnItemOff("bloc");
 		setTimeout(function () {
 			document.getElementById("bloc").style['z-index'] = 0;
-		}, 205);
+		}, 200);
+	},
+
+	onTabTouch:function() {
+		touches = event.touches[0];
+		bloc.c_pos = 0;
+		if(bloc.container_animation != null){
+			clearInterval(bloc.container_animation);
+		}
+		bloc.container_animation = setInterval(bloc.tabUpdater,5);
+	},
+
+	tabUpdater:function() {
+		document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+(touches.pageX-width))+ "px)";
+		document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + (touches.pageX-width)+ "px)";
+		document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + (touches.pageX-width)+ "px)";
+		document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + ((0-(touches.pageX-width))/2)+ "px)";
+		document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + ((touches.pageX-width)/2)+ "px)";
+	},
+
+	onTabSlide:function() {
+		touches = event.touches[0];
+	},
+
+	onTabTouchEnd:function() {
+		bloc.c_pos  = touches.pageX -width;
+		//uiControl.updateDebugger("xPos", (bloc.c_pos  >= -width*0.4))
+
+		clearInterval(bloc.container_animation);
+		if(bloc.c_pos  >= -width*0.5){
+			bloc.slide_step = (width + bloc.c_pos)/15;
+			bloc.container_animation = setInterval(bloc.mediaOut, 6);
+		} else{
+			bloc.slide_step = (width + bloc.c_pos)/18;
+			bloc.container_animation = setInterval(bloc.blogOut, 6);
+		}
+	},
+
+	blogOut:function () {
+		bloc.c_pos -= bloc.slide_step;
+		if(bloc.c_pos  > -width){
+			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+bloc.c_pos)+ "px)";
+			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
+			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
+			document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + ((0-bloc.c_pos)/2)+ "px)";
+			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (bloc.c_pos/2)+ "px)";
+		} else {
+			clearInterval(bloc.slide_animation);
+			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + width+ "px)";
+			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + -width+ "px)";
+			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + -width+ "px)";
+			document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + (width/2)+ "px)";
+			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" +  (-width/2) + "px)";
+			document.getElementById("bloc_blog").classList.add("active");
+			document.getElementById("bloc_media").classList.remove("active");
+		}
+	},
+
+	mediaOut:function () {
+		bloc.c_pos += bloc.slide_step;
+		if(bloc.c_pos < 0){
+			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+bloc.c_pos)+ "px)";
+			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
+			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
+			document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + ((0-bloc.c_pos)/2)+ "px)";
+			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (bloc.c_pos/2)+ "px)";
+		} else{
+			clearInterval(bloc.slide_animation);
+			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(0px)";
+			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(0px)";
+			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(0px)";
+			document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(0px)";
+			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(0px)";
+			document.getElementById("bloc_media").classList.add("active");
+			document.getElementById("bloc_blog").classList.remove("active");
+		}
+	},
+
+	toggleOut:function() {
+		if(bloc.container_animation != null){
+			clearInterval(bloc.container_animation);
+		}
+		if(!document.getElementById("bloc_media").classList.contains("active")){
+			bloc.c_pos = -width;
+			bloc.slide_step = width/18;
+			bloc.container_animation = setInterval(bloc.mediaOut, 6);
+		} else{
+			bloc.c_pos = 0;
+			bloc.slide_step = width/18;
+			bloc.container_animation = setInterval(bloc.blogOut, 6);
+		}
 	}
 
 };

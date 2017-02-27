@@ -5,11 +5,11 @@
 
   position:absolute;
 
-  top:7.5vh;
-  left:-100vw;
+  top:7.5%;
+  left:-100%;
 
-  height:92.5vh;
-  width:100vw;
+  height:92.5%;
+  width:100%;
 
   margin:0px;
   padding:0px;
@@ -19,7 +19,7 @@
 }
 
 .userBloc.on{
-	left:0vw;
+	left:0%;
   -webkit-animation: fade_on 200ms;
 
 }
@@ -30,7 +30,7 @@
 }
 
 .userBloc.off{
-	left:0vh;
+	left:0%;
   -webkit-animation: fade_off 200ms ;
 }
 
@@ -44,17 +44,17 @@
   from {-webkit-backface-visibility: hidden;
         -webkit-transform: translate(0,0);}
   to {-webkit-backface-visibility: hidden;
-      -webkit-transform: translate(100vw,0);}
+      -webkit-transform: translate(100%,0);}
 
 }
 
 
 .userBloc_background{
   position:absolute;
-  left:0vh;
+  left:0%;
 
-  height:100vh;
-  width:100vw;
+  height:100%;
+  width:100%;
 }
 
 .userBloc_background.on{
@@ -68,12 +68,12 @@
 .filter{
 /*  background:url(../img/gradient.png) no-repeat center; /* 170px x 200px */
   background-attachment:fixed;
-  background-size:100vw 100vw;
+  background-size:100% 100%;
 
   position:absolute;
-  left:0vw;
-  height:100vh;
-  width:100vw;
+  left:0%;
+  height:100%;
+  width:100%;
   margin:0px;
   padding:0px;
 
@@ -84,9 +84,9 @@
 .userProfile{
   position:absolute;
   background-size: contain;
-  left:0vw;
-  height:100vh;
-  width:100vw;
+  left:0%;
+  height:100%;
+  width:100%;
   margin:0px;
   padding:0px;
 	color:white;
@@ -95,11 +95,11 @@
 .userPP{
   position:absolute;
   background-size:contain;
-  top:35vh;
-  left:50vw;
-  width:50vw;
-  height:29vh;
-  margin:-25vw 0px 0px -25vw;
+  top:35%;
+  left:50%;
+  width:50%;
+  height:31%;
+  margin:-25% 0px 0px -25%;
   display:block;
 
   z-index: 200;
@@ -109,32 +109,31 @@
 
 
 .user_Profile_breakdown_container{
-  width:100vw;
-  height:65vh;
+  width:100%;
+  height:70%;
 }
 
 /*150.8*/
 .user_Profile_breakdown_0{
   position:absolute;
   background-size:contain;
-  left:0;
-  top:0;
+  left:0px;
+  top:0%;
   opacity: 0.50;
 }
 
 .user_Profile_slice_0{
   fill: none;
   stroke: #ff8787;
-  stroke-width: 2vw;
-  stroke-dasharray: 29.5vw 195vw;
+  stroke-width: 60;
+  stroke-dasharray: 29.5% 195%;
 }
 
 .user_Profile_breakdown_1{
   position:absolute;
   background-size:contain;
 
-  left:0px;
-	top:0vw;
+  left:0px;  top:0%;
   opacity: 0.5;
 }
 
@@ -142,7 +141,7 @@
   fill: none;
   stroke: #fff891;
   stroke-width:60 ;
-  stroke-dasharray: 29.5vw 195vw;
+  stroke-dasharray: 29.5% 195%;
 }
 
 .user_Profile_breakdown_2{
@@ -150,7 +149,7 @@
   background-size:contain;
 
   left:0px;
-  top:0vw;
+  top:0%;
 
   opacity: 0.50;
 }
@@ -159,7 +158,7 @@
   fill: none;
   stroke: #82ffd1;
   stroke-width: 60;
-	stroke-dasharray: 29.5vw 195vw;
+stroke-dasharray: 29.5% 195%;
 }
 
 .user_Profile_breakdown_3{
@@ -167,7 +166,7 @@
   background-size:contain;
 
   left:0px;
-  top:0vw;
+  top:0%;
   opacity: 0.50;
 }
 
@@ -175,7 +174,7 @@
   fill: none;
   stroke: #ff9eea;
   stroke-width: 60;
-	stroke-dasharray: 29.5vw 195vw;
+	stroke-dasharray: 29.5% 195%;
 }
 
 .user_Profile_breakdown_4{
@@ -183,7 +182,7 @@
   background-size:contain;
 
   left:0px;
-  top:0vw;
+  top:0%;
   opacity: 0.50;
 }
 
@@ -191,7 +190,7 @@
   fill: none;
   stroke: #6369ff;
   stroke-width: 60;
-	stroke-dasharray: 29.5vw 195vw;
+	stroke-dasharray: 29.5% 195%;
 }
 
 .user_Profile_breakdown_5{
@@ -199,7 +198,7 @@
   background-size:contain;
 
   left:0px;
-  top:0vw;
+  top:0%;
   opacity: 0.50;
 }
 
@@ -207,7 +206,7 @@
   fill: none;
   stroke: #C69BFF;
   stroke-width: 60;
-	stroke-dasharray: 29.5vw 195vw;
+	stroke-dasharray: 29.5% 195%;
 }
 
 .user_Profile_breakdown_6{
@@ -215,7 +214,7 @@
   background-size:contain;
 
   left:0px;
-  top:0vw;
+  top:0%;
   opacity: 0.50;
 }
 
@@ -223,19 +222,19 @@
   fill: none;
   stroke: #b5fff9;
   stroke-width: 60;
-  stroke-dasharray: 29.5vw 195vw;
+  stroke-dasharray: 29.5% 195%;
 }
 
 .userFollowingStatus{
   position:absolute;
 
-  top:-1.5vh;
-  left:63vw;
-  width:25vw;
+  top:-1.5%;
+  left:63%;
+  width:25%;
 
   z-index:105;
 
-  padding:2vw;
+  padding:2%;
   text-align: center;
   font-size: 6vw;
   border: .8vw dashed #bfbfbf;
@@ -254,10 +253,10 @@
 .userFollowingStatus_fbarrow{
   position:absolute;
   background-color:#e68800;
-  top:4vh;
-  left:62.6vw;
-  width:0.5vw;
-  height: .5vh;
+  top:4.25%;
+  left:62.5%;
+  width:0.5%;
+  height: 1%;
   z-index:104;
   display:none;
 
@@ -268,11 +267,10 @@
 .userFollowingStatus_farrow{
   position:absolute;
   background-color:#ffcb80;
-  top:-1.4vh;
-	height: 1vh;
-
-  left:92.75vw;
-  width:0.5vw;
+  top:-1.5%;
+  left:92.75%;
+  width:0.5%;
+  height: 1%;
   z-index:104;
   display:none;
 
@@ -289,12 +287,12 @@
 .user_Display_Name{
   position:absolute;
   color: #ff9633;
-  top:-3vh;
+  top:-3%;
   left:0;
-  width:100vw;
+  width:100%;
 
-  padding:0vw 0vw 6vh 5vw;
-  margin: 0vw 0vw 0vw 0vw;
+  padding:0% 0% 6% 5%;
+  margin: 0% 0% 0% 0%;
 
   text-align: left;
   font-size: 9vw;
@@ -312,20 +310,20 @@
 
 .page_break{
   position:absolute;
-  top:7vh;
+  top:7%;
   left:0px;
-  width:100vw;
+  width:100%;
   opacity:0.20;
 }
 
 .user_Handle{
   position:absolute;
 
-  top:2.5vh;
-  left:4vw;
-  width:25vw;
+  top:2.5%;
+  left:4%;
+  width:25%;
 
-  padding:0vw 0vw 0vw 2vw;
+  padding:0% 0% 0% 2%;
   text-align: left;
   z-index:100;
   font-size: 4.5vw;
@@ -340,13 +338,30 @@
 }
 
 
+.userblocFeed{
+  position:absolute;
+
+  width:100%;
+  height:48.5%;
+
+  top:23%;
+  left:0%;
+
+  margin:0px;
+  padding:0px;
+
+
+  -webkit-backface-visibility: hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
 
 .content_box{
 	position:absolute;
 	/*background-color: white;*/
-	/*top:6.75vh;*/
-	height:40vh;
-	width:100vw;
+	top:6.75%;
+	height:40%;
+	width:100%;
 	margin:0px;
 
 	border-radius: 5px;
@@ -358,8 +373,8 @@
 .userBloc_bio{
     text-align: left;
     font-size: 4.25vw;
-    width: 80vw;
-    padding:9vh 5vw 0vh 12vw;
+    width: 80%;
+    padding:4% 5% 0% 12%;
 }
 
 .userBloc_bio.light{
@@ -373,17 +388,18 @@
 .weeks{
 	position:absolute;
   /*background-color: white;*/
-  top:18vh;
-  height:40vh;
-  width:100vw;
+  top:6.75%;
+  height:40%;
+  width:100%;
   margin:0px;
 
   border-radius: 5px;
 
   text-align: center;
   font-size: 6vw;
-  left:35vw;
-  width:30vw;
+  top:33%;
+  left:35%;
+  width:30%;
 }
 
 .weeks.light{
@@ -397,17 +413,18 @@
 .following{
 	position:absolute;
   /*background-color: white;*/
-  top:18vh;
-  height:40vw;
-  width:100vw;
+  top:6.75%;
+  height:40%;
+  width:100%;
   margin:0px;
 
   border-radius: 5px;
 
   text-align: center;
   font-size: 6vw;
-  left:63vw;
-  width:30vw;
+  top:33%;
+  left:63%;
+  width:30%;
 }
 
 .following.light{
@@ -421,17 +438,18 @@
 .followers{
 	position:absolute;
   /*background-color: white;*/
-  top:18vh;
-  height:40vw;
-  width:100vw;
+  top:6.75%;
+  height:40%;
+  width:100%;
   margin:0px;
 
   border-radius: 5px;
 
   text-align: center;
   font-size: 6vw;
-  left:7vw;
-  width:30vw;
+  top:33%;
+  left:7%;
+  width:30%;
 }
 
 .followers.light{

@@ -370,7 +370,7 @@ var userBloc = {
 
     id: 0,
     last_slice: 0,
-    weight:[1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    weight:[0.1, 0.5, 0.8, 0.6, 0.4, 0.8, 0.6],
 
     setup:function(id) {
       userBloc.id = parseInt(id);
@@ -432,7 +432,7 @@ var userBloc = {
       for(i = 0; (current_angle+angle) <= 185; i++){
         document.getElementById("user_Profile_breakdown_" + i).style.transform= "rotate(" + current_angle + "deg)";
         document.getElementById("user_Profile_slice_" + i).style['stroke-dasharray']= dasharray;
-				document.getElementById("user_Profile_slice_" + i).style['stroke-width'] = 18*userBloc.weight[i]+ '%';
+				document.getElementById("user_Profile_slice_" + i).style['stroke-width'] = 60*userBloc.weight[i];
         current_angle += angle;
       }
 			for(i=i ; i <= 6; i++){

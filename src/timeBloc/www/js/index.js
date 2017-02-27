@@ -75,7 +75,7 @@ var app = {
 								bloc.setup(page_log_bid.pop());
 								break;
 						default:
-							alert("wut");
+							alert("PAGE_SETUP_UNHANDLED: "+id);
 					}
 				}
 			},
@@ -106,7 +106,7 @@ var dataManager = {
 		height = window.innerHeight;
 		width = screen.availWidth;
 		uiControl.updateDebugger("build", "pre-alpha");
-		uiControl.updateDebugger("version", "0.49");
+		uiControl.updateDebugger("version", "0.51");
 		//uiControl.updateDebugger("screenX", height);
 		//uiControl.updateDebugger("screenY", width);
 		document.body.style.height = height + "px";
@@ -1035,7 +1035,7 @@ var calander = {
 			clearInterval(calander.slide_animation);
 		}
 		document.getElementById("calander").style.display = "block";
-		calander.slide_animation = setInterval(this.slideUpdater,5);
+		calander.slide_animation = setInterval(this.slideUpdater,10);
 	},
 
 	slideUpdater:function() {
@@ -1102,7 +1102,7 @@ var bloc = {
 
 	setup:function(id) {
 		bloc.id = parseInt(id);
-		page_log_bid.push(id);
+		page_log_bid.push(bloc.id);
 		db.transaction(bloc.getSetupInfo, dataManager.errorCB);
 	},
 

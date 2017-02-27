@@ -10,11 +10,12 @@
 
   height:100%;
   width:100%;
+	display:none;
 
   margin:0px;
   padding:0px;
   z-index:0;
-  overflow: hidden;
+  overflow-x: hidden;
 
 	-webkit-backface-visibility: hidden;
 }
@@ -303,10 +304,10 @@
 .userFollowingStatus_farrow{
   position:absolute;
   background-color:#ffcb80;
-  top:-0.25vw;
+  top:-0.3vw;
 	height: 2vw;
 
-  right:-1.05vw;
+  right:-1.15vw;
   width:0.6vw;
 
   display:none;

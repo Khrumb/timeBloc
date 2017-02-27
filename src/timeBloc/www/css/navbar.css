@@ -55,8 +55,7 @@ body {
   padding:0px;
   border:none;
   z-index: 9000;
-  overflow-y: hidden;
-  overflow-x: hidden;
+  overflow: hidden;
   background-size: fixed;
 }
 

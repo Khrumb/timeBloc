@@ -31,3 +31,50 @@
 	padding:0px;
 
 }
+
+.logo:active{
+	-webkit-transform:scale(0.8,0.8);
+}
+
+.connection_spinner{
+	position: absolute;
+	left:50%;
+	top:40%;
+}
+
+.connection_message{
+	position: absolute;
+	color:rgba(0, 0, 0, 0.6);
+	left:5%;
+	top:50%;
+	width:90%;
+	font-size: 5.25vw;
+	font-family: "main_font";
+	margin: 0;
+	padding:0;
+
+	text-align: center;
+	border:0;
+
+	-webkit-animation: beat 3s infinite;
+
+}
+
+@-webkit-keyframes beat{
+	from {-webkit-transform:scale(1.0,1.0);}
+	96% {	-webkit-transform:scale(1.0,1.0);}
+	97% {	-webkit-transform:scale(0.98,0.98);}
+	98% {-webkit-transform:scale(1.0,1.0);}
+	99% {-webkit-transform:scale(1.05,1.05);}
+	to {-webkit-transform:scale(1.0,1.0);}
+}
+
+@-webkit-keyframes connecting{
+	from {-webkit-transform:rotate(0deg);}
+	to {-webkit-transform:rotate(360deg);}
+}
+
+@font-face {
+  font-family: "main_font";
+  src:url(../res/Nova-Plain.ttf);
+}

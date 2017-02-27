@@ -68,17 +68,28 @@
   border-left: none;
   border-right: none;
   padding: 3vw 0vw 0vw 0vw;
-  margin:0 0 0 0;
+  margin:0 0 -1px 0;
 }
 
 .top_field{
   border-top-left-radius: 2vw;
   border-top-right-radius: 2vw;
+
 }
 
 .bottom_field{
   border-bottom-left-radius: 2vw;
   border-bottom-right-radius: 2vw;
+
+}
+
+.login_error{
+	position:relative;
+	color:red;
+	left:5%;
+	height:auto;
+	margin: 2vw 0 -2vw 0;
+	display:none;
 }
 
 .login_button{
@@ -109,10 +120,13 @@
   border-top-left-radius: 2vw;
   border-top-right-radius: 2vw;
   border:.5vw solid red;
+	border-bottom: none;
 }
 
 .failed_bottom{
   border-bottom-left-radius: 2vw;
   border-bottom-right-radius: 2vw;
   border:.5vw solid red;
+	border-top: none;
+
 }

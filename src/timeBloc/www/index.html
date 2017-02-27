@@ -25,10 +25,21 @@
        <div id='sidebar' class="sidebar" ontouchstart="sidebar.onTouch();" ontouchmove="sidebar.onSlide();" ontouchend="sidebar.onTouchEnd();">
         <h1 class="mastHead" ><a href="#blocfeed" ontouchstart="sidebar.slide();" ontouchend="blocFeed.setup();">timeBloc</a></h1>
         <ul>
-					<li ontouchstart="sidebar.slide();" ontouchend="userBloc.setup();">Active Profile</li>
-          <li ontouchstart="sidebar.slide();" ontouchend="blocFeed.setup();">blocFeed</li>
-					<li ontouchstart="sidebar.slide();" ontouchend="bloc.setup(1);">Test Bloc</li>
-          <li ontouchstart="sidebar.slide();" ontouchend="dataManager.resetUserData();">Logout</li>
+					<li class="profile_sidebar_link" ontouchstart="sidebar.slide();" ontouchend="userBloc.setup();">
+						<div class="profile_sidebar_link_image_container">
+							<div id="profile_sidebar_link_image" class="profile_sidebar_link_image"></div>
+						</div>
+						<p id="profile_sidebar_link_display_name" class="profile_sidebar_link_display_name" >
+							display_name
+						</p>
+						<p id="profile_sidebar_link_username" class="profile_sidebar_link_username" >
+							@Username
+						</p>
+					</li>
+
+          <li class="standard_sidebar_link" ontouchstart="sidebar.slide();" ontouchend="blocFeed.setup();">blocFeed</li>
+					<li class="standard_sidebar_link" ontouchstart="sidebar.slide();" ontouchend="bloc.setup(1);">Test Bloc</li>
+          <li class="standard_sidebar_link" ontouchstart="sidebar.slide();" ontouchend="dataManager.resetUserData();">Logout</li>
         </ul>
         <div class="easterEgg" ontouchstart="sidebar.slide();" ontouchend="founders.setup();">
         </div>
@@ -259,6 +270,9 @@
         <input type="text" class="login_field" id="login_username" placeholder="username" autocomplete="off">
         <input type="password" class="login_field" id="login_password" placeholder="password" autocomplete="off">
          <div id="login_content">
+					<div id="login_error" class="login_error">
+						Invalid Username or Password.
+					</div>
           <div class="login_button" ontouchend="login.submit();">
             Login
           </div>
@@ -275,7 +289,13 @@
 		 </div>
 
 		 <div id="base" class="base">
-			 <img class="logo" src="assets/logo.png" alt="" />
+			 <img class="logo" src="assets/logo.png" ontouchend="network.getServerStatus();" />
+			 <div id="connection_spinner" class="connection_spinner">
+
+			 </div>
+			 <div id="connection_message" class="connection_message">
+
+			</div>
 		 </div>
 		  <script type="text/javascript" src="cordova.js"></script>
 			<script type="text/javascript" src="js/socket.io.js"></script>

@@ -19,6 +19,7 @@ var sidebar_isOn = false;
 var blocFeed_bloc_on = false;
 var isFollowing = false;
 
+var version = "0.53.6";
 var db;
 
 var app = {
@@ -56,26 +57,41 @@ var app = {
 				if(sidebar_isOn){
 					sidebar.slide();
 				} else if(page_log.length > 1){
-					if(page_log[page_log.length-1] == 'userBloc'){
-						page_log_uid.pop();
-					}
 					current_page = page_log.pop();
-					var id = page_log[page_log.length-1];
-					switch (id) {
-						case 'blocFeed':
-								blocFeed.setup();
-								break;
-						case 'userBloc':
-								userBloc.setup(page_log_uid.pop());
+					if(page_log[page_log.length-1] == 'userBloc' && current_page == 'userBloc'){
+					 page_log_uid.pop();
+					}
+					switch (current_page) {
+						case "calander":
+							calander.c_pos = -width;
+							calander.slide_step = Math.floor(width/25);
+							calander.slide_animation = setInterval(calander.popIn, 6);
+							current_page = null;
 							break;
-						case 'personalPage':
-								personalPage.setup();
-								break;
-						case 'bloc':
-								bloc.setup(page_log_bid.pop());
-								break;
+						case "personalPage":
+							personalPage.taredown();
+							current_page = null;
+							break;
 						default:
-							alert("PAGE_SETUP_UNHANDLED: "+id);
+						var id = page_log[page_log.length-1];
+						switch (id) {
+							case 'blocFeed':
+									blocFeed.setup();
+									break;
+							case 'calander':
+							case 'userBloc':
+									page_log.pop();
+									userBloc.setup(page_log_uid.pop());
+									break;
+							case 'personalPage':
+									personalPage.setup();
+									break;
+							case 'bloc':
+									bloc.setup(page_log_bid.pop());
+									break;
+							default:
+								alert("PAGE_SETUP_UNHANDLED: "+id);
+						}
 					}
 				}
 			},
@@ -106,13 +122,13 @@ var dataManager = {
 		height = screen.availHeight;
 		width = screen.availWidth;
 		uiControl.updateDebugger("build", "pre-alpha");
-		uiControl.updateDebugger("version", "0.53.1");
+		uiControl.updateDebugger("version", version);
 		//uiControl.updateDebugger("screenX", height);
 		//uiControl.updateDebugger("screenY", width);
 		//document.body.style.height = height + "px";
 		//document.body.style.width = width + "px";
     db = window.openDatabase("timeBloc", "0.1", "dmgr", 20000000);
-    db.transaction(dataManager.populateDB, dataManager.errorCB);
+    //db.transaction(dataManager.populateDB, dataManager.errorCB);
   },
 
   //user (uid, username, display_name, date_joined)
@@ -205,6 +221,10 @@ var dataManager = {
 	getTheme:function(imgdata) {
 		uiControl.updateDebugger("is in byte", 2*imgdata.length);
 		return "light";
+	},
+
+	setUser:function() {
+		uid = prompt("Enter UID of user:");
 	},
 
   numberToString:function(num) {
@@ -302,8 +322,12 @@ var uiControl = {
 				} else {
 				  id = page_log[page_log.length-1];
 				}
-				//iControl.updateDebugger("tco", id);
+				//uiControl.updateDebugger("tco", page_log);
 				switch (id) {
+					case 'calander':
+						calander.c_pos = -width;
+						calander.slide_step = Math.floor(width/25);
+						calander.slide_animation = setInterval(calander.popIn, 6);
 					case 'userBloc':
 						userBloc.taredown();
 						break;
@@ -319,10 +343,6 @@ var uiControl = {
 					case 'dialog':
 						uiControl.select(-2);
 						break;
-					case 'calander':
-						calander.slide_step = (width)/50;
-						calander.slide_animation = setInterval(calander.popIn, 4);
-						break;
 					default:
 						alert("Unhandled Page: " + id);
 				}
@@ -333,7 +353,6 @@ var uiControl = {
 				document.getElementById('bloc').display = 'none';
 				document.getElementById('dialog').display = 'none';
 				document.getElementById('base').display = 'none';
-
 			}
     },
 
@@ -344,7 +363,10 @@ var uiControl = {
 			}
 			if(page_log[page_log.length-1]!=id){
 				page_log.push(id);
+			} else if(page_log[page_log.length-1] == 'userBloc'){
+				page_log.push(id);
 			}
+			//uiControl.updateDebugger("pl", page_log);
       if(document.getElementById(id).classList.contains("off")){
         document.getElementById(id).classList.remove('off');
       }
@@ -385,7 +407,6 @@ var uiControl = {
 			dialog += "<div class='option cancel' ontouchend='uiControl.select(-1);'>Cancel</div>";
 			document.getElementById('option_container').innerHTML = dialog;
 			document.getElementById("dialog").style['z-index'] = page_log.length+5;
-
 			uiControl.turnItemOn("dialog");
 
 		},
@@ -1029,11 +1050,9 @@ var calander = {
 	},
 
 	taredown:function() {
-		setTimeout(function () {
-			document.getElementById("calander").style.display = "none";
-			document.getElementById("calander").style['z-index'] = 0;
-			document.getElementById("calander").style.left = "0%";
-		}, 200);
+		document.getElementById("calander").style.display = "none";
+		document.getElementById("calander").style['z-index'] = 0;
+		document.getElementById("calander").style.left = "0%";
 	},
 
 	sideGrab:function() {

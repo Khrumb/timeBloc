@@ -106,7 +106,7 @@ var dataManager = {
 		height = screen.availHeight;
 		width = screen.availWidth;
 		uiControl.updateDebugger("build", "pre-alpha");
-		uiControl.updateDebugger("version", "0.53");
+		uiControl.updateDebugger("version", "0.53.1");
 		//uiControl.updateDebugger("screenX", height);
 		//uiControl.updateDebugger("screenY", width);
 		//document.body.style.height = height + "px";
@@ -578,7 +578,7 @@ var blocFeed ={
 
 var userBloc = {
 
-    id: 0,
+    id: null,
 		weight:[0.166, 0.166, 0.166, 0.166, 0.166, 0.166, 0.166],
     last_slice: 0,
 		current_angle: 0,
@@ -1101,7 +1101,7 @@ var calander = {
 
 var bloc = {
 
-	id: 0,
+	id: null,
 	c_bloc: null,
 
 	c_pos:0,

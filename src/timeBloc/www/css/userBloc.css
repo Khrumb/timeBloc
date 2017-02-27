@@ -109,11 +109,13 @@
 
 
 .user_Profile_breakdown_container{
+	left:0;
   width:100vw;
   height:65vh;
+	margin:0px;
+	padding:0px;
 }
 
-/*150.8*/
 .user_Profile_breakdown_0{
   position:absolute;
   background-size:contain;

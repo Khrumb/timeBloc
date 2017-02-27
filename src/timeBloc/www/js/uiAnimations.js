@@ -370,43 +370,34 @@ var userBloc = {
 
     id: 0,
     last_slice: 0,
-    weight:[1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+		c_angle: 0,
+		position_list: [0,1,2,3,4,5,6],
+    weight:[0, 0.166, 0.166, 0.166, 0.166, 0.166, 0.166],
 
     setup:function(id) {
       userBloc.id = parseInt(id);
+			uiControl.turnCurrentItemOff();
       db.transaction(userBloc.getUserInfo, dataManager.errorCB);
-      db.transaction(userBloc.getOtherInfo, dataManager.errorCB);
-		  db.transaction(userBloc.getWeights, dataManager.errorCB);
-      setTimeout(function () {
-        uiControl.turnCurrentItemOff();
-        uiControl.turnItemOff("userBloc");
-        uiControl.turnItemOn("userBloc");
-				document.getElementById("userBloc").style.left = 0 + '%';
-      }, 100);
     },
 
-    taredown:function() {
+		setupCallBack:function(){
+			uiControl.turnItemOff("userBloc");
+			uiControl.turnItemOn("userBloc");
+			document.getElementById("userBloc").style.left = 0 + '%';
+		},
+
+		taredown:function() {
 			uiControl.turnItemOff("userBloc");
 			setTimeout(function () {
 				document.getElementById("userBloc").style.left = -100 + '%';
 			}, 200);
-    },
+		},
 
-    getUserInfo:function(tx){
+		getUserInfo:function(tx){
       tx.executeSql('SELECT * FROM user where uid = '+ userBloc.id, [], userBloc.setupUserElements, dataManager.errorCB);
     },
 
-    getWeights:function(tx){
-      tx.executeSql('SELECT * FROM weight_list where uid = ' + userBloc.id, [], userBloc.setWedges, dataManager.errorCB );
-    },
-
-    getOtherInfo:function(tx){
-      tx.executeSql('SELECT * FROM follower_list where fuid = '+ userBloc.id, [], userBloc.setupFollowers, dataManager.errorCB);
-      tx.executeSql('SELECT * FROM follower_list where uid = '+ userBloc.id, [], userBloc.setupFollowing, dataManager.errorCB);
-      tx.executeSql('SELECT * FROM follower_list where uid = '+ uid +' AND fuid = ' + userBloc.id + ' OR uid = '+ userBloc.id +' AND fuid = ' + uid, [], userBloc.setFollowButton, dataManager.errorCB);
-    },
-
-    setupUserElements: function(tx,results) {
+		setupUserElements: function(tx,results) {
       var user = results.rows.item(0);
       page_log_uid.push(user.uid);
       document.getElementById('user_Profile_Picture').src = "img/"+ user.uid +"_profile_picture.jpg";
@@ -415,70 +406,131 @@ var userBloc = {
       document.getElementById('user_Display_Name').innerHTML = user.display_name;
       document.getElementById('user_Handle').innerHTML = "@" + user.username;
       document.getElementById('user_bio').innerHTML = user.bio;
+			userBloc.getWeights(tx);
     },
 
-		setWedges:function(tx, results) {
+    getWeights:function(tx){
+      tx.executeSql('SELECT * FROM weight_list where uid = ' + userBloc.id, [], userBloc.setWeights, dataManager.errorCB );
+    },
+
+		setWeights:function(tx, results) {
 			var userWedge = results.rows.item(0);
-			var replacement = [];
+			var replace_weight = [];
+			var replace_pos = [];
 			for(var i=0; i <= 6 ; i++){
-				//alert(userWedge['weight_'+ i]);
 				if(userWedge['weight_'+ i] > 0){
-					replacement.push(userWedge['weight_'+ i]);
+					replace_weight.push(userWedge['weight_'+ i]);
+					replace_pos.push(i);
 				}
 			}
-			userBloc.weight = replacement;
+			userBloc.weight = replace_weight;
+			userBloc.position_list = replace_pos;
 			userBloc.generateSelf();
+			userBloc.getOtherInfo(tx);
+		},
+
+    getOtherInfo:function(tx){
+      tx.executeSql('SELECT * FROM follower_list where fuid = '+ userBloc.id, [], userBloc.setupFollowers, dataManager.errorCB);
+      tx.executeSql('SELECT * FROM follower_list where uid = '+ userBloc.id, [], userBloc.setupFollowing, dataManager.errorCB);
+      tx.executeSql('SELECT * FROM follower_list where uid = '+ uid +' AND fuid = ' + userBloc.id + ' OR uid = '+ userBloc.id +' AND fuid = ' + uid, [], userBloc.setFollowButton, dataManager.errorCB);
+    },
+
+		setupFollowers: function(tx,results) {
+			document.getElementById('followers').innerHTML = dataManager.numberToString(results.rows.length);
+		},
+
+		setupFollowing: function(tx,results) {
+			document.getElementById('following').innerHTML = dataManager.numberToString(results.rows.length);
+		},
+
+		setFollowButton: function(tx,results) {
+			//alert(results.rows.length);
+			userBloc.resetFollowButton();
+			if (userBloc.id == uid) {
+				document.getElementById('user_Follow_Status').style.border = '.8vw dashed #bfbfbf';
+				document.getElementById('user_Follow_Status').style.background = '#bfbfbf';
+				document.getElementById('user_Follow_Status').innerHTML = "Edit Profile";
+				document.getElementById('user_Follow_Status').ontouchend = userBloc.toBeImplemented;
+			} else {
+				switch (results.rows.length) {
+					case 2:
+						userBloc.followBack();
+						userBloc.follow();
+						break;
+					case 1:
+						if(results.rows.item(0).uid != uid){
+							userBloc.followBack();
+						} else {
+							userBloc.follow();
+						}
+						break;
+					default:
+						userBloc.unfollow();
+				}
+			}
+			userBloc.setupCallBack();
 		},
 
     generateSelf:function() {
-      var current_angle = -180;
-      var angle = 360/userBloc.weight.length;
-      var dasharray = ((195/userBloc.weight.length)+1.5) + "%" + " 195%";
-			var i;
-      for(i = 0; (current_angle+angle) <= 185; i++){
-        document.getElementById("user_Profile_breakdown_" + i).style.transform= "rotate(" + current_angle + "deg)";
-        document.getElementById("user_Profile_slice_" + i).style['stroke-dasharray']= dasharray;
-				document.getElementById("user_Profile_slice_" + i).style['stroke-width'] = 18*userBloc.weight[i]+ '%';
-        current_angle += angle;
-      }
-			for(i=i ; i <= 6; i++){
-				document.getElementById("user_Profile_slice_" + i).style['stroke-width'] = 0;
+			userBloc.c_angle = 240/(userBloc.weight.length-1);
+			var begin_angle = -25.15;
+			var limit = 215+ userBloc.c_angle/2;
+			var dasharray = (135/(userBloc.weight.length-1)) + "%" + " 195%";
+			//(begin_angle+userBloc.c_angle) <= limit
+		//	alert(userBloc.position_list);
+      for(var i = 0; i < 7; i++){
+			  if(userBloc.position_list[i] != null){
+        	document.getElementById("user_Profile_breakdown_" + userBloc.position_list[i]).style.transform= "rotate(" + (begin_angle+(userBloc.c_angle*(i-1))) + "deg)";
+        	document.getElementById("user_Profile_slice_" + userBloc.position_list[i]).style['stroke-dasharray']= dasharray;
+					document.getElementById("user_Profile_slice_" + userBloc.position_list[i]).style['stroke-width'] = 16 + '%';
+					document.getElementById("user_Profile_breakdown_" + userBloc.position_list[i]).style.opacity = 0.50;
+        	//begin_angle += userBloc.c_angle;
+				} else {
+					document.getElementById("user_Profile_slice_" + i).style['stroke-width'] = 0;
+					//document.getElementById("user_Profile_slice_"  + userBloc.last_slice).style['stroke-width'] = 23 + '%';
+				}
 			}
+			document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.transform= "rotate(-145.38deg)";
+			document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = 1.0;
+			document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style['stroke-dasharray']= 	"70% 195%";
+			document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style['stroke-width'] = '23%';
+			document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = 1.0;
     },
 
-    setupFollowers: function(tx,results) {
-      document.getElementById('followers').innerHTML = dataManager.numberToString(results.rows.length);
+    onProfilePictureTouch:function(){
+      touches = event.touches[0];
+			var direction = Math.atan2(touches.pageY -  window.innerHeight*0.43, touches.pageX - window.innerWidth*0.50) + Math.PI;
+			userBloc.c_angle = (direction/(2*Math.PI/120));
+			//userBloc.c_angle = Math.round(userBloc.c_angle/30)*30;
+			//document.getElementById('followers').innerHTML = userBloc.c_angle;
+		},
+
+    onProfilePictureDrag:function() {
+      touches = event.touches[0];
+      var direction = Math.atan2(touches.pageY -  window.innerHeight*0.43, touches.pageX - window.innerWidth*0.50)+Math.PI;
+			var dt = (direction/(2*Math.PI/120));
+			var step = dt -  userBloc.c_angle;
+			document.getElementById("weeks").innerHTML = 	userBloc.position_list;
+			if(step > 20 && step < 30  || step < -40 ){
+				userBloc.position_list.unshift(userBloc.position_list.pop());
+				userBloc.generateSelf();
+				userBloc.c_angle = dt;
+			} else if(step < -20  && step > -30 || step > 40){
+				userBloc.position_list.push(userBloc.position_list.shift());
+				userBloc.generateSelf();
+				userBloc.c_angle = dt;
+			}
+			//document.getElementById('user_Profile_breakdown_container').style.transform = "rotate(" + dt + "deg)";
     },
 
-    setupFollowing: function(tx,results) {
-      document.getElementById('following').innerHTML = dataManager.numberToString(results.rows.length);
+    onProfilePictureEnd:function() {
+    	document.getElementById("weeks").innerHTML = userBloc.last_slice;
+			//document.getElementById("user_Profile_slice_" + userBloc.last_slice).style['stroke-dasharray'] = 70 + "%" + " 195%";
+
     },
 
-    setFollowButton: function(tx,results) {
-      //alert(results.rows.length);
-      userBloc.resetFollowButton();
-      if (userBloc.id == uid) {
-        document.getElementById('user_Follow_Status').style.border = '.8vw dashed #bfbfbf';
-        document.getElementById('user_Follow_Status').style.background = '#bfbfbf';
-        document.getElementById('user_Follow_Status').innerHTML = "Edit Profile";
-        document.getElementById('user_Follow_Status').ontouchend = userBloc.toBeImplemented;
-      } else {
-        switch (results.rows.length) {
-          case 2:
-            userBloc.followBack();
-            userBloc.follow();
-            break;
-          case 1:
-            if(results.rows.item(0).uid != uid){
-              userBloc.followBack();
-            } else {
-              userBloc.follow();
-            }
-            break;
-          default:
-            userBloc.unfollow();
-        }
-      }
+    toBeImplemented:function(ev) {
+      alert('To be Implemented');
     },
 
 		setTheme:function(id) {
@@ -494,54 +546,15 @@ var userBloc = {
 		},
 
 		resetFollowButton:function() {
-      document.getElementById('user_Follow_Status').ontouchend = userBloc.toggleFollow;
-      document.getElementById('user_Follow_Status').style.border = '.8vw dashed #bfbfbf';
-      //document.getElementById('user_Follow_Status').style.background = "#f2f2f2";
-      document.getElementById('user_Follow_Status').innerHTML = "Follow";
-      document.getElementById('userFollowingStatus_fbarrow').style.display = "none";
-      document.getElementById('userFollowingStatus_farrow').style.display = "none";
-      document.getElementById('user_Follow_Status').style.background = 'none';
-      isFollowing = false;
-    },
-
-    onProfilePictureTouch:function(){
-      touches = event.touches;
-      first_touch = touches[0];
-      //alert("W:"+ window.innerWidth*0.5 + " H: " + window.innerHeight*0.3);
-    },
-
-    onProfilePictureDrag:function() {
-      touches = event.touches[0];
-      var angle = (1/userBloc.weight.length)*2*Math.PI;
-      var direction = Math.atan2(touches.pageY - window.innerHeight*0.35, touches.pageX - window.innerWidth*0.50);
-      direction += (Math.PI);
-      direction = Math.floor(direction/angle);
-      document.getElementById("user_Profile_slice_" +direction).style['stroke-width'] = 22 + '%';
-      document.getElementById("user_Profile_breakdown_" +direction).style.opacity= 1.0;
-      if(direction != userBloc.last_slice){
-      document.getElementById("user_Profile_slice_" +userBloc.last_slice).style['stroke-width'] = 18*userBloc.weight[userBloc.last_slice] + '%';
-      document.getElementById("user_Profile_breakdown_" +userBloc.last_slice).style.opacity= 0.5;
-      }
-      userBloc.last_slice = direction;
-    },
-
-    onProfilePictureEnd:function() {
-      var distance = Math.pow((touches.pageX - first_touch.pageX), 2) + Math.pow((touches.pageY - first_touch.pageY), 2);
-      distance = Math.sqrt(distance);
-      if(distance > (document.body.clientWidth*0.25)){
-        alert("Going to slice:" + userBloc.last_slice);
-        document.getElementById("user_Profile_slice_" +userBloc.last_slice).style['stroke-width'] = 60;
-        document.getElementById("user_Profile_breakdown_" +userBloc.last_slice).style.opacity= 0.5;
-
-      } else {
-        document.getElementById("user_Profile_slice_" +userBloc.last_slice).style['stroke-width'] = 60;
-        document.getElementById("user_Profile_breakdown_" +userBloc.last_slice).style.opacity= 0.5;
-      }
-    },
-
-    toBeImplemented:function(ev) {
-      alert('To be Implemented');
-    },
+			document.getElementById('user_Follow_Status').ontouchend = userBloc.toggleFollow;
+			document.getElementById('user_Follow_Status').style.border = '.8vw dashed #bfbfbf';
+			//document.getElementById('user_Follow_Status').style.background = "#f2f2f2";
+			document.getElementById('user_Follow_Status').innerHTML = "Follow";
+			document.getElementById('userFollowingStatus_fbarrow').style.display = "none";
+			document.getElementById('userFollowingStatus_farrow').style.display = "none";
+			document.getElementById('user_Follow_Status').style.background = 'none';
+			isFollowing = false;
+		},
 
     toggleFollow:function() {
       if(!isFollowing){

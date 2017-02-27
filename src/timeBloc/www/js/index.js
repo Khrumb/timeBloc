@@ -250,6 +250,20 @@ var uiControl = {
       alert('To be Implemented');
     },
 
+		setTheme:function(id) {
+			var classes = ['user_Display_Name', 'user_Handle', 'user_Follow_Status',
+										 'user_bio', 'user_Info', 'page_break',
+										 'wks', 'fr', 'fi'];
+			var current_block;
+			for(var i = 0; i < classes.length; i++){
+				current_block = document.getElementById(classes[i]);
+				if(current_block.classList.length > 1){
+					current_block.classList.remove(current_block.classList[1]);
+				}
+				current_block.classList.add(id);
+			}
+		},
+
     populate: function() {
       //====================================
       //--------------userBloc--------------
@@ -486,7 +500,7 @@ var userBloc = {
       document.getElementById('user_Handle').textContent = "@" + user.username;
 			document.getElementById('user_Info').textContent = user.birthday + " | " + user.location;
       document.getElementById('user_bio').textContent = user.bio;
-			userBloc.setTheme(user.theme);
+			uiControl.setTheme(user.theme);
 
 			userBloc.getWeights(tx);
     },
@@ -667,20 +681,6 @@ var userBloc = {
 
 		extendPreview:function() {
 
-		},
-
-		setTheme:function(id) {
-			var classes = ['user_Display_Name', 'user_Handle', 'user_Follow_Status',
-										 'user_bio', 'user_Info', 'page_break',
-										 'wks', 'fr', 'fi'];
-			var current_block;
-			for(var i = 0; i < classes.length; i++){
-				current_block = document.getElementById(classes[i]);
-				if(current_block.classList.length > 1){
-					current_block.classList.remove(current_block.classList[1]);
-				}
-				current_block.classList.add(id);
-			}
 		},
 
 	  resetFollowButton:function() {

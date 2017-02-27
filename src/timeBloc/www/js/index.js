@@ -8,9 +8,11 @@ var movement;
 var page_log = [];
 var page_log_uid = [];
 var page_log_bid = [];
+var page_log_mid = [];
 var current_page = null;
 
 var uid = 3;
+var comment_number = 0;
 
 var timer;
 
@@ -19,7 +21,7 @@ var sidebar_isOn = false;
 var blocFeed_bloc_on = false;
 var isFollowing = false;
 
-var version = "0.54.5";
+var version = "0.54.11";
 var db;
 
 var app = {
@@ -43,8 +45,8 @@ var app = {
 					uiControl.setDebugger();
 	        //uiControl.populate();
 					setTimeout(function () {
-						blocFeed.setup();
-						//bloc.setup(1);
+						//blocFeed.setup();
+						bloc.setup(1);
 						//alert("setup called");
 						setTimeout(function () {
 							document.getElementById('base').style.display = "none";
@@ -54,9 +56,17 @@ var app = {
 	    },
 
 			onBackKeyDown: function() {
+
 				if(sidebar_isOn){
 					sidebar.slide();
-				} else if(page_log.length > 1){
+				} else if(!bloc.mediaIsOut && bloc.wasToggled){
+					if(bloc.container_animation != null){
+						clearInterval(bloc.container_animation);
+						bloc.c_pos = -width;
+						bloc.slide_step = width/18;
+						bloc.container_animation = setInterval(bloc.mediaOut, 6);
+					}
+				}else if(page_log.length > 1){
 					current_page = page_log.pop();
 					if(page_log[page_log.length-1] == 'userBloc' && current_page == 'userBloc'){
 					 page_log_uid.pop();
@@ -72,11 +82,20 @@ var app = {
 							personalPage.taredown();
 							current_page = null;
 							break;
+						case "fullScreenMedia":
+							fullScreenMedia.taredown();
+							current_page = null;
+							break;
 						case "dialog":
 							uiControl.select(-2);
 							current_page = null;
 							break;
+						case "fullScreenMedia":
+							current_page = null;
+							break;
 						default:
+						uiControl.updateDebugger("pl", current_page);
+
 						var id = page_log[page_log.length-1];
 						switch (id) {
 							case 'blocFeed':
@@ -155,11 +174,13 @@ var dataManager = {
     tx.executeSql('DROP TABLE IF EXISTS user');
     tx.executeSql('DROP TABLE IF EXISTS bloc');
 		tx.executeSql('DROP TABLE IF EXISTS bloc_temp');
-		tx.executeSql('DROP TABLE IF EXISTS picture');
+		tx.executeSql('DROP TABLE IF EXISTS media');
 		tx.executeSql('DROP TABLE IF EXISTS personal');
+		tx.executeSql('DROP TABLE IF EXISTS comments');
 		tx.executeSql('DROP TABLE IF EXISTS weight_list');
     tx.executeSql('DROP TABLE IF EXISTS follower_list');
 		tx.executeSql('DROP TABLE IF EXISTS permission_list');
+
 
 
 
@@ -169,12 +190,29 @@ var dataManager = {
 		tx.executeSql('CREATE TABLE IF NOT EXISTS bloc_temp (bid Primary Key ASC, uid Refrences USER uid, message, posted_time)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS follower_list (uid Refrences USER uid, fuid Refrences USER uid, date_followed)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS weight_list (uid Refrences USER uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6)');
-		tx.executeSql('CREATE TABLE IF NOT EXISTS picture (pid Primary Key, uid Refrences USER uid, bid Refrences bloc bid, data)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS media (mid Primary Key, uid Refrences USER uid, bid Refrences bloc bid, type, data)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS permission_list (plid Primary Key, uid Refrences USER uid, bid Refrences bloc bid, permission_level, date_added)');
-		tx.executeSql('CREATE TABLE IF NOT EXISTS bloc (bid Primary Key, uid Refrences USER uid, plid References permission_list(plid), title, pid References picture(pid), location, date)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS bloc (bid Primary Key, uid Refrences USER uid, plid References permission_list(plid), title, mid References media(mid), location, date)');
+
+		tx.executeSql('CREATE TABLE IF NOT EXISTS comments (cid Primary Key, reply References comments(cid), uid Refrences USER uid , bid Refrences bloc bid, text)');
 
 
 	  //temp inserts
+
+		//template for regex: tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (<seq#>, <cid>, <uid>, <bid>, <text>)');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (0, -1, 3, 1, "This is my test bloc i guess?")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (1, 0, 1, 1, "Any idea on how i can get myself one of these?")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (2, -1, 2, 1, "riprip")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (3, 1, 0, 1, "BOT_DETECTED")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (4, 0, 2, 1, "RandomStoof")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (5, 2, 0, 1, "01000100 01101111 01100101 01110011 00100000 01110100 01101000 01101001 01110011 00100000 01100011 01101111 01110101 01101110 01110100 00100000 01100001 01110011 00100000 01100001 01101110 00100000 01000101 01100001 01110011 01110100 01100101 01110010 01100101 01100111 01100111 00111111")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (6, 3, 3, 1, "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (7, -1, 1, 1, "Bruh Calm down.")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (8, 5, 2, 1, "LOL, im the bot.")');
+		comment_number=9;
+
+		//Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium
+
     //template for regex: tx.executeSql('INSERT INTO personal(session_key, uid) VALUES (<session_id>, <uid>)');
     tx.executeSql('INSERT INTO personal(session_key, uid) VALUES (1, 1)');
 
@@ -199,46 +237,46 @@ var dataManager = {
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 3, 2, "<date_joined>")');
 
 
-		//tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (<seq#>, <uid>, <bid>, <imagedata>)');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (1, 3, 1, "img/1_bloc_bg.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (0, 3, 0, "img/2_bloc_bg.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (3, 3, 1, "img/bloc_1_1.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (4, 3, 1, "img/bloc_1_2.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (5, 3, 1, "img/bloc_1_3.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (6, 3, 1, "img/bloc_1_4.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (7, 3, 1, "img/bloc_1_5.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (8, 3, 1, "img/bloc_1_6.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (9, 3, 1, "img/bloc_1_7.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (10, 3, 1, "img/bloc_1_8.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (11, 3, 1, "img/bloc_1_9.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (12, 3, 1, "img/bloc_1_10.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (13, 3, 1, "img/bloc_1_11.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (14, 3, 1, "img/bloc_1_12.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (15, 3, 1, "img/bloc_1_13.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (16, 3, 1, "img/bloc_1_14.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (17, 3, 1, "img/bloc_1_15.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (18, 3, 1, "img/bloc_1_1.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (19, 3, 1, "img/bloc_1_2.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (20, 3, 1, "img/bloc_1_3.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (21, 3, 1, "img/bloc_1_4.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (22, 3, 1, "img/bloc_1_5.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (23, 3, 1, "img/bloc_1_6.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (24, 3, 1, "img/bloc_1_7.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (25, 3, 1, "img/bloc_1_8.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (26, 3, 1, "img/bloc_1_9.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (27, 3, 1, "img/bloc_1_10.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (28, 3, 1, "img/bloc_1_11.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (29, 3, 1, "img/bloc_1_12.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (30, 3, 1, "img/bloc_1_13.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (31, 3, 1, "img/bloc_1_14.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (32, 3, 1, "img/bloc_1_15.jpg")');
+		//tx.executeSql('INSERT INTO picture(mid, uid, bid, type, data) VALUES (<seq#>, <uid>, <bid>, <type(0=picture)> <imagedata>)');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (1, 3, 0, 0, "img/1_bloc_bg.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (0, 3, 1, 0, "img/2_bloc_bg.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (3, 3, 1, 0,"img/bloc_1_1.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (4, 3, 1, 0, "img/bloc_1_2.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (5, 3, 1, 0, "img/bloc_1_3.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (6, 3, 1, 0, "img/bloc_1_4.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (7, 3, 1, 0, "img/bloc_1_5.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (8, 3, 1, 0, "img/bloc_1_6.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (9, 3, 1, 0, "img/bloc_1_7.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (10, 3, 1, 0, "img/bloc_1_8.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (11, 3, 1, 0, "img/bloc_1_9.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (12, 3, 1, 0, "img/bloc_1_10.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (13, 3, 1, 0, "img/bloc_1_11.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (14, 3, 1, 0, "img/bloc_1_12.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (15, 3, 1, 0, "img/bloc_1_13.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (16, 3, 1, 0, "img/bloc_1_14.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (17, 3, 1, 0, "img/bloc_1_15.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (18, 3, 1, 0, "img/bloc_1_1.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (19, 3, 1, 0, "img/bloc_1_2.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (20, 3, 1, 0, "img/bloc_1_3.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (21, 3, 1, 0, "img/bloc_1_4.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (22, 3, 1, 0, "img/bloc_1_5.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (23, 3, 1, 0, "img/bloc_1_6.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (24, 3, 1, 0, "img/bloc_1_7.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (25, 3, 1, 0, "img/bloc_1_8.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (26, 3, 1, 0, "img/bloc_1_9.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (27, 3, 1, 0, "img/bloc_1_10.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (28, 3, 1, 0, "img/bloc_1_11.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (29, 3, 1, 0, "img/bloc_1_12.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (30, 3, 1, 0, "img/bloc_1_13.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (31, 3, 1, 0, "img/bloc_1_14.jpg")');
+		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (32, 3, 1, 0, "img/bloc_1_15.jpg")');
 
 		//tx.executeSql('INSERT INTO permission_list(pl_id, uid, bid, date_added) VALUES (<seq#>, <uid>, <bid>, <permission_level>, <current_data>)');
 		tx.executeSql('INSERT INTO permission_list(plid, uid, bid, permission_level, date_added) VALUES (0, 3, 0, 5 ,"-Null-")');
 
-		//tx.executeSql('INSERT INTO bloc(bid, uid, pl_id, title, pid, location, date) VALUES (<seq#>, <uid>, <pl_id>, "<title>",  <pid>, <location>, <current_date> )');
-		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, pid, location) VALUES (0, 0, 0, "Default Bloc",  0, "NA - USA" )');
-		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, pid, location) VALUES (1, 3, 0, "Brane Test",  1, "CO - USA" )');
+		//tx.executeSql('INSERT INTO bloc(bid, uid, pl_id, title, mid, location, date) VALUES (<seq#>, <uid>, <pl_id>, "<title>",  <mid>, <location>, <current_date> )');
+		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, mid, location) VALUES (0, 0, 0, "Default Bloc",  0, "NA - USA" )');
+		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, mid, location) VALUES (1, 3, 0, "Brane Test",  0, "CO - USA" )');
 
     //template for regex: tx.executeSql('INSERT INTO bloc(bid, userID, message) VALUES (<bid>, "<username>", "<message>")');
     tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (0, 0, "Link to UID_0 - Default")');
@@ -356,7 +394,7 @@ var uiControl = {
 				} else {
 				  id = page_log[page_log.length-1];
 				}
-				//uiControl.updateDebugger("tco", page_log);
+				//uiControl.updateDebugger("tco", id);
 				switch (id) {
 					case 'calander':
 						calander.c_pos = -width;
@@ -381,8 +419,11 @@ var uiControl = {
 					case 'founders':
 						founders.taredown();
 						break;
+					case 'fullScreenMedia':
+						fullScreenMedia.taredown();
+						break;
 					default:
-						alert("Unhandled Page: " + id);
+						alert("TCO Unhandled Page: " + id);
 				}
       } else {
 				document.getElementById('blocFeed').display = 'block';
@@ -463,7 +504,7 @@ var uiControl = {
 			}
 			if(id == -3){
 				page_log.pop();
-				uiControl.turnCurrentItemOff()
+				uiControl.turnCurrentItemOff();
 			}
 			uiControl.turnItemOff("dialog");
 			setTimeout(function () {
@@ -1165,7 +1206,10 @@ var bloc = {
 
 	id: null,
 	c_bloc: null,
+	mediaList: [],
 	mediaIsOut: true,
+	wasToggled: false,
+	timer:0,
 
 	c_pos:0,
 	slide_step:0,
@@ -1181,18 +1225,16 @@ var bloc = {
 		if(bloc.id != parseInt(id)){
 			bloc.id = parseInt(id);
 			page_log_bid.push(bloc.id);
-
 			bloc.scrollThreshhold = Math.floor(2*(width*0.5876));
 			bloc.scrollLimit = Math.floor(width*0.444444444444444444);
-			document.getElementById("bloc_content_slide_tab_left").style.height = (width+bloc.scrollLimit) + "px";
-			document.getElementById("bloc_content_slide_tab_right").style.height = (width+bloc.scrollLimit) + "px";
-			document.getElementById("bloc_media_content").style.height = (width+bloc.scrollLimit) + "px";
-			document.getElementById("bloc_blog_content").style.height = (width+bloc.scrollLimit) + "px";
+			bloc.reply_id = -1;
+			if(!bloc.mediaIsOut){
+				bloc.wasToggled = true;
+			}
 
 			db.transaction(bloc.getSetupInfo, dataManager.errorCB);
 		}
 	},
-
 
 	setupCallBack:function(){
 		uiControl.turnCurrentItemOff();
@@ -1211,30 +1253,32 @@ var bloc = {
 		bloc.c_bloc = results.rows.item(0);
 		document.getElementById("bloc_title").textContent = bloc.c_bloc.title;
 		document.getElementById("bloc_location").textContent = bloc.c_bloc.location;
-		tx.executeSql('SELECT * FROM picture where bid = '+ bloc.c_bloc.bid, [], bloc.setupPictures, dataManager.errorCB);
+		tx.executeSql('SELECT * FROM media where bid = '+ bloc.c_bloc.bid, [], bloc.setupPictures, dataManager.errorCB);
+
 	},
 
 	setupPictures:function(tx, results) {
 		var pictures = "";
 		var piccounter = 0;
 		for(var i = 0; i < results.rows.length; i++){
-			if(results.rows.item(i).pid == bloc.c_bloc.pid){
+			bloc.mediaList.push(results.rows.item(i).mid);
+			if(results.rows.item(i).mid == bloc.c_bloc.mid){
 				document.getElementById("bloc_bg").style['background-image'] = "url('"+results.rows.item(i).data+"')";
 			} else {
 				switch(piccounter%3){
 					case 0:
 						pictures += "<div class='bloc_photo_row'>"+
-													"<div class='bloc_photo_container c1'>"+
+													"<div class='bloc_photo_container c1' ontouchstart='bloc.pictureTouchStart();' onTouchEnd='bloc.selectiveSetup(\"picture\", "+ results.rows.item(i).mid +");'>"+
 														"<img class='bloc_photo' src='"+ results.rows.item(i).data +"' />" +
 													"</div>";
 						break;
 					case 1:
-						pictures += "<div class='bloc_photo_container c2'>"+
+						pictures += "<div class='bloc_photo_container c2' ontouchstart='bloc.pictureTouchStart();' onTouchEnd='bloc.selectiveSetup(\"picture\", "+ results.rows.item(i).mid +");'>"+
 														"<img class='bloc_photo' src='"+ results.rows.item(i).data +"' />" +
 													"</div>";
 						break;
 					case 2:
-					pictures += "<div class='bloc_photo_container c3'>"+
+						pictures += "<div class='bloc_photo_container c3' ontouchstart='bloc.pictureTouchStart();' onTouchEnd='bloc.selectiveSetup(\"picture\", "+ results.rows.item(i).mid +");'>"+
 													"<img class='bloc_photo' src='"+ results.rows.item(i).data +"' />" +
 												"</div>"+
 											"</div>";
@@ -1252,6 +1296,102 @@ var bloc = {
 																																"</div>";
 		}
 		tx.executeSql('SELECT * FROM user where uid = '+ bloc.c_bloc.uid, [], bloc.setupUserInfo, dataManager.errorCB);
+		tx.executeSql('SELECT * FROM comments Left Outer Join user ON comments.uid = user.uid where bid =' + bloc.c_bloc.bid, [], bloc.setupDiscussion, dataManager.errorCB);
+	},
+
+
+	comments:[],
+	comment_connections:[],
+	visited:[],
+	base_id:0,
+	setupDiscussion:function(tx, results) {
+		bloc.base_id = results.rows.item(0).cid;
+		bloc.comments = [];
+		bloc.comment_connections = [];
+		bloc.visited = [];
+		for(var i = 0; i < results.rows.length; i++){
+			bloc.comments[i] = results.rows.item(i);
+			bloc.comment_connections.push(results.rows.item(i).reply);
+		}
+		var discussion = "";
+		bloc.children =[];
+		for(var i = 0; i < results.rows.length ; i++){
+			bloc.children.push(0);
+		}
+		for(var i = 0; i < results.rows.length ; i++){
+			if(bloc.visited.indexOf(i) == -1){
+				bloc.visited.push(i);
+				discussion += bloc.generateThreadHead(i);
+			}
+		}
+		document.getElementById('bloc_blog_content').innerHTML = discussion;
+		for(var i = 0; i < results.rows.length ; i++){
+			document.getElementById("bloc_comment_"+i+"_poster").textContent = '@'+ bloc.comments[i].username;
+			if(bloc.comments[i].reply != -1){
+				var parent = bloc.comments[i].reply;
+				document.getElementById('bloc_comment_parent_'+i).textContent = "@" + bloc.comments[parent].username+ " ";
+
+			}
+			document.getElementById("bloc_comment_children_"+i).textContent = bloc.children[i];
+
+			document.getElementById("bloc_comment_"+i+"_text").textContent = bloc.comments[i].text;
+		}
+	},
+
+	generateThreadHead:function(id) {
+		var comment = '<div class="comment">'+
+										'<img id="bloc_comment_'+ id +'_picture" class ="bloc_commenter_picture" src="'+ bloc.comments[id].profilePicture +'" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'userBloc\', '+bloc.comments[id].uid+');"/>';
+		if(uid == bloc.comments[id].uid){
+			comment += '<div class="comment_info_container self" ontouchstart="bloc.pictureTouchStart();" onTouchEnd="bloc.selectiveSetup(\'comment_tap\', '+ id +');">';
+		} else{
+			comment += '<div class="comment_info_container" ontouchstart="bloc.pictureTouchStart();" onTouchEnd="bloc.selectiveSetup(\'comment_tap\', '+ id +');">';
+		}
+		comment +=  				'<p id="bloc_comment_'+ id +'_poster" class="bloc_comment_poster"></p>'+
+												'<p id="bloc_comment_'+ id +'_text" class="bloc_comment_text"></p>'+
+												'<p class="bloc_comment_children"><span class="bloc_comment_cute_little_plus">+</span><span id="bloc_comment_children_'+ id +'">0</span></p>'+
+											'</div>'+
+											'<div id="bloc_comment_'+ id +'_reply_container" class="bloc_comment_reply_container">'+ bloc.findChildren(id,0) +'</div>'+
+									'</div>';
+		return comment;
+	},
+
+	generateReply:function(id, deapth) {
+		var comment = '<div id="bloc_comment_"'+ id +' class="comment">' +
+										'<img id="bloc_comment_'+ id +'_picture" class ="bloc_commenter_picture reply_picture" src="'+ bloc.comments[id].profilePicture +'" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'userBloc\', '+bloc.comments[id].uid+');" />';
+		if(uid == bloc.comments[id].uid){
+			comment += '<div class="comment_info_container reply_content self" ontouchstart="bloc.pictureTouchStart();" onTouchEnd="bloc.selectiveSetup(\'comment_tap\', '+ id +');">';
+		} else{
+			comment += '<div class="comment_info_container reply_content" ontouchstart="bloc.pictureTouchStart();" onTouchEnd="bloc.selectiveSetup(\'comment_tap\', '+ id +');">';
+		}
+		comment +=    			'<p id="bloc_comment_'+ id +'_poster" class="bloc_comment_poster"></p>'+
+												'<p class="bloc_comment_text"><span id="bloc_comment_parent_'+id+'" class="bloc_comment_parent"></span><span id="bloc_comment_'+ id +'_text" ></span></p>'+
+												'<p class="bloc_comment_children"><span class="bloc_comment_cute_little_plus">+</span><span id="bloc_comment_children_'+ id +'">0</span></p>'+
+											'</div>';
+			if(deapth < 1 || bloc.reply_id == id){
+				comment += '<div id="bloc_comment_'+ id +'_reply_container" class="bloc_comment_reply_container">'+ bloc.findChildren(id,deapth) +'</div>'+'</div>';
+			}
+			else{
+				comment += '<div id="bloc_comment_'+ id +'_reply_container" class="bloc_comment_reply_container" style="display:none">'+ bloc.findChildren(id,deapth) +'</div>'+'</div>';
+			}
+
+		return comment;
+	},
+
+
+	children:[],
+	findChildren:function(id, deapth) {
+		var char = "";
+		deapth++;
+		for(var i = 0; i < bloc.comments.length; i++){
+			var nextChild = bloc.comment_connections.indexOf(id,i);
+			if(nextChild != -1 && bloc.visited.indexOf(nextChild) == -1){
+				bloc.visited.push(nextChild);
+				char += bloc.generateReply(nextChild, deapth);
+				bloc.children[id] += (bloc.children[nextChild]+1);
+				i = nextChild+1;
+			}
+		}
+		return char;
 	},
 
 	setupUserInfo:function(tx, results) {
@@ -1263,12 +1403,13 @@ var bloc = {
 	taredown:function() {
 		uiControl.turnItemOff("bloc");
 		if(!bloc.mediaIsOut){
-			bloc.toggleOut();
+			//bloc.toggleOut();
 		}
 		clearInterval(bloc.heightListener);
 		clearInterval(bloc.scrollAnimation);
 		bloc.heightListener == null;
 		bloc.scrollAnimation == null;
+		bloc.wasToggled = false;
 		setTimeout(function () {
 			bloc.id = null;
 			document.getElementById("bloc_media_content").scrollTop =  0;
@@ -1346,6 +1487,7 @@ var bloc = {
 		if(bloc.container_animation != null){
 			clearInterval(bloc.container_animation);
 		}
+		bloc.wasToggled = true;
 		if(!document.getElementById("bloc_media").classList.contains("active")){
 			bloc.c_pos = -width;
 			bloc.slide_step = width/18;
@@ -1360,29 +1502,39 @@ var bloc = {
 	last_state: true,
 	c_scroll_top:0,
 	scrollListener:function() {
-		if(bloc.last_state != bloc.mediaIsOut){
-			bloc.c_scroll_top = bloc.scrollHeight;
-		} else {
+		if(bloc.last_state == bloc.mediaIsOut){
 			if(bloc.mediaIsOut){
 				bloc.scrollHeight =	document.getElementById("bloc_media_content").scrollTop;
 			} else {
 				bloc.scrollHeight =	document.getElementById("bloc_blog_content").scrollTop;
 			}
+		} else {
+				bloc.c_scroll_top = bloc.scrollHeight;
+				bloc.last_state = bloc.mediaIsOut;
 		}
-
 		if(bloc.scrollHeight >= bloc.scrollThreshhold){
 			if(bloc.scrollAnimation == null){
 				bloc.scrollAnimation = setInterval(bloc.scrollExpand, 5);
+				document.getElementById("bloc_content_slide_tab_left").style.height = (width+bloc.scrollLimit) + "px";
+				document.getElementById("bloc_content_slide_tab_right").style.height = (width+bloc.scrollLimit) + "px";
+				document.getElementById("bloc_media_content").style.height = (width+bloc.scrollLimit) + "px";
+				document.getElementById("bloc_blog_content").style.height = (width+bloc.scrollLimit) + "px";
 			}
 		} else {
-			clearInterval(bloc.scrollAnimation);
-			document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY(0px)";
-			bloc.scrollAnimation = null;
+			if(bloc.scrollAnimation != null){
+				clearInterval(bloc.scrollAnimation);
+				document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY(0px)";
+				document.getElementById("bloc_content_slide_tab_left").style.height = width + "px";
+				document.getElementById("bloc_content_slide_tab_right").style.height = width + "px";
+				document.getElementById("bloc_media_content").style.height = width + "px";
+				document.getElementById("bloc_blog_content").style.height = width + "px";
+				bloc.scrollAnimation = null;
+			}
 		}
 	},
 
 	scrollExpand:function() {
-			bloc.containerPosition = bloc.scrollHeight - bloc.scrollThreshhold;
+			bloc.containerPosition =  bloc.scrollHeight-bloc.scrollThreshhold;
 			if(bloc.containerPosition <= bloc.scrollLimit){
 					document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY("+-bloc.containerPosition+"px)";
 			} else{
@@ -1390,8 +1542,151 @@ var bloc = {
 				document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY("+-bloc.scrollLimit+"px)";
 				bloc.scrollAnimation = null;
 			}
+	},
+
+	pictureTouchStart:function() {
+		bloc.heightTracker = bloc.scrollHeight;
+	},
+
+
+	last_id: -1,
+	last_tap:0,
+	double_tap: false,
+	selectiveSetup:function(page_ID, id) {
+		if(bloc.scrollHeight == bloc.heightTracker){
+			switch (page_ID) {
+				case 'userBloc':
+						if((performance.now()- bloc.last_tap) > 200){
+							setTimeout(function () {
+								if(!bloc.double_tap){
+									userBloc.setup(id);
+								} else {
+									alert("Like :3");
+									bloc.double_tap = false;
+								}
+							}, 200);
+							bloc.last_tap = performance.now();
+						} else {
+							bloc.double_tap = true;
+						}
+					break;
+				case 'picture':
+					fullScreenMedia.setup(id);
+					break;
+				case 'comment_tap':
+					if((performance.now()- bloc.last_tap) > 200){
+						setTimeout(function () {
+							if(!bloc.double_tap){
+								if(document.getElementById('bloc_comment_'+ id +'_reply_container').style.display == "none"){
+									document.getElementById('bloc_comment_'+ id +'_reply_container').style.display = 'block';
+								} else {
+									document.getElementById('bloc_comment_'+ id +'_reply_container').style.display = "none";
+								}
+							} else {
+								bloc.replyComment(id);
+								bloc.double_tap = false;
+							}
+						}, 200);
+						bloc.last_tap = performance.now();
+					} else {
+						bloc.double_tap = true;
+					}
+					break;
+				case 'confirm':
+					//alert("comment submit");
+					if(document.getElementById("bloc_comment_textarea").value != ""){
+						db.transaction(bloc.submitComment, dataManager.errorCB);
+					} else {
+						alert("Your Comment is blank!");
+					}
+					break;
+				case 'reply_backout':
+						document.getElementById("bloc_comment_reply").remove();
+					break;
+				default:
+					alert("UNHANDLED PAGE: " + page_ID + "\nID: " + id);
+			}
+			bloc.last_id = id;
+		}
+	},
+
+	reply_id: 0,
+	replyComment:function(id) {
+		bloc.reply_id = id;
+		if(document.getElementById("bloc_comment_reply") != null){
+			document.getElementById("bloc_comment_reply").remove();
+		}
+		document.getElementById("bloc_content_slide_tab_left").style.height = (width+bloc.scrollLimit) + "px";
+		document.getElementById("bloc_content_slide_tab_right").style.height = (width+bloc.scrollLimit) + "px";
+		document.getElementById("bloc_media_content").style.height = (width+bloc.scrollLimit) + "px";
+		document.getElementById("bloc_blog_content").style.height = (width+bloc.scrollLimit) + "px";
+		document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY("+-bloc.scrollLimit+"px)";
+
+
+		document.getElementById('bloc_comment_'+ id +'_reply_container').style.display = "block";
+		var comment = '<div id="bloc_comment_reply" class="comment">' +
+										'<img id="bloc_comment_'+ id +'_picture" class ="bloc_commenter_reply_cancel" src="assets/cancel.png" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'reply_backout\', '+uid+');" />'+
+										'<img id="bloc_comment_'+ id +'_picture" class ="bloc_commenter_reply_confirm" src="assets/confirm.png" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'confirm\', '+uid+');" />'+
+											'<div class="comment_info_container reply_content self" >'+
+		    								'<p id="bloc_comment_'+ id +'_poster" class="bloc_comment_poster"></p>'+
+												'<textarea id="bloc_comment_textarea" class="bloc_comment_textarea" autofocus rows=3 maxlengh=140></textarea>'+
+												'<p class="bloc_comment_children"><span class="bloc_comment_cute_little_plus">+</span><span id="bloc_comment_children_'+ id +'">0</span></p>'+
+											'</div>'+
+										'<div id="bloc_comment_'+ id +'_reply_container" class="bloc_comment_reply_container"></div>'+
+									'</div>';
+		document.getElementById('bloc_comment_'+ id +'_reply_container').innerHTML = comment+document.getElementById('bloc_comment_'+ id +'_reply_container').innerHTML;
+	},
+
+	submitComment:function(tx) {
+			tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES ('+ comment_number +', '+ bloc.reply_id +', '+ uid +', '+ bloc.c_bloc.bid +' , "'+document.getElementById("bloc_comment_textarea").value +'")');
+			tx.executeSql('SELECT * FROM comments Left Outer Join user ON comments.uid = user.uid where bid =' + bloc.c_bloc.bid, [], bloc.setupDiscussion, dataManager.errorCB);
+			comment_number++;
+			document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY(0px)";
+			document.getElementById("bloc_content_slide_tab_left").style.height = width + "px";
+			document.getElementById("bloc_content_slide_tab_right").style.height = width + "px";
+			document.getElementById("bloc_media_content").style.height = width + "px";
+			document.getElementById("bloc_blog_content").style.height = width + "px";
 	}
 
+};
+
+var fullScreenMedia ={
+
+	setup:function(id) {
+		db.transaction(function(tx){
+			tx.executeSql('SELECT * FROM media where mid = '+ id, [], fullScreenMedia.mediaSetup, dataManager.errorCB);
+		}, dataManager.errorCB);
+	},
+
+	mediaSetup:function(tx, results) {
+		var media = results.rows.item(0);
+		switch (media.type) {
+			case 0:
+				document.getElementById('fullScreenMedia_piture').src = media.data;
+				break;
+			default:
+				alert("UNHANDLED MEDIA TYPE:" + media.type);
+		}
+		fullScreenMedia.setupCallBack();
+	},
+
+	setupCallBack:function(){
+		document.getElementById("fullScreenMedia").style.display = "block";
+		document.getElementById("fullScreenMedia").style['z-index'] = 1;
+		uiControl.turnItemOn("fullScreenMedia");
+	},
+
+	taredown:function() {
+		if (current_page == null) {
+			page_log.pop();
+			uiControl.turnCurrentItemOff();
+		}
+		uiControl.turnItemOff("fullScreenMedia");
+		setTimeout(function () {
+			document.getElementById("fullScreenMedia").style.display = "none";
+			document.getElementById("fullScreenMedia").style['z-index'] = 0;
+		}, 200);
+	}
 };
 
 var founders ={

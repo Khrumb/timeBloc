@@ -14,7 +14,9 @@
         <link rel="stylesheet" type="text/css" href="css/calander.css" />
         <link rel="stylesheet" type="text/css" href="css/userBloc.css" />
         <link rel="stylesheet" type="text/css" href="css/blocFeed.css" />
+				<link rel="stylesheet" type="text/css" href="css/user_input.css" />
 				<link rel="stylesheet" type="text/css" href="css/personalPage.css" />
+				<link rel="stylesheet" type="text/css" href="css/fullScreenMedia.css" />
         <title>timeBloc</title>
     </head>
     <body id="mass_container">
@@ -179,13 +181,30 @@
   				 <div id="bloc_blog_container" class="bloc_blog_container">
 						 <div id="bloc_content_slide_tab_right" class="bloc_content_slide_tab right_half" ontouchstart="bloc.onTabTouch();" ontouchmove="bloc.onTabSlide();" ontouchend="bloc.onTabTouchEnd();"></div>
   					 <div id="bloc_blog_content" class="bloc_content">
-  						 <div class="bloc_empty_content">
-  						 	No Posts Yet :(
+<!--
+							 <div class="comment">
+								 <img class ="bloc_commenter_picture" src="img/3_profile_picture_icon.jpg"/>
+								 <div class="comment_info_container">
+									 <p id="bloc_comment_poster" class="bloc_comment_poster">
+  									 Brane
+  								 </p>
+  								 <p id="bloc_comment_text" class="bloc_comment_text">
+  									 Some Bull shit text for time being.
+  								 </p>
+								 </div>
+								 <div class="bloc_comment_reply_container">
+
+								 </div>
   						 </div>
+						 -->
   					 </div>
   				 </div>
   			 </div>
 			 </div>
+		 </div>
+
+		 <div data-anchor="fullScreenMedia"  id="fullScreenMedia" class="fullScreenMedia">
+			 <img id="fullScreenMedia_piture" class="fullScreenMedia_piture" src="" alt="" />
 		 </div>
 
      <div data-anchor="founders"  id="founders" class="founders">
@@ -226,6 +245,17 @@
 			 <div class="bgfade"></div>
 		 		<div id="option_container" class="option_container">
 				</div>
+		 </div>
+
+		 <div id="user_input" class="user_input">
+			 <div class="bgfade"></div>
+			 <div class="input_container">
+				 <div id="input_message"class="input_message">
+
+				 </div>
+			 </div>
+
+
 		 </div>
 
 		 <div id="base" class="base">

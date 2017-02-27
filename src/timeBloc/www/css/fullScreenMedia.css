@@ -1,0 +1,49 @@
+.fullScreenMedia{
+	position: absolute;
+	background-color: rgba(0, 0, 0, 1);
+
+  top:8%;
+  left:0vw;
+
+  height:92%;
+  width:100vw;
+
+  margin:0px;
+  padding:0px;
+
+	display:none;
+	border:none;
+	z-index: 1;
+  overflow: hidden;
+}
+
+.fullScreenMedia.on{
+	-webkit-backface-visibility: hidden;
+  -webkit-animation: fade_on 200ms;
+
+}
+
+@-webkit-keyframes fade_on {
+  from {opacity: 0.0}
+  to {opacity: 1.0}
+}
+
+.fullScreenMedia.off{
+	-webkit-backface-visibility: hidden;
+  -webkit-animation: fade_off 200ms ;
+}
+
+@-webkit-keyframes fade_off {
+  from {opacity: 1.0}
+  to {opacity: 0.0}
+}
+
+.fullScreenMedia_piture{
+	position: relative;
+	background-size: contain;
+	width: 100vw;
+	heigth:auto;
+	left:0;
+	top: 50%;
+  -webkit-transform: translateY(-50%);
+}

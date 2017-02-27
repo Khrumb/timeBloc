@@ -1,6 +1,4 @@
-
 .userBloc {
-
   background-attachment:fixed;
 
   position:absolute;
@@ -48,7 +46,6 @@
 
 }
 
-
 .userBloc_background{
   position:absolute;
   left:0vh;
@@ -66,7 +63,6 @@
 }
 
 .filter{
-/*  background:url(../img/gradient.png) no-repeat center; /* 170px x 200px */
   background-attachment:fixed;
   background-size:100vw 100vw;
 
@@ -81,17 +77,6 @@
   overflow: hidden;
 }
 
-.userProfile{
-  position:absolute;
-  background-size: contain;
-  left:0vw;
-  height:100vh;
-  width:100vw;
-  margin:0px;
-  padding:0px;
-	color:white;
-}
-
 .userPP{
   position:absolute;
   background-size:contain;
@@ -102,9 +87,10 @@
   margin:-25.5vw 0px 0px -25.5vw;
   display:block;
 
+  z-index: 201;
+
   border-radius:400px;
 }
-
 
 .user_Profile_breakdown_container{
 	position: absolute;
@@ -115,8 +101,25 @@
 	margin:0px;
 	padding:0px;
 	z-index:200;
-
 	transform-origin: 50% 35%;
+  -webkit-transform: translateZ(0);
+}
+
+.user_Profile_breakdown_container.cw{
+  -webkit-animation: rotate_cw 2000ms infinite linear;
+}
+
+@-webkit-keyframes rotate_cw {
+  from {transform: rotate(0deg)}
+  to {transform: rotate(360deg)}
+}
+.user_Profile_breakdown_container.ccw{
+  -webkit-animation: rotate_ccw 2000ms infinite linear;
+}
+
+@-webkit-keyframes rotate_ccw {
+  from {transform: rotate(360deg)}
+  to {transform: rotate(0deg)}
 }
 
 .user_Profile_breakdown_0{
@@ -231,20 +234,34 @@
   stroke-dasharray: 29.5vw 195vw;
 }
 
+
+.userProfile{
+  position:absolute;
+  background-size: contain;
+  top: 65vh;
+  height:35vh;
+  width:100vw;
+  margin:0px;
+  padding:0px;
+	color:white;
+
+  z-index: 201;
+}
+
 .userFollowingStatus{
   position:absolute;
 
-  top:63.75vh;
+  top:0.5vh;
   left:63vw;
   width:25vw;
-
-  z-index:105;
 
   padding:2vw;
   text-align: center;
   font-size: 6vw;
   border: .8vw dashed #bfbfbf;
   border-radius:1vw;
+
+  z-index:201;
 }
 
 .userFollowingStatus.light{
@@ -260,13 +277,12 @@
   position:absolute;
   background-color:#e68800;
 	bottom:-0.2vh;
-	height:2vh;
+	height:1.5vh;
 
 
-  left:-1.35vw;
-	width:.7vw;
+   left:-1.025vw;
+	width:.6vw;
 
-  z-index:104;
   display:none;
 
   transform: rotate(-25deg);
@@ -277,19 +293,17 @@
   position:absolute;
   background-color:#ffcb80;
   top:-0.2vh;
-	height: 2vh;
+	height: 1.5vh;
 
-  right:-1.35vw;
-  width:.7vw;
+  right:-1.025vw;
+  width:.6vw;
 
-  z-index:104;
   display:none;
 
   transform: rotate(155deg);
 
 	border-radius: 2vw;
 }
-
 
 .userFollowingStatus:active{
   box-shadow:none;
@@ -298,19 +312,16 @@
 .user_Display_Name{
   position:absolute;
   color: #ff9633;
-  top:61vh;
+  top:-3vh;
   left:0;
   max-width:54vw;
 
-	whitespace: nowrap;
 
   padding:3vh 0vw 3vh 6vw;
   margin: 0vw 0vw 0vw 0vw;
 
   text-align: left;
   font-size: 6vw;
-
-  z-index:100;
 }
 
 .user_Display_Name.light{
@@ -321,9 +332,71 @@
 	color:#ff891a;
 }
 
+.user_Handle{
+  position:absolute;
+
+  top:2.75vh;
+  left:4vw;
+  width:25vw;
+
+  padding:0vw 0vw 0vw 2vw;
+  text-align: left;
+  font-size: 4.5vw;
+}
+
+.user_Handle.light{
+	color: white;
+}
+
+.user_Handle.dark{
+	color: #292929;
+}
+
+.user_Birthday{
+  position:absolute;
+
+  top:5vh;
+  left:18vw;
+  width:25vw;
+
+  padding:0vw 0vw 0vw 2vw;
+  text-align: left;
+  font-size: 3.5vw;
+	font-style: italic;
+}
+
+.user_Birthday.light{
+	color: white;
+}
+
+.user_Birthday.dark{
+	color: #292929;
+}
+
+.user_Location{
+  position:absolute;
+
+  top:5vh;
+  left:4.5vw;
+  width:25vw;
+
+  padding:0vw 0vw 0vw 2vw;
+  text-align: left;
+  font-size: 3.5vw;
+	font-style: italic;
+}
+
+.user_Location.light{
+	color: white;
+}
+
+.user_Location.dark{
+	color: #292929;
+}
+
 .page_break{
   position:absolute;
-  top:72vh;
+  top:8vh;
   left:0px;
 	border-bottom-width: 1vw;
   width:100vw;
@@ -340,75 +413,10 @@
 	opacity: 0.30;
 }
 
-.user_Handle{
-  position:absolute;
-
-  top:66.5vh;
-  left:4vw;
-  width:25vw;
-
-  padding:0vw 0vw 0vw 2vw;
-  text-align: left;
-  z-index:100;
-  font-size: 4.5vw;
-}
-
-.user_Handle.light{
-	color: white;
-}
-
-.user_Handle.dark{
-	color: #292929;
-}
-
-.user_Birthday{
-  position:absolute;
-
-  top:69vh;
-  left:18vw;
-  width:25vw;
-
-  padding:0vw 0vw 0vw 2vw;
-  text-align: left;
-  z-index:100;
-  font-size: 3.5vw;
-	font-style: italic;
-}
-
-.user_Birthday.light{
-	color: white;
-}
-
-.user_Birthday.dark{
-	color: #292929;
-}
-
-.user_Location{
-  position:absolute;
-
-  top:69vh;
-  left:4.5vw;
-  width:25vw;
-
-  padding:0vw 0vw 0vw 2vw;
-  text-align: left;
-  z-index:100;
-  font-size: 3.5vw;
-	font-style: italic;
-}
-
-.user_Location.light{
-	color: white;
-}
-
-.user_Location.dark{
-	color: #292929;
-}
-
 .content_box{
 	position:absolute;
 	/*background-color: white;*/
-	top:66vh;
+	top:1vh;
 	height:40vh;
 	width:100vw;
 	margin:0px;
@@ -420,6 +428,7 @@
 }
 
 .userBloc_bio{
+
     text-align: left;
     font-size: 4.25vw;
     width: 80vw;

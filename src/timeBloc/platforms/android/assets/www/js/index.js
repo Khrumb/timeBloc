@@ -1,0 +1,19 @@
+
+
+var app = {
+
+  initialize: function() {
+    this.bindEvents();
+  },
+
+  bindEvents: function(){
+    document.addEventListener('deviceready', this.onDeviceReady, false);
+  },
+
+  onDeviceReady: function() {
+    uiControl.initialize();
+    //alert("we made it");
+    blocFeed.generateFeed();
+    uiControl.setPage('blocFeed');
+  }
+};

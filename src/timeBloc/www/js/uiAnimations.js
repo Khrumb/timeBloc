@@ -66,7 +66,7 @@ var dataManager = {
     tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (1, "hyte", "John Gregg", "Lead Programmer on timeBloc.<br><br>Too Cool 5 You.", "dark", "January, 5th", "WV - USA", "<date_joined>")');
     tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (2, "the_reelist_condor", "Connor Thomas", "BYU<br>Also a noob.", "dark", "December, 4th", "UT - USA","<date_joined>")');
     tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (3, "serbian_slayer", "Brane Pantovic", "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.", "light", "March, 14th", "NY - USA","<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (0, "user", "default_user", "<message>", "light", "NULL, 00th", "Your Mum", "<date_joined>")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (0, "user", "default_user", "<message>", "light", "NULL, 00th", "N/A - N/A", "<date_joined>")');
 
     //template for regex: tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES (<uid>, <fuid>, "<date_joined>")');
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 1, 2, "<date_joined>")');
@@ -159,8 +159,8 @@ var uiControl = {
         //alert("DB INITILIZED");
         network.initialize();
         //uiControl.populate();
-        blocFeed.setup();
-        //userBloc.setup(3);
+        //blocFeed.setup();
+        userBloc.setup(3);
     },
 
     onBackKeyDown: function() {
@@ -379,6 +379,7 @@ var userBloc = {
 		position_list: [0,1,2,3,4,5,6],
     weight:[0, 0.166, 0.166, 0.166, 0.166, 0.166, 0.166],
 		c_user: null,
+    currentPercent: 0,
 
     setup:function(id) {
       userBloc.id = parseInt(id);
@@ -501,6 +502,11 @@ var userBloc = {
       touches = event.touches[0];
 			var direction = Math.atan2(touches.pageY -  window.innerHeight*0.43, touches.pageX - window.innerWidth*0.50) + Math.PI;
 			userBloc.c_angle = 360*(direction/(2*Math.PI));
+      var bdc = document.getElementById('user_Profile_breakdown_container');
+      //bdc.classList.toggle("active");
+      bdc.style.WebkitAnimationPlayState = "initial";
+      //bdc.style.WebkitAnimationPlayState = "paused";
+      //bdc.style.animation = "rotate_0 2000ms linear";
 		},
 
     onProfilePictureDrag:function() {
@@ -508,21 +514,43 @@ var userBloc = {
       var direction = Math.atan2(touches.pageY -  window.innerHeight*0.43, touches.pageX - window.innerWidth*0.50)+Math.PI;
 			var dt = 360*(direction/(2*Math.PI));
 			var step = dt -  userBloc.c_angle;
-			document.getElementById("weeks").innerHTML = 	dt.toPrecision(3);
-			if(step > 23 && step < 28  || step < -40 ){
-				document.getElementById('user_Profile_breakdown_container').style.transform = "rotate(" + dt + "deg)";
-				userBloc.c_angle = dt;
-			} else if(step < -23  && step > -28 || step > 40){
-				document.getElementById('user_Profile_breakdown_container').style.transform = "rotate(" + dt + "deg)";
-				userBloc.c_angle = dt;
-			}
+      var bdc = document.getElementById('user_Profile_breakdown_container');
+      document.getElementById('user_bio').innerHTML = step + " : " + userBloc.c_angle;
+      document.getElementById('weeks').innerHTML = dt.toPrecision(3);
+      var current_direction = "";
+      if(step < 0){
+				if(bdc.classList.length)
+        bdc.classList.toggle("cw");
+        current_direction = "cw";
+        //bdc.style.WebkitAnimationPlayState = "running";
+      } else if (step > 0){
+        bdc.classList.toggle("ccw");
+        current_direction = "ccw";
+        //bdc.style.WebkitAnimationPlayState = "paused";
+      } else {
+        bdc.classList.toggle(current_direction);
+				current_direction = "";
+				bdc.classList.style.transform = "rotate("+ dt +")";
+        bdc.style.WebkitAnimationPlayState = "paused";
 
+      }
+      if(Math.abs(step) > 30){
+        userBloc.c_angle = dt;
+      }
     },
 
     onProfilePictureEnd:function() {
-    	document.getElementById("weeks").innerHTML = userBloc.last_slice;
-			//document.getElementById("user_Profile_slice_" + userBloc.last_slice).style['stroke-dasharray'] = 70 + "%" + " 195%";
-
+      var bdc = document.getElementById('user_Profile_breakdown_container');
+      //bdc.style.WebkitAnimationPlayState = "running";
+      var animation = document.styleSheets[1].cssRules[document.styleSheets[1].cssRules.length-1];
+      //animation.deleteRule("0");
+      //animation.deleteRule("1");
+      //animation.appendRule("0% {transform: rotate(0deg)}");
+      //animation.appendRule("100% {transform: rotate(180deg)}");
+      //bdc.style.transform = "rotate("+ ((userBloc.c_angle + 360*userBloc.currentPercent/10)%360) +"deg)";
+      //userBLoc.c_angle = ((userBloc.c_angle + 360*(userBloc.currentPercent/10))%360);
+      bdc.style.WebkitAnimationPlayState = "paused";
+      bdc.classList.toggle("active");
     },
 
     toBeImplemented:function(ev) {
@@ -543,7 +571,7 @@ var userBloc = {
 			}
 		},
 
-		resetFollowButton:function() {
+	  resetFollowButton:function() {
 			document.getElementById('user_Follow_Status').ontouchend = userBloc.toggleFollow;
 			document.getElementById('user_Follow_Status').style.border = '.8vw dashed #bfbfbf';
 			//document.getElementById('user_Follow_Status').style.background = "#f2f2f2";

@@ -88,6 +88,17 @@
 }
 
 
+.username_edit.light{
+	color: #ff9633;
+}
+
+.username_edit.dark{
+	color:#ff891a;
+}
+.username_edit.editing{
+ color: white;
+}
+
 .location_swap{
 	position: relative;
 	text-align: left;
@@ -110,6 +121,17 @@
 
 }
 
+.location_swap.light{
+	color: white;
+}
+
+.location_swap.dark{
+	color: #292929;
+}
+
+.location_swap.editing{
+	color: white;
+}
 
 .bio_edit {
   position: relative;
@@ -132,6 +154,18 @@
   display: none;
 }
 
+.bio_edit.light{
+	color: white;
+}
+
+.bio_edit.dark{
+	color: #292929;
+}
+
+.bio_edit.editing{
+	color: white;
+}
+
 
 
 .bottom_line {
@@ -145,6 +179,21 @@
   width: 86%;
   opacity: 0.4;
   display: none;
+}
+
+.bottom_line.light{
+	background-color: white;
+	opacity:0.20;
+}
+
+.bottom_line.dark{
+	background-color: #292929;
+	opacity: 0.30;
+}
+
+.bottom_line.editing{
+	background-color: white;
+	opacity: 0.40;
 }
 
 .finished_profile{
@@ -190,6 +239,32 @@ textarea:focus, input:focus{
 	height:100%;
 
   display:none;
+}
+
+.theme_Selecter{
+	position: absolute;
+	top:25vw;
+	right :2vw;
+	height:auto;
+	width: 20vw;
+	display:none;
+	font-size: 3vw;
+}
+
+.theme{
+	height:auto;
+	width:auto;
+	background-color: white;
+	text-align: center;
+
+	margin: 0 0 2vw 0;
+	padding: 2vw 0 2vw 0;
+
+	border-radius: 2vw;
+}
+
+.active_theme{
+		border: 0.28vw solid #ffb16e;
 }
 
 @font-face {

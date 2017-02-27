@@ -37,7 +37,7 @@
 						</p>
 					</li>
 
-          <li class="standard_sidebar_link" ontouchstart="sidebar.slide();" ontouchend="blocFeed.setup();">blocFeed</li>
+          <li class="standard_sidebar_link" ontouchstart="sidebar.slide();" ontouchend="blocFeed.setup();">User List</li>
 					<li class="standard_sidebar_link" ontouchstart="sidebar.slide();" ontouchend="bloc.setup(1);">Test Bloc</li>
           <li class="standard_sidebar_link" ontouchstart="sidebar.slide();" ontouchend="dataManager.resetUserData();">Logout</li>
         </ul>
@@ -45,9 +45,9 @@
         </div>
        </div>
        <div class="navbar top">
-         <div id="navbar_menu_button" class="navbar top menu" ontouchstart="sidebar.slide();">
+         <div id="navbar_menu_button" class="navbar menu" ontouchstart="sidebar.slide();">
          </div>
-				 <div class="navbar top backbutton" ontouchstart="app.onBackKeyDown();">
+				 <div class="navbar backbutton" ontouchstart="app.onBackKeyDown();">
 
 				 </div>
 	      </div>
@@ -59,11 +59,17 @@
        <div id ="userBloc_slide_tab" class="userBloc_slide_tab" ontouchstart="calander.sideGrab();" ontouchmove="calander.dragOut();" ontouchend="calander.onDragEnd();"></div>
 			 <img id="current_userPP" class="current_userPP" src="assets/camera.png" ontouchend="personalPage.selectPictureSource('profilePicture');"/>
 			 <img id="bgselect" class="bgselect" src="assets/bgselect.png" ontouchend="personalPage.selectPictureSource('background');"/>
+
        <div data-anchor="personalPage" id ="personalPage" class="personalPage">
          <div id="bg_overlay" class="bg_overlay"></div>
 				 <div id="finished_profile" class="finished_profile" ontouchend="personalPage.finalize();">
 				 	Finish
 				 </div>
+				 <ul id="theme_Selecter" class="theme_Selecter">
+				 	<li id="theme_light" class="theme light" ontouchend="uiControl.setPreviewTheme('light');">Light</li>
+					<li id="theme_dark" class="theme dark" ontouchend="uiControl.setPreviewTheme('dark');">Dark</li>
+					<li id="theme_editing" class="theme editing active_theme" ontouchend="uiControl.setPreviewTheme('editing');">Editing</li>
+				 </ul>
 				 <div class="edit_container">
 					 <input id="username_edit" class="username_edit" type="textbox" maxlength="24"/>
 					 <div id="location_swap" class="location_swap" ontouchend="personalPage.getGeoLocation();"> </div>
@@ -72,7 +78,8 @@
 					 <div id="bottom_line" class="bottom_line"></div>
 				</div>
        </div>
-       <div id="userBloc_bloc_preview" class="userBloc_bloc_preview">
+
+			 <div id="userBloc_bloc_preview" class="userBloc_bloc_preview">
         Bloc info Here
        </div>
         <div id='user_Profile_breakdown_container' class="user_Profile_breakdown_container"  ontouchstart="userBloc.onProfilePictureTouch();" ontouchmove="userBloc.onProfilePictureDrag();" ontouchend="userBloc.onProfilePictureEnd();">
@@ -271,7 +278,7 @@
         <input type="password" class="login_field" id="login_password" placeholder="password" autocomplete="off">
          <div id="login_content">
 					<div id="login_error" class="login_error">
-						Invalid Username or Password.
+
 					</div>
           <div class="login_button" ontouchend="login.submit();">
             Login

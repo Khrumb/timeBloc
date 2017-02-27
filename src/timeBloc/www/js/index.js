@@ -22,12 +22,20 @@ var sidebar_isOn = false;
 var blocFeed_bloc_on = false;
 var isFollowing = false;
 
-var version = "0.55.5";
+var version = "0.55.10";
+
+//LIVE_SERVER_OPTIONS
 var server = "http://98.236.77.7";
 var server_backup = "http://10.0.0.2";
 var login_server = server + ":750";
 var content_server = server + ":700";
-
+/*
+//DEV_SERVER_OPTIONS
+var server_backup  = "http://98.236.77.7";
+var server = "http://10.0.0.2";
+var login_server = server + ":750";
+var content_server = server + ":700";
+*/
 var db;
 
 var app = {
@@ -41,8 +49,8 @@ var app = {
 	        document.addEventListener('backbutton', this.onBackKeyDown, false);
 	        document.addEventListener('online', this.onlineCheck, false);
 	        document.addEventListener('offline', this.offlineCheck, false);
-					//document.addEventListener('pause', this.onPause, false);
-					//document.addEventListener('resume', this.onResume, false);
+					document.addEventListener('Pause', this.onPause, false);
+					document.addEventListener('Resume', this.onResume, false);
 	    },
 
 	    onDeviceReady: function() {
@@ -62,8 +70,11 @@ var app = {
 			},
 
 			onBackKeyDown: function() {
-
-				if(sidebar_isOn){
+				if(login.created){
+					document.getElementById('login_content').style.display = 'block';
+					document.getElementById('account_content').style.display = 'none';
+					login.created = false;
+				} else if(sidebar_isOn){
 					sidebar.slide();
 				} else if(!bloc.mediaIsOut && bloc.wasToggled){
 					if(bloc.container_animation != null){
@@ -138,6 +149,23 @@ var app = {
 			},
 
 			onPause:function() {
+				db.transaction(function(tx){
+					tx.executeSql('DROP TABLE IF EXISTS user');
+					tx.executeSql('DROP TABLE IF EXISTS bloc_temp');
+					tx.executeSql('DROP TABLE IF EXISTS follower_list');
+
+					tx.executeSql('CREATE TABLE IF NOT EXISTS personal(username, session_key)');
+					tx.executeSql('CREATE TABLE IF NOT EXISTS user (uid Primary Key ASC, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground, version)');
+					tx.executeSql('CREATE TABLE IF NOT EXISTS bloc_temp (uid Refrences USER uid, message, posted_time)');
+					tx.executeSql('CREATE TABLE IF NOT EXISTS follower_list (user Refrences USER uid, followed Refrences USER uid)');
+				}, dataManager.errorCB);
+				if(page_log.length > 0){
+					uiControl.turnCurrentItemOff();
+				}
+				page_log = [];
+				page_log_bid = [];
+				page_log_uid = [];
+				document.getElementById('base').style.display = "block";
 			},
 
 			onResume:function() {
@@ -149,73 +177,91 @@ var app = {
 
 var network = {
 
-	sendLoginRequest:function(username, password) {
-		if(online){
+	sendLoginRequest_recieved: true,
+	sendLoginRequest:function(uname, pword) {
+		if(network.sendLoginRequest_recieved){
+			network.sendLoginRequest_recieved = false;
 			var socket = io(login_server);
 			socket.on('connect', function () {
-				socket.emit("login_request", username+":sep:"+password);
+				var post = {
+					username:uname,
+					password:pword
+				};
+				socket.emit("login_request", post);
 			 });
 
 			 socket.on('login_succeed', function (message) {
  				socket.disconnect();
-				uid = parseInt(message.uid);
 				uiControl.turnCurrentItemOff();
+				uid = parseInt(message.uid);
 				page_log.pop();
 				db.transaction(function(tx) {
 					tx.executeSql('delete from user where uid = '+ message.uid);
-					tx.executeSql('INSERT INTO user(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground, version) VALUES ('+message.uid+', "'+message.username+'", "'+message.display_name+'", "'+message.bio+'", "light", "'+message.birthday+'", "'+message.location+'", "'+message.date_joined+'", "'+message.profilePicture+'", "'+message.profileBackground+'", '+message.version+')');
+					tx.executeSql('INSERT INTO user(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground, version) VALUES ('+message.uid+', "'+message.username+'", "'+message.display_name+'", "'+message.bio+'", "'+message.theme+'", "'+message.birthday+'", "'+message.location+'", "'+message.date_joined+'", "'+message.profilePicture+'", "'+message.profileBackground+'", '+message.version+')');
 					tx.executeSql('INSERT INTO personal(username, session_key) VALUES ("'+ document.getElementById('login_username').value +'",'+dataManager.toHashCode(document.getElementById('login_password').value)+')');
 					tx.executeSql('SELECT * FROM user where uid = '+ uid, [], login.populateUserElements, dataManager.errorCB);
 				}, dataManager.errorCB);
 				app.deviceReadyCallBack();
+				network.sendLoginRequest_recieved = true;
  			 });
 
 			 socket.on('login_failed', function (msg) {
+				socket.disconnect();
 				if(page_log[page_log.length-1] != "login"){
 					login.setup();
 				}
+				document.getElementById('login_error').textContent = "Invalid Username or Password.";
 				document.getElementById('login_error').style.display = "block";
 				login.loginFailed();
- 				socket.disconnect();
+				network.sendLoginRequest_recieved = true;
  			 });
 		} else {
-			alert("Phone Is offline.");
+			document.getElementById('login_error').textContent = "Request Sent, Waiting on Server.";
+			document.getElementById('login_error').style.display = "block";
 		}
 	},
 
-	sendCreateUserRequest:function(username, password, display_name, location, birthday) {
-		if(online){
+	sendCreateUserRequest_recieved:true,
+	sendCreateUserRequest:function(uname, pword, dispname, loc, bday) {
+		if(network.sendCreateUserRequest_recieved){
+			network.sendCreateUserRequest_recieved = false;
 			var socket = io(login_server);
 			socket.on('connect', function () {
-				uiControl.updateDebugger("Login_Server", "ONLINE");
-				socket.emit("user_create_request", username + ":sep:" + password +":sep:" + display_name + ":sep:" + location + ":sep:"+ birthday);
+				var post = {
+					username:uname,
+					password:pword,
+					display_name:dispname,
+					location:loc,
+					birthday:bday
+				};
+				socket.emit("user_create_request", post);
 			 });
 
 			 socket.on('user_create_request_succeed', function (message) {
  				socket.disconnect();
-				uid = parseInt(message.uid);
 				uiControl.turnCurrentItemOff();
+				uid = parseInt(message);
 				page_log.pop();
 				db.transaction(function(tx) {
-					tx.executeSql('delete from user where uid = '+ message.uid);
-					tx.executeSql('INSERT INTO user(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground, version) VALUES ('+message.uid+', "'+message.username+'", "'+message.display_name+'", "'+message.bio+'", "light", "'+message.birthday+'", "'+message.location+'", "'+message.date_joined+'", "'+message.profilePicture+'", "'+message.profileBackground+'", '+message.version+')');
+					tx.executeSql('DROP TABLE IF EXISTS personal');
+					tx.executeSql('CREATE TABLE IF NOT EXISTS personal(username, session_key)');
 					tx.executeSql('INSERT INTO personal(username, session_key) VALUES ("'+ document.getElementById('login_username').value +'",'+dataManager.toHashCode(document.getElementById('login_password').value)+')');
-					tx.executeSql('SELECT * FROM user where uid = '+ uid, [], login.populateUserElements, dataManager.errorCB);
+					dataManager.getLoginInfo(tx);
 				}, dataManager.errorCB);
-				userBloc.setup();
-				personalPage.setup();
+				network.sendCreateUserRequest_recieved = true;
  			 });
 
 			 socket.on('user_create_request_failed', function () {
  				socket.disconnect();
+				network.sendCreateUserRequest_recieved = true;
  			 });
-		} else {
-			alert("Phone Is offline.");
 		}
 	},
 
+	getServerStatus_recieved:true,
   getServerStatus:function() {
-		if(online){
+		if(network.getServerStatus_recieved){
+			network.getServerStatus_recieved = false;
 			document.getElementById('connection_message').textContent = "Attempting Server...";
 			document.getElementById('connection_message').style['-webkit-animation-play-state']="running";
 			var socket = io(content_server);
@@ -228,12 +274,14 @@ var network = {
 				socket.disconnect();
 				document.getElementById('connection_message').innerHTML = "Logging in...";
 			  dataManager.initialize();
+				network.getServerStatus_recieved = true;
 			});
 
 			socket.on('incorrect_version', function () {
 				socket.disconnect();
-				document.getElementById('connection_message').innerHTML = "App version incompatable with server.<br><br>Please update your app to<br>the newest version.";
+				document.getElementById('connection_message').innerHTML = "App version incompatable with server.<br><br>Please update your app to<br><a href='#' onclick='window.open(encodeURI(\"https://build.phonegap.com/apps/1855877/install/sqNJNdbQDWJ6cdVCox1P\"), \"_system\")'>the newest version.</a>";
 				document.getElementById('connection_message').style['-webkit-animation-play-state']="paused";
+				network.getServerStatus_recieved = true;
 			});
 
 			socket.on('reconnecting', function () {
@@ -241,26 +289,30 @@ var network = {
 				if(server_online  == false){
 					document.getElementById('connection_message').textContent = "Server Offline";
 					document.getElementById('connection_message').style['-webkit-animation-play-state']="paused";
+					network.getServerStatus_recieved = true;
 				} else {
 					server_online = false;
 					login_server = server_backup + ":750";
 					content_server = server_backup + ":700";
+					network.getServerStatus_recieved = true;
 					network.getServerStatus();
 				}
 			});
-		} else {
-			setTimeout(function () {
-				network.getServerStatus();
-			}, 5000);
-			alert("Phone Is offline.");
+
 		}
   },
 
-	requestUserBloc:function(id, version) {
-		if(online){
+	requestUserBloc_recieved:true,
+	requestUserBloc:function(id, cli_version) {
+		if(network.requestUserBloc_recieved){
+			network.requestUserBloc_recieved = false;
 			var socket = io(content_server);
 			socket.on('connect', function () {
-				socket.emit("request_userBloc", (id+':sep:'+version));
+				var post={
+					uid:id,
+					version:cli_version
+				};
+				socket.emit("request_userBloc", post);
 			 });
 
 			 socket.on('request_userBloc_info', function (message) {
@@ -268,30 +320,56 @@ var network = {
 				db.transaction(function(tx) {
 					tx.executeSql('delete from user where uid = '+ message.uid);
 					//alert("packet recieved");
-					tx.executeSql('INSERT INTO user(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground, version) VALUES ('+message.uid+', "'+message.username+'", "'+message.display_name+'", "'+message.bio+'", "light", "'+message.birthday+'", "'+message.location+'", "'+message.date_joined+'", "'+message.profilePicture+'", "'+message.profileBackground+'", '+message.version+')');
+					tx.executeSql('INSERT INTO user(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground, version) VALUES ('+message.uid+', "'+message.username+'", "'+message.display_name+'", "'+message.bio+'", "'+message.theme+'", "'+message.birthday+'", "'+message.location+'", "'+message.date_joined+'", "'+message.profilePicture+'", "'+message.profileBackground+'", '+message.version+')');
 					userBloc.getUserInfo(tx);
+					network.requestUserBloc_recieved = true;
 				}, dataManager.errorCB);
  			 });
+
 
 			 socket.on('request_userBloc_uptoDate', function () {
 				socket.disconnect();
 				db.transaction(function(tx) {
 					userBloc.getUserInfo(tx);
+					network.requestUserBloc_recieved = true;
 				}, dataManager.errorCB);
  			 });
 
 			 socket.on('request_userBloc_failed', function (message) {
- 				uiControl.updateDebugger("Content_Server", message);
 				socket.disconnect();
-				 alert(message);
+
  			 });
-		} else {
-			alert("Phone Is offline.");
 		}
 	},
 
+	getUserFollowers_recieved:true,
+	getUserFollowers:function(id) {
+		if(network.getUserFollowers_recieved){
+			network.getUserFollowers_recieved = false;
+			var socket = io(content_server);
+			socket.on('connect', function () {
+					socket.emit("get_follower_info", id);
+			 });
+
+			socket.on('get_follower_info_return', function (message) {
+				socket.disconnect();
+				db.transaction(function(tx) {
+					tx.executeSql('DROP TABLE IF EXISTS follower_list');
+					tx.executeSql('CREATE TABLE IF NOT EXISTS follower_list (user Refrences USER uid, followed Refrences USER uid)');
+					for(var i = 0; i < message.length; i++){
+						tx.executeSql('INSERT INTO follower_list (user, followed) VALUES ( '+ message[i].user +', '+ message[i].followed+')');
+					}
+					network.getUserFollowers_recieved = true;
+				}, dataManager.errorCB);
+			});
+		}
+
+	},
+
+	getUsers_recieved:true,
 	getUsers:function() {
-		if(online){
+		if(network.getUsers_recieved){
+			network.getUsers_recieved = false;
 			var socket = io(content_server);
 			socket.on('connect', function () {
 				socket.emit('get_users_request');
@@ -301,42 +379,107 @@ var network = {
 				socket.disconnect();
 				db.transaction(function(tx) {
 					tx.executeSql('DROP TABLE IF EXISTS bloc_temp');
-					tx.executeSql('CREATE TABLE IF NOT EXISTS bloc_temp (uid Refrences USER uid, message, posted_time)');
+					tx.executeSql('CREATE TABLE IF NOT EXISTS bloc_temp (uid Refrences USER uid, message, username)');
 					for(var i = 0; i < message.length; i++){
-						tx.executeSql('INSERT INTO bloc_temp(uid, message) VALUES ('+message[i].uid+', "Link to - '+message[i].display_name+'")');
+						tx.executeSql('INSERT INTO bloc_temp(uid, message, username) VALUES ('+message[i].uid+', "'+message[i].display_name+'", "'+message[i].username+'")');
 					}
 					blocFeed.getBlocs(tx);
+					network.getUsers_recieved = true;
 				}, dataManager.errorCB);
  			});
 
 			socket.on('get_users_failed', function (message) {
 				socket.disconnect();
 				alert(message);
+				network.getUsers_recieved = true;
  			});
 
-		} else {
-			alert("Phone Is offline.");
 		}
 	},
 
 	updateUser:function(tx, results) {
-		if(online){
+		var socket = io(content_server);
+		socket.on('connect', function () {
+			socket.emit("userBloc_update", results.rows.item(0));
+		 });
+
+		socket.on('update_user_succeed', function () {
+				socket.disconnect();
+		});
+
+		socket.on('update_user_failed', function (message) {
+			socket.disconnect();
+			alert(message);
+ 		});
+	},
+
+	setFollow_recieved:true,
+	setFollow:function(inc_followed) {
+		if(network.setFollow_recieved){
+			network.setFollow_recieved = false;
 			var socket = io(content_server);
 			socket.on('connect', function () {
-				socket.emit("userBloc_update", results.rows.item(0));
+				post ={user: uid,
+							 followed: inc_followed
+							};
+				socket.emit("follow", post);
 			 });
 
-			socket.on('update_user_succeed', function () {
+			socket.on('follow_confirmed', function (message) {
 				socket.disconnect();
+				db.transaction(function(tx) {
+					tx.executeSql('INSERT INTO follower_list (user, followed) VALUES ( '+ uid +', '+ inc_followed+')');
+					userBloc.getOtherInfo(tx);
+					network.setFollow_recieved = true;
+				}, dataManager.errorCB);
  			});
 
-			socket.on('update_user_failed', function (message) {
+			socket.on('follow_failed', function (message) {
 				socket.disconnect();
 				alert(message);
+				network.setFollow_recieved = true;
  			});
 
-		} else {
-			alert("Phone Is offline.");
+			socket.on('reconnecting', function (message) {
+				socket.disconnect();
+				alert(message);
+				network.setFollow_recieved = true;
+ 			});
+		}
+	},
+
+	setUnFollow_recieved:true,
+	setUnFollow:function(inc_unfollowed) {
+		if(network.setUnFollow_recieved){
+			network.setUnFollow_recieved = false;
+			var socket = io(content_server);
+			socket.on('connect', function () {
+				post ={user: uid,
+							 followed: inc_unfollowed
+							};
+				socket.emit("unfollow", post);
+			 });
+
+			socket.on('unfollow_confirmed', function (message) {
+				socket.disconnect();
+				db.transaction(function(tx) {
+					tx.executeSql('Delete from follower_list where user = '+uid+' AND followed ='+ inc_unfollowed+' ');
+					userBloc.getOtherInfo(tx);
+					network.setUnFollow_recieved = true;
+				}, dataManager.errorCB);
+ 			});
+
+			socket.on('unfollow_failed', function (message) {
+				socket.disconnect();
+				alert(message);
+				network.setUnFollow_recieved = true;
+ 			});
+
+			socket.on('reconnecting', function (message) {
+				socket.disconnect();
+				alert(message);
+				network.setUnFollow_recieved = true;
+ 			});
 		}
 	}
 
@@ -378,9 +521,12 @@ var dataManager = {
 			tx.executeSql('DROP TABLE IF EXISTS user');
 			tx.executeSql('DROP TABLE IF EXISTS bloc_temp');
 			tx.executeSql('DROP TABLE IF EXISTS personal');
+			tx.executeSql('DROP TABLE IF EXISTS follower_list');
+
 			tx.executeSql('CREATE TABLE IF NOT EXISTS personal(username, session_key)');
 			tx.executeSql('CREATE TABLE IF NOT EXISTS user (uid Primary Key ASC, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground, version)');
 			tx.executeSql('CREATE TABLE IF NOT EXISTS bloc_temp (uid Refrences USER uid, message, posted_time)');
+			tx.executeSql('CREATE TABLE IF NOT EXISTS follower_list (user Refrences USER uid, followed Refrences USER uid)');
 		}, dataManager.errorCB);
 		if(page_log.length > 0){
 			uiControl.turnCurrentItemOff();
@@ -395,22 +541,22 @@ var dataManager = {
   populateDB:function(tx) {
     //remove after live host server
 
-  	//tx.executeSql('DROP TABLE IF EXISTS user');
+  	tx.executeSql('DROP TABLE IF EXISTS user');
     tx.executeSql('DROP TABLE IF EXISTS bloc');
-		//tx.executeSql('DROP TABLE IF EXISTS bloc_temp');
+		tx.executeSql('DROP TABLE IF EXISTS bloc_temp');
 		tx.executeSql('DROP TABLE IF EXISTS media');
 		//tx.executeSql('DROP TABLE IF EXISTS personal');
 		tx.executeSql('DROP TABLE IF EXISTS comments');
 		tx.executeSql('DROP TABLE IF EXISTS weight_list');
-    tx.executeSql('DROP TABLE IF EXISTS follower_list');
+		tx.executeSql('DROP TABLE IF EXISTS follower_list');
 		tx.executeSql('DROP TABLE IF EXISTS permission_list');
 
     tx.executeSql('CREATE TABLE IF NOT EXISTS personal(username, session_key)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS user (uid Primary Key ASC, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground, version)');
-		tx.executeSql('CREATE TABLE IF NOT EXISTS bloc_temp (uid Refrences USER uid, message, posted_time)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS bloc_temp (uid Refrences USER uid, message, username)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS follower_list (user Refrences USER uid, followed Refrences USER uid)');
 
 
-    tx.executeSql('CREATE TABLE IF NOT EXISTS follower_list (uid Refrences USER uid, fuid Refrences USER uid, date_followed)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS weight_list (uid Refrences USER uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS media (mid Primary Key, uid Refrences USER uid, bid Refrences bloc bid, type, data)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS permission_list (plid Primary Key, uid Refrences USER uid, bid Refrences bloc bid, permission_level, date_added)');
@@ -461,14 +607,15 @@ var dataManager = {
 		*/
 
 
-    //template for regex: tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES (<uid>, <fuid>, "<date_joined>")');
+    //template for regex: tx.executeSql('INSERT INTO follower_list( user, followed, date_followed) VALUES (<uid>, <fuid>, "<date_joined>")');
+		/*
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 1, 2, "<date_joined>")');
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 1, 3, "<date_joined>")');
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 2, 1, "<date_joined>")');
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 2, 3, "<date_joined>")');
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 3, 1, "<date_joined>")');
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 3, 2, "<date_joined>")');
-
+		*/
 
 		//tx.executeSql('INSERT INTO picture(mid, uid, bid, type, data) VALUES (<seq#>, <uid>, <bid>, <type(0=picture)> <imagedata>)');
 		tx.executeSql('INSERT INTO media(mid, uid, bid, type, data) VALUES (1, 3, 0, 0, "img/1_bloc_bg.jpg")');
@@ -603,6 +750,27 @@ var uiControl = {
 			var classes = ['user_Display_Name', 'user_Handle', 'user_Follow_Status',
 										 'user_bio', 'user_Info', 'page_break',
 										 'wks', 'fr', 'fi'];
+			var current_block;
+			for(var i = 0; i < classes.length; i++){
+				current_block = document.getElementById(classes[i]);
+				if(current_block.classList.length > 1){
+					current_block.classList.remove(current_block.classList[1]);
+				}
+				current_block.classList.add(id);
+			}
+		},
+
+		setPreviewTheme:function(id) {
+			var classes = ['finished_profile', 'username_edit', 'location_swap', 'bottom_line', 'bio_edit'];
+			var selector = ['theme_light', 'theme_dark', 'theme_editing'];
+			for(var i = 0; i < selector.length; i++){
+				if(document.getElementById(selector[i]).classList.contains('active_theme')){
+					document.getElementById(selector[i]).classList.toggle('active_theme');
+				}
+				if(("theme_"+id) == selector[i]){
+					document.getElementById(selector[i]).classList.add('active_theme');
+				}
+			}
 			var current_block;
 			for(var i = 0; i < classes.length; i++){
 				current_block = document.getElementById(classes[i]);
@@ -899,7 +1067,6 @@ var login = {
 																		document.getElementById('display_name').value,
 																		document.getElementById('location').value,
 																		document.getElementById('birthday').value);
-			login.created = false;
 		}
 	},
 
@@ -960,23 +1127,10 @@ var blocFeed ={
 
   generateBloc:function(b){
     var basic_template = "<div class='blocFeed_container'>"+
-                              "<div class='blocFeed_bloc_top'>" +
-                              "<a href='#userBloc' ontouchend='sidebar.slideOff();userBloc.setup(<username>);'>" +
-                              "<img id='bloc_<bloc_id>_pic' class='blocFeed_bloc_picture' src='assets/blocFeed_icon.png'/>" +
-                              "</a>" +
-                              "<div class='blocFeed_bloc_username' id='bloc_<bloc_id>_name'>" +
-                              "</div>" +
-                              "<div class='blocFeed_bloc_title'>"+
-                              " <p id='bloc_<bloc_id>_title'><message></p>" +
-                              "</div>" +
-                              "<a href='#Expanded' ontouchend='blocFeed.expand(<bloc_id>);'>" +
-                              " <p id='blocFeed_bloc_expander_<bloc_id>' class='blocFeed_bloc_expander'>^</p>"+
-                              "</a>"+
-                            "</div>"+
+                              "<img ontouchend='userBloc.setup("+b.uid+")' class='blocFeed_bloc_picture' src='assets/blocFeed_icon.png'/>" +
+                              "<p class='blocFeed_bloc_title'>"+ b.message +"</p>" +
+															"<p class='blocFeed_bloc_username'>@"+b.username+"</p>"+
                           "</div>";
-    basic_template = basic_template.replace(/<bloc_id>/g, b.bid);
-    basic_template = basic_template.replace(/<username>/g, b.uid);
-    basic_template = basic_template.replace(/<message>/g, b.message);
     return basic_template;
   },
 
@@ -1020,10 +1174,12 @@ var userBloc = {
 			if(id == null){
 				id = uid;
 			}
-			if(userBloc.id != parseInt(id)){
-				userBloc.id = parseInt(id);
+			if(userBloc.id != id){
 				page_log_uid.push(id);
+				userBloc.id = id;
+				network.getUserFollowers(userBloc.id);
 			}
+			alert(userBloc.id +' : ' +id);
 			db.transaction(function(tx) {
 				tx.executeSql('SELECT version FROM user where uid = '+ userBloc.id, [], function(tx, results) {
 					if(results.rows.length != 0){
@@ -1063,14 +1219,13 @@ var userBloc = {
 		setupUserElements: function(tx,results) {
 				var user = results.rows.item(0);
 				userBloc.c_user = user;
+				uiControl.setTheme(user.theme);
 				document.getElementById('userBloc').style.backgroundImage = "url("+ user.profileBackground+")";
 				document.getElementById('user_Profile_Picture').style.backgroundImage = "url("+ user.profilePicture +")";
 				document.getElementById('user_Display_Name').textContent = user.display_name;
 				document.getElementById('user_Handle').textContent = "@" + user.username;
 				document.getElementById('user_Info').textContent = user.birthday + " | " + user.location;
 				document.getElementById('user_bio').textContent = user.bio;
-				uiControl.setTheme(user.theme);
-				userBloc.getOtherInfo(tx);
 				userBloc.getWeights(tx);
 
     },
@@ -1097,13 +1252,15 @@ var userBloc = {
 				userBloc.position_list = [0,1,2,3,4,5,6];
 			}
 			userBloc.generateSelf();
+			userBloc.getOtherInfo(tx);
 			userBloc.setupCallBack();
 		},
 
     getOtherInfo:function(tx){
-      tx.executeSql('SELECT * FROM follower_list where fuid = '+ userBloc.id, [], userBloc.setupFollowers, dataManager.errorCB);
-      tx.executeSql('SELECT * FROM follower_list where uid = '+ userBloc.id, [], userBloc.setupFollowing, dataManager.errorCB);
-      tx.executeSql('SELECT * FROM follower_list where uid = '+ uid +' AND fuid = ' + userBloc.id + ' OR uid = '+ userBloc.id +' AND fuid = ' + uid, [], userBloc.setFollowButton, dataManager.errorCB);
+      tx.executeSql('SELECT * FROM follower_list where followed = '+ userBloc.id, [], userBloc.setupFollowers, dataManager.errorCB);
+      tx.executeSql('SELECT * FROM follower_list where user = '+ userBloc.id, [], userBloc.setupFollowing, dataManager.errorCB);
+			tx.executeSql('SELECT * FROM follower_list where user = '+ userBloc.id +' AND followed = ' + uid + ' OR user = '+ uid +' AND followed = ' + userBloc.id, [], userBloc.setFollowButton, dataManager.errorCB);
+
     },
 
 		setupFollowers: function(tx,results) {
@@ -1129,7 +1286,7 @@ var userBloc = {
 						userBloc.follow();
 						break;
 					case 1:
-						if(results.rows.item(0).uid != uid){
+						if(results.rows.item(0).user != uid){
 							userBloc.followBack();
 						} else {
 							userBloc.follow();
@@ -1248,9 +1405,6 @@ var userBloc = {
 			document.getElementById('user_Profile_breakdown_container').style['-webkit-transform'] = "rotate("+(userBloc.current_angle - userBloc.delta_a)+"deg)";
 		},
 
-		extendPreview:function() {
-
-		},
 
 	  resetFollowButton:function() {
 			document.getElementById('user_Follow_Status').ontouchend = userBloc.toggleFollow;
@@ -1265,12 +1419,10 @@ var userBloc = {
 
     toggleFollow:function() {
       if(!isFollowing){
-        db.transaction(userBloc.setFollow, dataManager.errorCB);
-				db.transaction(userBloc.getOtherInfo, dataManager.errorCB);
+        network.setFollow(userBloc.id);
       } else {
 				uiControl.dialog(["Unfollow"],[function() {
-					db.transaction(userBloc.setUnfollow, dataManager.errorCB);
-					db.transaction(userBloc.getOtherInfo, dataManager.errorCB);
+					network.setUnFollow(userBloc.id);
 				}]);
       }
     },
@@ -1283,9 +1435,6 @@ var userBloc = {
       document.getElementById('userFollowingStatus_fbarrow').style.display = "block";
     },
 
-    setFollow: function(tx) {
-        tx.executeSql('INSERT INTO follower_list (uid, fuid, date_followed) VALUES ( '+ uid +', '+ userBloc.id+', "<date_joined>")');
-    },
 
     follow: function(){
       document.getElementById('user_Follow_Status').ontouchend = userBloc.toggleFollow;
@@ -1323,6 +1472,8 @@ var personalPage = {
 		document.getElementById("current_userPP").style['z-index'] = page_log.length+5;
 		document.getElementById("bgselect").style['z-index'] = page_log.length+5;
 		document.getElementById("finished_profile").style['z-index'] = page_log.length+5;
+		document.getElementById("theme_Selecter").style['z-index'] = page_log.length+8;
+
 		document.getElementById("userBloc_slide_tab").style['z-index'] = 0;
 
 
@@ -1338,6 +1489,7 @@ var personalPage = {
 		document.getElementById("bg_overlay").style.display = "block";
 		document.getElementById("bottom_line").style.display = "block";
 		document.getElementById("finished_profile").style.display = "block";
+		document.getElementById("theme_Selecter").style.display = "block";
 		document.getElementById("current_userPP").style.display = "block";
 		document.getElementById("bgselect").style.display = "block";
 
@@ -1370,6 +1522,8 @@ var personalPage = {
 			document.getElementById("bg_overlay").style.display = "none";
 			document.getElementById("finished_profile").style.display = "none";
 			document.getElementById("bottom_line").style.display = "none";
+			document.getElementById("theme_Selecter").style.display = "none";
+
 			uiControl.setTheme(userBloc.c_user.theme);
 		}, 200);
 	},
@@ -1437,18 +1591,25 @@ var personalPage = {
 
 	gatherInfo:function (tx) {
 		if( personalPage.imageP != null){
-			tx.executeSql('UPDATE user SET profilePicture = "' + personalPage.imageP + '" where uid = ' + userBloc.c_user.uid);
+			tx.executeSql('UPDATE user SET profilePicture = "' + personalPage.imageP + '" where uid = ' + uid);
 		}
 		if( personalPage.imageB != null){
-			tx.executeSql('UPDATE user SET profileBackground = "' + personalPage.imageB + '" where uid = ' + userBloc.c_user.uid);
+			tx.executeSql('UPDATE user SET profileBackground = "' + personalPage.imageB + '" where uid = ' + uid);
 		}
-		tx.executeSql('UPDATE user SET display_name = "' + document.getElementById("username_edit").value + '" where uid = ' + userBloc.c_user.uid);
-		tx.executeSql('UPDATE user SET bio = "' + document.getElementById("bio_edit").value + '" where uid = ' + userBloc.c_user.uid);
+		tx.executeSql('UPDATE user SET display_name = "' + document.getElementById("username_edit").value + '" where uid = ' + uid);
+		tx.executeSql('UPDATE user SET bio = "' + document.getElementById("bio_edit").value + '" where uid = ' + uid);
+		var selector = ['theme_light', 'theme_dark', 'theme_editing'];
+		for(var i = 0; i < selector.length; i++){
+			if(document.getElementById(selector[i]).classList.contains('active_theme')){
+				tx.executeSql('UPDATE user SET theme = "' + selector[i].substr(6)  + '" where uid = ' + uid);
+				uiControl.setTheme(selector[i].substr(6));
+			}
+		}
 		personalPage.imageP = null;
 		personalPage.imageB = null;
 		document.getElementById("user_Display_Name").textContent = document.getElementById("username_edit").value;
 		document.getElementById("user_bio").textContent = document.getElementById("bio_edit").value;
-		tx.executeSql('SELECT * FROM user where uid = '+ userBloc.id, [], network.updateUser, dataManager.errorCB);
+		tx.executeSql('SELECT * FROM user where uid = '+ uid, [], network.updateUser, dataManager.errorCB);
 	},
 
   error:function() {

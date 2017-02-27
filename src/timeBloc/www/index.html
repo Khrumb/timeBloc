@@ -9,7 +9,6 @@
         <link rel="stylesheet" type="text/css" href="css/navbar.css" />
         <link rel="stylesheet" type="text/css" href="css/userBloc.css" />
         <link rel="stylesheet" type="text/css" href="css/blocFeed.css" />
-        <link href='https://fonts.googleapis.com/css?family=Shadows+Into+Light' rel='stylesheet' type='text/css'>
         <title>timeBloc</title>
     </head>
     <body>
@@ -25,7 +24,7 @@
         <div class="navbar top menu" ontouchstart="sidebar.slide();">
         </div>
       </div>
-    </div>
+		 </div>
 
      <div data-anchor="userBloc"  id="userBloc" class="userBloc">
        <img  id="userBloc_background" class="userBloc_background" src="img/user_background_picture.jpg"/>
@@ -65,18 +64,18 @@
           </div>
           <div id="userFollowingStatus_farrow" class="userFollowingStatus_farrow">
           </div>
-          <div class="content_box">
+          <div id='content_box' class="content_box">
             <div id="user_bio"class="userBloc_bio">
             </div>
-            <div class="content_box weeks">
+            <div id='wks' class="weeks">
               <div id="weeks" >- -</div>
               Weeks
             </div>
-            <div class="content_box followers">
+            <div id='fr' class="followers">
               <div id="followers" >- -</div>
               Followers
             </div>
-            <div class="content_box following">
+            <div id='fi' class="following">
               <div id="following" >- -</div>
               Following
             </div>
@@ -84,6 +83,7 @@
         </div>
       </div>
      </div>
+
 		 <div data-anchor="blocFeed" id="blocFeed" class="blocFeed">
 			 <div id="blocFeed_actionbar" class="blocFeed_actionbar">
 			 </div>
@@ -106,7 +106,8 @@
 		 </div>\
 		 -->
 		 </div>
-  	 <div data-anchor="bloc"  id="bloc" class="bloc">
+
+		 <div data-anchor="bloc"  id="bloc" class="bloc">
 		 </div>
 		  <script type="text/javascript" src="cordova.js"></script>
       <script type="text/javascript" src="js/navagator.js"></script>

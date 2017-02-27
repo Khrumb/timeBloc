@@ -53,6 +53,7 @@ body {
   border:none;
   z-index: 9998;
   overflow: hidden;
+	opacity: 0.70;
 }
 
 .navbar.top{
@@ -66,7 +67,6 @@ body {
 
 .navbar.top.menu{
   background:url(../img/navbar_menu_button.png) no-repeat center top;
-  background-color: #ff9200;
   background-size: contain;
   position:absolute;
   width:10%;
@@ -74,15 +74,13 @@ body {
   left:89%;
   top:10%;
 
-  border: 1px solid #e6e6e6;
   border-radius: 8px;
 
   box-shadow: none;
 }
 
 .navbar.top.menu:active{
-  border-color: black;
-  background-color: #cf6727;
+  opacity: 0.5;
 }
 
 .navbar.bottom{
@@ -109,7 +107,7 @@ body {
   left:-80%;
   animation:nav_drawer_slide_in 250ms ease;
   -webkit-animation:nav_drawer_slide_in 250ms ease;
-   -webkit-backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @-webkit-keyframes nav_drawer_slide_in {

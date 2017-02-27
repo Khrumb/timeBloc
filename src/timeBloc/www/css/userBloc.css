@@ -106,7 +106,7 @@
   padding:2%;
 
   text-align: center;
-  font-size: 120%;
+  font-size: 5vw;
 
   border-radius:3px;
   text-shadow: -1px -1px 2px #8c8c8c;
@@ -128,7 +128,7 @@
   padding:0% 7% 13% 14%;
 
   text-align: left;
-  font-size: 150%;
+  font-size: 7vw;
 
   z-index:100;
 
@@ -149,6 +149,8 @@
   text-align: left;
 
   z-index:100;
+
+  font-size: 5vw;
 
   text-shadow: 1px 1px 2px #8c8c8c;
 }
@@ -206,12 +208,13 @@
   top:6%;
   left:2%;
 
-  height:50px;
-  width:50px;
+  height:90%;
+  width:14%;
 
   margin:0px;
   padding:0px;
 
+  box-shadow: 1px 1px 2px #8c8c8c;
   border-radius: 400px;
 
   transform: translate3d(0,0,0);
@@ -233,7 +236,7 @@
   line-height: normal;
 
   font-family: arial;
-  font-size: 130%;
+  font-size: 6vw;
   font-weight: bold;
 }
 
@@ -255,7 +258,7 @@
   padding:0px;
 
   text-align: center;
-  font-size: 150%;
+  font-size: 7vw;
   color: #b3b3b3;
   font-weight: 900;
   font-family: Ltc;
@@ -298,7 +301,7 @@
   border-radius: 5px;
 
   text-align: center;
-  font-size: 80%;
+  font-size: 3.5vw;
 }
 
 .calendar.day1{
@@ -375,20 +378,29 @@
 
   text-align: center;
   font-family: arial;
-  font-size: 110%;
+  font-weight: 100;
+  font-size: 6vw;
 }
 
 .content_box.weeks{
-  left:10%;
+  font-weight: 900;
+  left:7%;
   width:30%;
 }
 
 .content_box.following{
+  font-weight: 900;
   left:35%;
   width:30%;
 }
 
 .content_box.followers{
-  left:60%;
+  font-weight: 900;
+  left:63%;
   width:30%;
+}
+
+hr{
+  padding: 0px;
+  margin: 0px;
 }

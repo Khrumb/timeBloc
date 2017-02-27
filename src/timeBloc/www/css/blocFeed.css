@@ -72,13 +72,15 @@
   top:6%;
   left:2%;
 
-  height:50px;
-  width:50px;
+  height:90%;
+  width:14%;
 
   margin:0px;
   padding:0px;
 
   border-radius: 400px;
+
+  box-shadow: 1px 1px 2px #8c8c8c;
 
 }
 
@@ -115,7 +117,7 @@
   line-height: normal;
 
   font-family: arial;
-  font-size: 130%;
+  font-size: 6vw;
   font-weight: bold;
 }
 

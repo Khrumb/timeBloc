@@ -106,7 +106,7 @@ var dataManager = {
 		height = screen.availHeight;
 		width = screen.availWidth;
 		uiControl.updateDebugger("build", "pre-alpha");
-		uiControl.updateDebugger("version", "0.52.1");
+		uiControl.updateDebugger("version", "0.53");
 		//uiControl.updateDebugger("screenX", height);
 		//uiControl.updateDebugger("screenY", width);
 		//document.body.style.height = height + "px";
@@ -326,7 +326,15 @@ var uiControl = {
 					default:
 						alert("Unhandled Page: " + id);
 				}
-      }
+      } else {
+				document.getElementById('blocFeed').display = 'block';
+				document.getElementById('userBloc').display = 'none';
+				document.getElementById('calander').display = 'none';
+				document.getElementById('bloc').display = 'none';
+				document.getElementById('dialog').display = 'none';
+				document.getElementById('base').display = 'none';
+
+			}
     },
 
     turnItemOn:function(id){
@@ -334,9 +342,9 @@ var uiControl = {
 				personalPage.taredown();
 				page_log.pop();
 			}
-		 if(page_log[page_log.length-1] != id){
-        page_log.push(id);
-      }
+			if(page_log[page_log.length-1]!=id){
+				page_log.push(id);
+			}
       if(document.getElementById(id).classList.contains("off")){
         document.getElementById(id).classList.remove('off');
       }
@@ -583,10 +591,12 @@ var userBloc = {
 		velocity: 0,
 
     setup:function(id) {
-      userBloc.id = parseInt(id);
-			page_log_uid.push(id);
-      db.transaction(userBloc.getUserInfo, dataManager.errorCB);
-			calander.setup();
+			if(userBloc.id != parseInt(id)){
+				userBloc.id = parseInt(id);
+				page_log_uid.push(id);
+				db.transaction(userBloc.getUserInfo, dataManager.errorCB);
+				calander.setup();
+			}
     },
 
 		setupCallBack:function(){
@@ -601,12 +611,10 @@ var userBloc = {
 			clearInterval(userBloc.animation);
 			uiControl.turnItemOff("userBloc");
 			//uiControl.updateDebugger("td", "userBloc");
-			setTimeout(function () {
-				document.getElementById("userBloc").style['z-index'] = 0;
-				document.getElementById("userBloc").style.display = "none";
-				calander.taredown();
-			}, 200);
-
+			document.getElementById("userBloc").style['z-index'] = 0;
+			document.getElementById("userBloc").style.display = "none";
+			userBloc.id = null;
+			calander.taredown();
 		},
 
 		getUserInfo:function(tx){
@@ -1101,9 +1109,11 @@ var bloc = {
 	container_animation: null,
 
 	setup:function(id) {
-		bloc.id = parseInt(id);
-		page_log_bid.push(bloc.id);
-		db.transaction(bloc.getSetupInfo, dataManager.errorCB);
+		if(bloc.id != parseInt(id)){
+			bloc.id = parseInt(id);
+			page_log_bid.push(bloc.id);
+			db.transaction(bloc.getSetupInfo, dataManager.errorCB);
+		}
 	},
 
 
@@ -1174,6 +1184,7 @@ var bloc = {
 	taredown:function() {
 		uiControl.turnItemOff("bloc");
 		setTimeout(function () {
+			bloc.id = null;
 			document.getElementById("bloc_media_content").scrollTop =  0;
 			document.getElementById("bloc").style.display = "none";
 			document.getElementById("bloc").style['z-index'] = 0;

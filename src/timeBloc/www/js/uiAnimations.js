@@ -563,7 +563,7 @@ var userBloc = {
 		op:0.5,
 		sw:16,
 		snapTo:function() {
-			var step = 1/10;
+			var step = 1/15;
 			userBloc.op += 0.5*step;
 			userBloc.sw += 2*step;
 			if(userBloc.delta_a > 0){

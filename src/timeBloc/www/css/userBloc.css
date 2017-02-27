@@ -531,8 +531,3 @@ hr{
   padding: 0px;
   margin: 0px;
 }
-
-@-webkit-keyframes rotate_0 {
-  from {transform: rotate(0deg)}
-  to {transform: rotate(0deg)}
-}

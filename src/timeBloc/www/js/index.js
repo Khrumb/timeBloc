@@ -874,7 +874,6 @@ var personalPage = {
 
 	selectPhotoAlbum:function(){
 		var camera = navigator.camera;
-		uiControl.updateDebugger("c", camera);
 	 	camera.getPicture(personalPage.callback, this.error, { quality: 50, sourceType: Camera.PictureSourceType.SAVEDPHOTOALBUM,destinationType: Camera.DestinationType.DATA_URL});
 	},
 
@@ -922,6 +921,53 @@ var personalPage = {
   error:function() {
     //alert("NEGATIVE GHOST-RIDER");
   }
+
+};
+
+var calander = {
+
+	animation: null,
+
+	setup:function() {
+
+	},
+
+	setupCallBack:function(){
+
+	},
+
+	taredown:function() {
+
+
+		setTimeout(function () {
+
+		}, 200);
+	},
+
+	sideGrab:function() {
+		touches = event.touches[0];
+		uiControl.updateDebugger("touch", "happened");
+	},
+
+	dragOut:function () {
+		touches = event.touches[0];
+		uiControl.updateDebugger("xPos", (width-touches.pageX);
+		document.getElementById("calander").style["-webkit-transform"] = "translateX(" + (touches.pageX -width)+ "px)";
+
+	},
+
+	onDragStop:function() {
+		touches = event.touches[0];
+
+	},
+
+	popOut:function () {
+		uiControl.updateDebugger("xPos", width - touches.pageX );
+	},
+
+	popIn:function () {
+		uiControl.updateDebugger("xPos", width - touches.pageX );
+	}
 
 };
 

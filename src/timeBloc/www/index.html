@@ -6,12 +6,13 @@
         <meta name="msapplication-tap-highlight" content="no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/navbar.css" />
+				<link rel="stylesheet" type="text/css" href="css/base.css" />
+				<link rel="stylesheet" type="text/css" href="css/dialog.css" />
+				<link rel="stylesheet" type="text/css" href="css/navbar.css" />
+				<link rel="stylesheet" type="text/css" href="css/calander.css" />
         <link rel="stylesheet" type="text/css" href="css/userBloc.css" />
         <link rel="stylesheet" type="text/css" href="css/blocFeed.css" />
 				<link rel="stylesheet" type="text/css" href="css/personalPage.css" />
-				<link rel="stylesheet" type="text/css" href="css/dialog.css" />
-        <link rel="stylesheet" type="text/css" href="css/base.css" />
         <title>timeBloc</title>
     </head>
     <body id="mass_container">
@@ -43,12 +44,11 @@
 					 <input id="username_edit" class="username_edit" type="textbox" maxlength="24"/>
 					 <div id="location_swap" class="location_swap" ontouchend="personalPage.getGeoLocation();"> </div>
 					 <textarea id="bio_edit" class="bio_edit" rows=3 cols=40 wrap="hard" maxlength="110"></textarea>
-					 
+
 					 <div id="bottom_line" class="bottom_line"></div>
 				</div>
        </div>
-			 	<img id="user_Profile_Picture" class="userPP" src="img/user_profile_picture.png"/>
-
+		   <img id="user_Profile_Picture" class="userPP" src="img/user_profile_picture.png"/>
         <div id='user_Profile_breakdown_container' class="user_Profile_breakdown_container"  ontouchstart="userBloc.onProfilePictureTouch();" ontouchmove="userBloc.onProfilePictureDrag();" ontouchend="userBloc.onProfilePictureEnd();">
          <svg id ="user_Profile_breakdown_0" class="user_Profile_breakdown_0" width="100%" height="70%" >
            <circle id="user_Profile_slice_0" class="user_Profile_slice_0" r="34%" cx="50%" cy="50%"/>
@@ -72,7 +72,6 @@
            <circle id="user_Profile_slice_6" class="user_Profile_slice_6" r="34%" cx="50%" cy="50%"/>
 				 </svg>
       	</div>
-
         <div class="userProfile">
 					<div class="userContent">
           	<div id ="user_Display_Name" class ="user_Display_Name"></div>
@@ -107,7 +106,12 @@
             </div>
           </div>
           </div>
-     </div>
+				<div id="calander" class="calander">
+						<div class="slide_tab" ontouchstart="calander.sideGrab();" ontouchmove="calander.dragOut();">
+
+						</div>
+				</div>
+		 </div>
 
 		 <div data-anchor="blocFeed" id="blocFeed" class="blocFeed">
 			 <div id="blocFeed_actionbar" class="blocFeed_actionbar">

@@ -106,6 +106,8 @@
 	border:none;
 
 	display: none;
+	-webkit-backface-visibility: hidden;
+	
 }
 
 

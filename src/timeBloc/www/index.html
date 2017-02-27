@@ -5,11 +5,12 @@
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-tap-highlight" content="no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-        <meta name="viewport" content="user-scalable=no, initial-scale=3, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, width=1080, height=1920, target-densitydpi=device-dpi" />
         <link rel="stylesheet" type="text/css" href="css/navbar.css" />
         <link rel="stylesheet" type="text/css" href="css/userBloc.css" />
         <link rel="stylesheet" type="text/css" href="css/blocFeed.css" />
 				<link rel="stylesheet" type="text/css" href="css/personalPage.css" />
+        <link rel="stylesheet" type="text/css" href="css/base.css" />
         <title>timeBloc</title>
     </head>
     <body>
@@ -25,6 +26,8 @@
          <div class="navbar top menu" ontouchstart="sidebar.slide();">
         	</div>
 	      </div>
+				<div id="debug" class="debug">
+				</div>
 		  </div>
 
      <div data-anchor="userBloc"  id="userBloc" class="userBloc">
@@ -116,9 +119,11 @@
 			 <img  id="current_background" class="current_background" src="img/user_background_picture.jpg" ontouchend=''/>
 			 <div class="upper_container">
 			 	 <img id="current_Profile_Picture" class="current_userPP" src="img/user_profile_picture.png" ontouchend=''/>
-			 </div>
-
-			 <div class="bottom_text">
+         <input type="text" id="set_username" class="set_username" value="">
+       </div>
+       <div class="bg_overlay" ontouchend="personalPage.selectBackground();">
+      </div>
+			 <div id="bottom_text" class="bottom_text">
 			 		All data will save automatically.
 			 </div>
 		 </div>
@@ -128,10 +133,9 @@
 
 		 <div class="base"></div>
 		  <script type="text/javascript" src="cordova.js"></script>
-      <script type="text/javascript" src="js/navagator.js"></script>
-      <script type="text/javascript" src="js/uiAnimations.js"></script>
+      <script type="text/javascript" src="js/index.js"></script>
       <script type="text/javascript">
-        uiControl.initialize();
+        app.initialize();
       </script>
     </body>
 </html>

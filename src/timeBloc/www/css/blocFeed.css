@@ -25,16 +25,21 @@
 }
 
 
+@-webkit-keyframes fade_off {
+  from {opacity: 1.0}
+  to {opacity: 0.0}
+}
+
+
 .blocFeed.on{
 	-webkit-backface-visibility: hidden;
-  -webkit-animation: fade_on 200ms;
+  -webkit-animation: fade_on 600ms;
 }
 
 @-webkit-keyframes fade_on {
   from {opacity: 0.0}
   to {opacity: 1.0}
 }
-
 
 .blocFeed_actionbar{
   background-color: white;

@@ -23,21 +23,10 @@
 
 }
 
-@-webkit-keyframes fade_on {
-  from {opacity: 0.0}
-  to {opacity: 1.0}
-}
-
 .personalPage.off{
 	-webkit-backface-visibility: hidden;
   -webkit-animation: fade_off 200ms ;
 }
-
-@-webkit-keyframes fade_off {
-  from {opacity: 1.0}
-  to {opacity: 0.0}
-}
-
 
 .upper_container{
 	background-color: #f2f2f2;
@@ -69,7 +58,47 @@
   margin:-12.5vw 0px 0px -12.5vw;
   display:block;
 
-  border-radius:400px;
+  border-radius:50%;
+}
+
+.set_username{
+	background-color: #f2f2f2;
+	background-attachment:fixed;
+	left:30vw;
+	top: 5vh;
+
+	width:25vw;
+
+
+	color: #b3b3b3;
+	text-align: left;
+	font-size: 3vh;
+
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-bottom-color:  #b3b3b3;
+	border-bottom-width: thin;
+  position:absolute;
+	z-index:201;
+}
+
+.bg_overlay {
+	background-color: black;
+	opacity: 0.5;
+	position:absolute;
+	top:50vh;
+	left: 0vh;
+	width: 100vw;
+	color:#b3b3b3;
+
+	height:47vh;
+
+	padding: 0vh 0px 1vh 0px;
+	z-index: 201;
+
+	text-align: center;
+	font-size: 3.5vh;
 }
 
 

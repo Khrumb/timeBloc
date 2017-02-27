@@ -39,15 +39,6 @@
   to {opacity: 0.0}
 }
 
-@-webkit-keyframes page_slide_off {
-  /*cubic-bezier(1,0,.91,.57)*/
-  from {-webkit-backface-visibility: hidden;
-        -webkit-transform: translate(0,0);}
-  to {-webkit-backface-visibility: hidden;
-      -webkit-transform: translate(100vw,0);}
-
-}
-
 .userBloc_background{
   position:absolute;
   left:0vh;
@@ -121,9 +112,24 @@
 	-webkit-backface-visibility: hidden;
 }
 
-.user_Profile_breakdown_container.spin{
+.darken{
   -webkit-backface-visibility: hidden;
-  -webkit-animation: rotate_0 400ms linear;
+  -webkit-animation: darken_wedge 600ms ease;
+}
+
+@-webkit-keyframes  darken_wedge{
+  from{opacity:0.5;}
+  to{opacity:1.0;}
+}
+
+.expand{
+  -webkit-backface-visibility: hidden;
+  -webkit-animation: expand_wedge 150ms linear;
+}
+
+@-webkit-keyframes  expand_wedge{
+  from{stroke-width: 16%;}
+  to{stroke-width: 22%;}
 }
 
 .user_Profile_breakdown_0{

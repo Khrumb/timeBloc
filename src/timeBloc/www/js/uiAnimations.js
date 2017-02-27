@@ -205,6 +205,10 @@ var uiControl = {
       online = false;
     },
 
+    toBeImplemented:function(ev) {
+      alert('To be Implemented');
+    },
+
     populate: function() {
       //====================================
       //--------------userBloc--------------
@@ -300,11 +304,16 @@ var sidebar = {
 
 var blocFeed ={
 
+  //all page data load events here
   setup:function() {
     this.requestData();
+  },
+
+  //all ui load evenets here
+  setupCallBack:function() {
     uiControl.turnCurrentItemOff();
+    document.getElementById("blocFeed").style['z-index'] = 100;
     uiControl.turnItemOn("blocFeed");
-		document.getElementById("blocFeed").style['z-index'] = 100;
   },
 
   taredown:function() {
@@ -327,6 +336,7 @@ var blocFeed ={
       full_bloc += blocFeed.generateBloc(results.rows.item(i));
     }
     bf.innerHTML = full_bloc;
+    blocFeed.setupCallBack();
   },
 
   generateBloc:function(b){
@@ -520,9 +530,13 @@ var userBloc = {
 			}
 			userBloc.sw = 16;
 			userBloc.op = 0.5;
-      document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = 0.5;
-			document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style['stroke-width'] = 16 + '%';
-			timer = performance.now();
+      if(document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).classList.contains("darken")){
+        document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).classList.toggle("darken");
+        document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = 0.5;
+  			document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style['stroke-width'] = 16 + '%';
+  			//document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).classList.toggle("expand");
+      }
+      timer = performance.now();
 		},
 
     onProfilePictureDrag:function() {
@@ -569,28 +583,31 @@ var userBloc = {
 			if(userBloc.delta_a > 0){
 				userBloc.delta_a -= userBloc.delta_a*step;
 				if(userBloc.delta_a <= 1){
+          clearInterval(userBloc.animation);
 					document.getElementById('user_Profile_breakdown_container').style['-webkit-transform'] = "rotate("+ userBloc.current_angle +"deg)";
-					clearInterval(userBloc.animation);
+          //document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).classList.toggle("expand");
+          document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).classList.toggle("darken");
+          document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style["stroke-width"] = "22.5%";
+          document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = 1.0;
+
 				}
 			} else {
 				userBloc.delta_a -= userBloc.delta_a*step;
 				if(userBloc.delta_a >= -1){
+          clearInterval(userBloc.animation);
 					document.getElementById('user_Profile_breakdown_container').style['-webkit-transform'] = "rotate("+ userBloc.current_angle +"deg)";
-					clearInterval(userBloc.animation);
-					//userBloc.animation = setInterval(userBloc.extendPreview, 5);
+          //document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).classList.toggle("expand");
+          document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).classList.toggle("darken");
+          document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style["stroke-width"] = "22.5%";
+          document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = 1.0;
 				}
 			}
 			document.getElementById('user_Profile_breakdown_container').style['-webkit-transform'] = "rotate("+(userBloc.current_angle - userBloc.delta_a)+"deg)";
-			document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = userBloc.op;
 		},
 
 		extendPreview:function() {
 
 		},
-
-    toBeImplemented:function(ev) {
-      alert('To be Implemented');
-    },
 
 		setTheme:function(id) {
 			var classes = ['user_Display_Name', 'user_Handle', 'user_Follow_Status',
@@ -668,9 +685,9 @@ var personalPage = {
 		document.getElementById('current_Profile_Picture').src = "img/"+ userBloc.c_user.uid +"_profile_picture.jpg";
 		document.getElementById('current_background').src = "img/"+ userBloc.c_user.uid +"_profile_background.jpg";
 
-		/*
-		document.getElementById('user_Display_Name').innerHTML = userBloc.c_user.display_name;
-		document.getElementById('user_Handle').innerHTML = "@" + userBloc.c_user.username;
+
+		document.getElementById('set_username').value = userBloc.c_user.display_name;
+		/*document.getElementById('user_Handle').innerHTML = "@" + userBloc.c_user.username;
 		document.getElementById('user_Birthday').innerHTML = userBloc.c_user.birthday;*
 		document.getElementById('user_Location').innerHTML = userBloc.c_user.location;
 		document.getElementById('user_bio').innerHTML = userBloc.c_user.bio;
@@ -689,7 +706,20 @@ var personalPage = {
 		setTimeout(function () {
 			document.getElementById("personalPage").style['z-index'] = 0;
 		}, 200);
-	}
+	},
+
+  selectBackground:function(){
+    navagator.camera.getPicture(this.selectBackground, this.error);
+  },
+
+  selectBackground:function(imageData) {
+    alert("A THING HAPPENED");
+
+  },
+
+  error:function() {
+    alert("NEGATIVE GHOST-RIDER");
+  }
 
 };
 

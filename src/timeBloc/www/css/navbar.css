@@ -154,3 +154,24 @@ li a{
   font-family: "main_font";
   src:url(../res/Nova-Plain.ttf);
 }
+
+
+.debug{
+	background-color: black;
+	position:absolute;
+	opacity: 0.5;
+	top: 7.5vh;
+	height:auto;
+	right:0vw;
+	min-width:30vw;
+
+  z-index: 9999;
+}
+
+.dbg_item{
+	color:white;
+	height:auto;
+	width:auto;
+	text-align: right;
+	font-family:monospace;
+}

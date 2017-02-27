@@ -28,14 +28,12 @@
 
       <div data-anchor="blocFeed" id="blocFeed" class="blocFeed">
         <div id="blocFeed_actionbar" class="blocFeed_actionbar">
-          Post Action Bar
         </div>
         <div id="blocFeed_slideable" class="blocFeed_slideable">
 
         </div>
         <!--
         <div class='blocFeed_container'>\
-          <div class='blocFeed_bloc_top'>\
           <a href='#userBloc' ontouchend='sidebar.slideOff();uiControl.setPage(userBloc);userBloc.setup(<username>);'>\
           <img id='bloc_<bloc_id>_pic' class='blocFeed_bloc_picture' src='img/<username>_profile_picture.jpg'/>\
           </a>\
@@ -58,31 +56,41 @@
 
          <img id="user_Profile_Picture" class="userPP" src="img/user_profile_picture.png" ontouchstart="userBloc.onProfilePictureTouch();" ontouchmove="userBloc.onProfilePictureDrag();" ontouchend="userBloc.onProfilePictureEnd();"/>
          <div class="user_Profile_breakdown_container">
-           <svg id ="user_Profile_breakdown_0" class="user_Profile_breakdown_0" width="90%" height="70%" >
+           <svg id ="user_Profile_breakdown_0" class="user_Profile_breakdown_0" width="100%" height="70%" >
              <circle id="user_Profile_slice_0" class="user_Profile_slice_0" r="34%" cx="50%" cy="50%"/>
            </svg>
-           <svg id ="user_Profile_breakdown_1" class="user_Profile_breakdown_1" width="90%" height="70%" >
+           <svg id ="user_Profile_breakdown_1" class="user_Profile_breakdown_1" width="100%" height="70%" >
              <circle id="user_Profile_slice_1" class="user_Profile_slice_1" r="34%" cx="50%" cy="50%"/>
            </svg>
-           <svg id ="user_Profile_breakdown_2" class="user_Profile_breakdown_2" width="90%" height="70%" >
+           <svg id ="user_Profile_breakdown_2" class="user_Profile_breakdown_2" width="100%" height="70%" >
              <circle id="user_Profile_slice_2"class="user_Profile_slice_2" r="34%" cx="50%" cy="50%"/>
            </svg>
-           <svg id ="user_Profile_breakdown_3" class="user_Profile_breakdown_3" width="90%" height="70%" >
+           <svg id ="user_Profile_breakdown_3" class="user_Profile_breakdown_3" width="100%" height="70%" >
              <circle id="user_Profile_slice_3" class="user_Profile_slice_3" r="34%" cx="50%" cy="50%"/>
            </svg>
-           <svg id ="user_Profile_breakdown_4" class="user_Profile_breakdown_4" width="90%" height="70%" >
+           <svg id ="user_Profile_breakdown_4" class="user_Profile_breakdown_4" width="100%" height="70%" >
              <circle id="user_Profile_slice_4" class="user_Profile_slice_4" r="34%" cx="50%" cy="50%"/>
            </svg>
-           <svg id ="user_Profile_breakdown_5" class="user_Profile_breakdown_5" width="90%" height="70%" >
+           <svg id ="user_Profile_breakdown_5" class="user_Profile_breakdown_5" width="100%" height="70%" >
              <circle id="user_Profile_slice_5" class="user_Profile_slice_5" r="34%" cx="50%" cy="50%"/>
            </svg>
-           <svg id ="user_Profile_breakdown_6" class="user_Profile_breakdown_6" width="90%" height="70%" >
+           <svg id ="user_Profile_breakdown_6" class="user_Profile_breakdown_6" width="100%" height="70%" >
              <circle id="user_Profile_slice_6" class="user_Profile_slice_6" r="34%" cx="50%" cy="50%"/>
            </svg>
-      </div>
+         </div>
         <div class="userProfile">
-
+          <div id ="user_Display_Name" class ="user_Display_Name"></div>
+          <div id ="user_Handle" class ="user_Handle"></div>
+          <div id = "user_Follow_Status" class="userFollowingStatus" ontouchend="userBloc.toggleFollow();">
+            following
+          </div>
+          <div id="userFollowingStatus_fbarrow" class="userFollowingStatus_fbarrow">
+          </div>
+          <div id="userFollowingStatus_farrow" class="userFollowingStatus_farrow">
+          </div>
           <div class="content_box">
+            <div id="user_bio"class="userBloc_bio">
+            </div>
             <div class="content_box weeks">
               <div id="weeks" >- -</div>
               Weeks

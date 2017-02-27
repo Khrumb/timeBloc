@@ -47,7 +47,7 @@ var dataManager = {
     tx.executeSql('DROP TABLE IF EXISTS follower_list');
 
     tx.executeSql('CREATE TABLE IF NOT EXISTS personal (session_key Primary Key ASC, uid Refrences USER uid)');
-    tx.executeSql('CREATE TABLE IF NOT EXISTS user (uid Primary Key ASC, username, display_name, date_joined)');
+    tx.executeSql('CREATE TABLE IF NOT EXISTS user (uid Primary Key ASC, username, display_name, bio,  date_joined)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS bloc (bid Primary Key ASC, uid Refrences USER uid, message)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS follower_list (uid Refrences USER uid, fuid Refrences USER uid, date_followed)');
 
@@ -56,16 +56,16 @@ var dataManager = {
     //template for regex: tx.executeSql('INSERT INTO personal(session_key, uid) VALUES (<session_id>, <uid>)');
     tx.executeSql('INSERT INTO personal(session_key, uid) VALUES (1, 0)');
 
-    //template for regex: tx.executeSql('INSERT INTO User(uid, username, display_name, date_joined) VALUES (<uid>, "<username>", "<display_name>", "<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, date_joined) VALUES (1, "hyte", "John", "<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, date_joined) VALUES (2, "condor", "Connor", "<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, date_joined) VALUES (3, "brain", "Brane", "<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, date_joined) VALUES (0, "user", "default_user", "<date_joined>")');
+    //template for regex: tx.executeSql('INSERT INTO User(uid, username, display_name, bio, date_joined) VALUES (<uid>, "<username>", "<display_name>", "<bio>", "<date_joined>")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, date_joined) VALUES (1, "hyte", "John Gregg", "I am the Lead Programmer on timeBloc.", "<date_joined>")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, date_joined) VALUES (2, "the_reelist_condor", "Connor Thomas", "BYU<br>Also a noob.", "<date_joined>")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, date_joined) VALUES (3, "idea_man", "Brane Pantovic", "Wall Street Boss<br>I dont do much.", "<date_joined>")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, date_joined) VALUES (0, "user", "default_user", "<message>", "<date_joined>")');
 
     //template for regex: tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES (<uid>, <fuid>, "<date_joined>")');
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 1, 2, "<date_joined>")');
-    tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 1, 3, "<date_joined>")');
-    tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 2, 1, "<date_joined>")');
+    //tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 1, 3, "<date_joined>")');
+    //tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 2, 1, "<date_joined>")');
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 2, 3, "<date_joined>")');
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 3, 1, "<date_joined>")');
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 3, 2, "<date_joined>")');
@@ -153,7 +153,8 @@ var uiControl = {
         //alert("DB INITILIZED");
         network.initialize();
         //uiControl.populate();
-        userBloc.setup(1);
+        blocFeed.setup();
+        //userBloc.setup(3);
     },
 
     onBackKeyDown: function() {
@@ -356,9 +357,9 @@ var blocFeed ={
 
 var userBloc = {
 
-    id: 2,
-
-    angles : ["51"],
+    id: 0,
+    last_slice: 0,
+    data :[0,1,2,3,4,5,6],
 
     setup:function(id) {
       userBloc.id = parseInt(id);
@@ -384,7 +385,7 @@ var userBloc = {
     getOtherInfo:function(tx){
       tx.executeSql('SELECT * FROM follower_list where fuid = '+ userBloc.id, [], userBloc.setupFollowers, dataManager.errorCB);
       tx.executeSql('SELECT * FROM follower_list where uid = '+ userBloc.id, [], userBloc.setupFollowing, dataManager.errorCB);
-      //tx.executeSql('SELECT * FROM follower_list where uid = '+ uid +' AND fuid = ' + userBloc.id, [], userBloc.setFollowButton, dataManager.errorCB);
+      tx.executeSql('SELECT * FROM follower_list where uid = '+ uid +' AND fuid = ' + userBloc.id + ' OR uid = '+ userBloc.id +' AND fuid = ' + uid, [], userBloc.setFollowButton, dataManager.errorCB);
     },
 
     setupUserElements: function(tx,results) {
@@ -392,17 +393,16 @@ var userBloc = {
       page_log_uid.push(user.uid);
       document.getElementById('user_Profile_Picture').src = "img/"+ user.uid +"_profile_picture.jpg";
       document.getElementById('userBloc_background').src = "img/"+ user.uid +"_profile_background.jpg";
-      //document.getElementById('user_Display_Name').innerHTML = user.display_name;
-      //document.getElementById('user_Handle').innerHTML = "@" + user.username;
+      document.getElementById('user_Display_Name').innerHTML = user.display_name;
+      document.getElementById('user_Handle').innerHTML = "@" + user.username;
+      document.getElementById('user_bio').innerHTML = user.bio;
     },
-
     //tx, results
     generateSelf:function() {
-      var data = [0,1,2,3,4,5,6];
-      var current_angle = -90;
-      var angle = (1/data.length)*360;
-      var dasharray = ((1/data.length)-1) + "%"+" 190%";
-      for(var i = 0; (current_angle+angle) < 270; i++){
+      var current_angle = -180;
+      var angle = (1/userBloc.data.length)*360;
+      //var dasharray = (((((1/userBloc.data.length)-1)*191)+2) + "%"+" 191%";
+      for(var i = 0; (current_angle+angle) <= 180; i++){
         document.getElementById("user_Profile_breakdown_" + i).style.transform= "rotate(" + current_angle + "deg)";
         //document.getElementById("user_Profile_slice_" + i).style.stroke
         current_angle += angle;
@@ -421,18 +421,39 @@ var userBloc = {
 
     setFollowButton: function(tx,results) {
       //alert(results.rows.length);
+      userBloc.resetFollowButton();
       if (userBloc.id == uid) {
-        document.getElementById('user_Follow_Status').style.color = '#f2f2f2';
-        document.getElementById('user_Follow_Status').style.background = '#cccccc';
+        document.getElementById('user_Follow_Status').style.border = '.8vw dashed #bfbfbf';
+        document.getElementById('user_Follow_Status').style.background = '#bfbfbf';
         document.getElementById('user_Follow_Status').innerHTML = "Edit Profile";
         document.getElementById('user_Follow_Status').ontouchend = userBloc.toBeImplemented;
-      } else if(results.rows.length == 1){
-        userBloc.follow();
       } else {
-        userBloc.unfollow();
+        switch (results.rows.length) {
+          case 2:
+            userBloc.followBack();
+            userBloc.follow();
+            break;
+          case 1:
+            if(results.rows.item(0).uid != uid){
+              userBloc.followBack();
+            } else {
+              userBloc.follow();
+            }
+            break;
+          default:
+            userBloc.unfollow();
+        }
       }
     },
 
+    resetFollowButton:function() {
+      document.getElementById('user_Follow_Status').style.border = '.8vw dashed #bfbfbf';
+      document.getElementById('user_Follow_Status').style.background = "#f2f2f2";
+      document.getElementById('user_Follow_Status').innerHTML = "Follow";
+      document.getElementById('userFollowingStatus_fbarrow').style.display = "none";
+      document.getElementById('userFollowingStatus_farrow').style.display = "none";
+      isFollowing = false;
+    },
 
     onProfilePictureTouch:function(){
       touches = event.touches;
@@ -441,35 +462,52 @@ var userBloc = {
 
     onProfilePictureDrag:function() {
       touches = event.touches[0];
+      var angle = (1/userBloc.data.length)*2*Math.PI;
       var direction = Math.atan2(touches.pageY - first_touch.pageY, touches.pageX - first_touch.pageX);
-      alert(direction);
+      direction += (Math.PI);
+      direction = Math.floor(direction/angle);
+      document.getElementById("user_Profile_slice_" +direction).style['stroke-width'] = 90;
+      document.getElementById("user_Profile_breakdown_" +direction).style.opacity= 0.8;
+      if(direction != userBloc.last_slice){
+      document.getElementById("user_Profile_slice_" +userBloc.last_slice).style['stroke-width'] = 60;
+      document.getElementById("user_Profile_breakdown_" +userBloc.last_slice).style.opacity= 0.5;
+      }
+      userBloc.last_slice = direction;
     },
-
 
     onProfilePictureEnd:function() {
+      var distance = Math.pow((touches.pageX - first_touch.pageX), 2) + Math.pow((touches.pageY - first_touch.pageY), 2);
+      distance = Math.sqrt(distance);
+      if(distance > (document.body.clientWidth*0.25)){
+        alert("Going to slice:" + userBloc.last_slice);
+        document.getElementById("user_Profile_slice_" +userBloc.last_slice).style['stroke-width'] = 60;
+        document.getElementById("user_Profile_breakdown_" +userBloc.last_slice).style.opacity= 0.5;
+      } else {
+        document.getElementById("user_Profile_slice_" +userBloc.last_slice).style['stroke-width'] = 60;
+        document.getElementById("user_Profile_breakdown_" +userBloc.last_slice).style.opacity= 0.5;
+      }
     },
-
-
-
 
     toBeImplemented:function(ev) {
       alert('To be Implemented');
     },
 
-
-
-
-
-
     toggleFollow:function() {
       if(!isFollowing){
-        userBloc.follow();
         db.transaction(userBloc.setFollow, dataManager.errorCB);
       } else {
-        userBloc.unfollow();
         db.transaction(userBloc.setUnfollow, dataManager.errorCB);
       }
       db.transaction(userBloc.getOtherInfo, dataManager.errorCB);
+    },
+
+
+    followBack:function() {
+      document.getElementById('user_Follow_Status').style['border-top-style'] = "solid";
+      document.getElementById('user_Follow_Status').style['border-top-color'] = "#e68800";
+      document.getElementById('user_Follow_Status').style['border-left-style'] = "solid";
+      document.getElementById('user_Follow_Status').style['border-left-color'] = "#e68800";
+      document.getElementById('userFollowingStatus_fbarrow').style.display = "block";
     },
 
     setFollow: function(tx) {
@@ -478,8 +516,11 @@ var userBloc = {
 
     follow: function(){
       document.getElementById('user_Follow_Status').ontouchend = userBloc.toggleFollow;
-      document.getElementById('user_Follow_Status').color = 'white';
-      document.getElementById('user_Follow_Status').style.background = '#80ff80';
+      document.getElementById('user_Follow_Status').style['border-bottom-style'] = "solid";
+      document.getElementById('user_Follow_Status').style['border-bottom-color'] = "#ffcb80";
+      document.getElementById('user_Follow_Status').style['border-right-style'] = "solid";
+      document.getElementById('user_Follow_Status').style['border-right-color'] = "#ffcb80";
+      document.getElementById('userFollowingStatus_farrow').style.display = "block";
       document.getElementById('user_Follow_Status').innerHTML = "Following";
       isFollowing = true;
     },
@@ -490,8 +531,6 @@ var userBloc = {
 
     unfollow: function() {
       document.getElementById('user_Follow_Status').ontouchend = userBloc.toggleFollow;
-      document.getElementById('user_Follow_Status').color = 'white';
-      document.getElementById('user_Follow_Status').style.background = '#ffc980';
       document.getElementById('user_Follow_Status').innerHTML = "Follow";
       isFollowing = false;
     }

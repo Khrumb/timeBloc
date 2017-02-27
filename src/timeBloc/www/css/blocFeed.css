@@ -33,7 +33,7 @@
 
 .blocFeed.on{
 	-webkit-backface-visibility: hidden;
-  -webkit-animation: fade_on 600ms;
+  -webkit-animation: fade_on 300ms;
 }
 
 @-webkit-keyframes fade_on {

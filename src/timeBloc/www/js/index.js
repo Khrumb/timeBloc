@@ -33,16 +33,16 @@ var app = {
 
 	    onDeviceReady: function() {
 	        //alert("DEVICE READY");
-					uiControl.updateDebugger("screenX", screen.height);
-					uiControl.updateDebugger("screenY", screen.width);
+					uiControl.updateDebugger("screenX", screen.availHeight);
+					uiControl.updateDebugger("screenY", screen.availWidth);
 					//alert(uiControl.metrics.length);
 	        dataManager.initialize();
 	        //alert("DB INITILIZED");
 	        network.initialize();
 					uiControl.setDebugger();
 	        //uiControl.populate();
-	       	blocFeed.setup();
-	        //userBloc.setup(1);
+	       	//blocFeed.setup();
+	        userBloc.setup(1);
 	    },
 
 			onBackKeyDown: function() {
@@ -471,8 +471,7 @@ var userBloc = {
       document.getElementById('userBloc_background').src = "img/"+ user.uid +"_profile_background.jpg";
       document.getElementById('user_Display_Name').innerHTML = user.display_name;
       document.getElementById('user_Handle').innerHTML = "@" + user.username;
-			document.getElementById('user_Birthday').innerHTML = user.birthday;
-			document.getElementById('user_Location').innerHTML = user.location;
+			document.getElementById('user_Info').innerHTML = user.birthday + " | " + user.location;
       document.getElementById('user_bio').innerHTML = user.bio;
 			userBloc.setTheme(user.theme);
 			userBloc.getWeights(tx);
@@ -494,6 +493,7 @@ var userBloc = {
 			}
 			userBloc.weight = replace_weight;
 			userBloc.position_list = replace_pos;
+			uiControl.updateDebugger("PL", userBloc.position_list);
 			userBloc.generateSelf();
 			userBloc.getOtherInfo(tx);
 		},
@@ -559,6 +559,7 @@ var userBloc = {
 			}
 			document.getElementById('user_Profile_breakdown_container').style['-webkit-transform'] = "rotate(0deg)";
 			userBloc.current_angle = 0;
+			userBloc.last_slice = 0;
     },
 
     onProfilePictureTouch:function(){
@@ -632,7 +633,7 @@ var userBloc = {
 					document.getElementById('user_Profile_breakdown_container').style['-webkit-transform'] = "rotate("+ userBloc.current_angle +"deg)";
           //document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).classList.toggle("expand");
           document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).classList.toggle("darken");
-          document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style["stroke-width"] = "22.5%";
+          document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style["stroke-width"] = "23%";
           document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = 1.0;
 
 				}
@@ -643,7 +644,7 @@ var userBloc = {
 					document.getElementById('user_Profile_breakdown_container').style['-webkit-transform'] = "rotate("+ userBloc.current_angle +"deg)";
           //document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).classList.toggle("expand");
           document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).classList.toggle("darken");
-          document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style["stroke-width"] = "22.5%";
+          document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style["stroke-width"] = "23%";
           document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = 1.0;
 				}
 			}
@@ -656,7 +657,7 @@ var userBloc = {
 
 		setTheme:function(id) {
 			var classes = ['user_Display_Name', 'user_Handle', 'user_Follow_Status',
-										 'user_bio', 'user_Birthday', 'user_Location', 'page_break',
+										 'user_bio', 'user_Info', 'page_break',
 										 'wks', 'fr', 'fi'];
 			var current_block;
 			for(var i = 0; i < classes.length; i++){
@@ -727,6 +728,7 @@ var userBloc = {
 var personalPage = {
 
 	setup:function() {
+		uiControl.turnCurrentItemOff();
 		document.getElementById('current_Profile_Picture').src = "img/"+ userBloc.c_user.uid +"_profile_picture.jpg";
 		document.getElementById('current_background').src = "img/"+ userBloc.c_user.uid +"_profile_background.jpg";
 
@@ -734,7 +736,7 @@ var personalPage = {
 		document.getElementById('set_username').value = userBloc.c_user.display_name;
 		/*document.getElementById('user_Handle').innerHTML = "@" + userBloc.c_user.username;
 		document.getElementById('user_Birthday').innerHTML = userBloc.c_user.birthday;*
-		document.getElementById('user_Location').innerHTML = userBloc.c_user.location;
+		document.getElementById('ation').innerHTML = userBloc.c_user.location;
 		document.getElementById('user_bio').innerHTML = userBloc.c_user.bio;
 		userBloc.setTheme(userBloc.c_user.theme);*/
 		document.getElementById("personalPage").style['z-index'] = 700;

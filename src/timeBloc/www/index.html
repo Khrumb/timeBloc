@@ -5,7 +5,7 @@
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-tap-highlight" content="no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, width=1080, height=1920, target-densitydpi=device-dpi" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
         <link rel="stylesheet" type="text/css" href="css/navbar.css" />
         <link rel="stylesheet" type="text/css" href="css/userBloc.css" />
         <link rel="stylesheet" type="text/css" href="css/blocFeed.css" />
@@ -26,7 +26,7 @@
          <div class="navbar top menu" ontouchstart="sidebar.slide();">
         	</div>
 	      </div>
-				<div id="debug" class="debug">
+				<div id="debug" class="debug" ontouchend="uiControl.setDebugger();">
 				</div>
 		  </div>
 
@@ -58,21 +58,22 @@
 				 </svg>
       	</div>
         <div class="userProfile">
-          <div id ="user_Display_Name" class ="user_Display_Name"></div>
-          <div id ="user_Handle" class ="user_Handle"></div>
-					<div id ="user_Birthday" class ="user_Birthday"></div>
-					<div id ="user_Location" class ="user_Location"></div>
-          <hr id = "page_break" class="page_break">
-          <div id = "user_Follow_Status" class="userFollowingStatus" ontouchend="userBloc.toggleFollow();">
-						<div id ="user_Follow_Status_message">
-							following
+					<div class="userContent">
+          	<div id ="user_Display_Name" class ="user_Display_Name"></div>
+          	<div id ="user_Handle" class ="user_Handle"></div>
+						<div id ="user_Info" class ="user_Info"></div>
+						<div id = "user_Follow_Status" class="userFollowingStatus" ontouchend="userBloc.toggleFollow();">
+							<div id ="user_Follow_Status_message">
+								following
+							</div>
+							<div id="userFollowingStatus_fbarrow" class="userFollowingStatus_fbarrow">
+							</div>
+							<div id="userFollowingStatus_farrow" class="userFollowingStatus_farrow">
+							</div>
 						</div>
-						<div id="userFollowingStatus_fbarrow" class="userFollowingStatus_fbarrow">
-	          </div>
-	          <div id="userFollowingStatus_farrow" class="userFollowingStatus_farrow">
-	          </div>
-          </div>
-          <div id='content_box' class="content_box">
+					</div>
+          <hr id = "page_break" class="page_break">
+					<div id='content_box' class="content_box">
             <div id="user_bio"class="userBloc_bio">
             </div>
             <div id='wks' class="weeks">

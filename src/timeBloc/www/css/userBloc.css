@@ -287,7 +287,7 @@
 	margin:auto;
   padding:2%;
   text-align: center;
-  font-size: 120%;
+  font-size: 3vh;
   border: .8vw dashed #bfbfbf;
   border-radius:1vw;
 
@@ -353,7 +353,7 @@
 
 	padding:0vw 0vw 0vw 1vw;
   text-align: left;
-  font-size: 140%;
+  font-size: 3.75vh;
 }
 
 .user_Display_Name.light{
@@ -373,7 +373,7 @@
 	margin:-1% 0% 0% 0%;
   padding:0vw 0vw 0vw 2vw;
   text-align: left;
-  font-size: 110%;
+  font-size: 2.75vh;
 }
 
 .user_Handle.light{
@@ -393,7 +393,7 @@
 
   padding:0vw 0vw 0vw 2vw;
   text-align: left;
-  font-size: 75%;
+  font-size: 2.0vh;
 	font-style: italic;
 }
 
@@ -415,7 +415,7 @@ background-color: white;
   opacity:0.20;
 
 	padding: 0px;
-	margin: 6% 0px 2% 0px;
+	margin: 3.5vh 0px 0.5vh 0px;
 }
 
 .page_break.light{
@@ -440,12 +440,12 @@ background-color: white;
 	border-radius: 5px;
 
 	text-align: center;
-	font-size: 6vw;
+	font-size: 2vh;
 }
 
 .userBloc_bio{
   text-align: left;
-  font-size: 4.25vw;
+  font-size: 2.5vh;
   width: 80vw;
   padding:0vh 5vw 0vh 12vw;
 }
@@ -468,7 +468,7 @@ background-color: white;
   border-radius: 5px;
 
   text-align: center;
-  font-size: 6vw;
+  font-size: 3.5vh;
   left:35vw;
   width:30vw;
 }
@@ -492,7 +492,7 @@ background-color: white;
   border-radius: 5px;
 
   text-align: center;
-  font-size: 6vw;
+  font-size: 3.5vh;
   left:63vw;
   width:30vw;
 }
@@ -516,7 +516,7 @@ background-color: white;
   border-radius: 5px;
 
   text-align: center;
-  font-size: 6vw;
+	font-size: 3.5vh;
   left:7vw;
   width:30vw;
 }

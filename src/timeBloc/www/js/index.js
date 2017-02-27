@@ -41,8 +41,8 @@ var app = {
 	        network.initialize();
 					uiControl.setDebugger();
 	        //uiControl.populate();
-	       	//blocFeed.setup();
-	        userBloc.setup(1);
+	       	blocFeed.setup();
+	        //userBloc.setup(1);
 	    },
 
 			onBackKeyDown: function() {

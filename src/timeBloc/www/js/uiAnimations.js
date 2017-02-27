@@ -37,7 +37,6 @@ var dataManager = {
   //user (uid, username, display_name, date_joined)
   //bloc (bid, uid , message);
   //follower_list(uid, fuid, date_joined)
-
   populateDB:function(tx) {
 
     //remove after live host server
@@ -59,7 +58,7 @@ var dataManager = {
     //template for regex: tx.executeSql('INSERT INTO User(uid, username, display_name, bio, date_joined) VALUES (<uid>, "<username>", "<display_name>", "<bio>", "<date_joined>")');
     tx.executeSql('INSERT INTO User(uid, username, display_name, bio, date_joined) VALUES (1, "hyte", "John Gregg", "I am the Lead Programmer on timeBloc.", "<date_joined>")');
     tx.executeSql('INSERT INTO User(uid, username, display_name, bio, date_joined) VALUES (2, "the_reelist_condor", "Connor Thomas", "BYU<br>Also a noob.", "<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, date_joined) VALUES (3, "idea_man", "Brane Pantovic", "Wall Street Boss<br>I dont do much.", "<date_joined>")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, date_joined) VALUES (3, "idea_man", "Brane Pantovic", "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ab.", "<date_joined>")');
     tx.executeSql('INSERT INTO User(uid, username, display_name, bio, date_joined) VALUES (0, "user", "default_user", "<message>", "<date_joined>")');
 
     //template for regex: tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES (<uid>, <fuid>, "<date_joined>")');
@@ -167,6 +166,7 @@ var uiControl = {
         uiControl.turnCurrentItemOff();
         switch (page_log.pop()) {
           case 'userBloc':
+            userBloc.taredown();
             break;
           default:
             blocFeed.taredown();
@@ -303,7 +303,7 @@ var blocFeed ={
   },
 
   generateFeed:function(tx, results) {
-    var bf = document.getElementById('blocFeed');
+    var bf = document.getElementById('blocFeed_slideable');
     var full_bloc = "";
     for(var i = results.rows.length-1; i >=0 ; i--){
       full_bloc += blocFeed.generateBloc(results.rows.item(i));
@@ -359,7 +359,7 @@ var userBloc = {
 
     id: 0,
     last_slice: 0,
-    data :[0,1,2,3,4,5,6],
+    weight:[1,1,1,1,1,1,1],
 
     setup:function(id) {
       userBloc.id = parseInt(id);
@@ -372,6 +372,10 @@ var userBloc = {
         uiControl.turnItemOff("userBloc");
         uiControl.turnItemOn("userBloc");
       }, 100);
+    },
+
+    taredown:function() {
+
     },
 
     getUserInfo:function(tx){
@@ -400,7 +404,7 @@ var userBloc = {
     //tx, results
     generateSelf:function() {
       var current_angle = -180;
-      var angle = (1/userBloc.data.length)*360;
+      var angle = (1/userBloc.weight.length)*360;
       //var dasharray = (((((1/userBloc.data.length)-1)*191)+2) + "%"+" 191%";
       for(var i = 0; (current_angle+angle) <= 180; i++){
         document.getElementById("user_Profile_breakdown_" + i).style.transform= "rotate(" + current_angle + "deg)";
@@ -447,22 +451,25 @@ var userBloc = {
     },
 
     resetFollowButton:function() {
+      document.getElementById('user_Follow_Status').ontouchend = userBloc.toggleFollow;
       document.getElementById('user_Follow_Status').style.border = '.8vw dashed #bfbfbf';
-      document.getElementById('user_Follow_Status').style.background = "#f2f2f2";
+      //document.getElementById('user_Follow_Status').style.background = "#f2f2f2";
       document.getElementById('user_Follow_Status').innerHTML = "Follow";
       document.getElementById('userFollowingStatus_fbarrow').style.display = "none";
       document.getElementById('userFollowingStatus_farrow').style.display = "none";
+      document.getElementById('user_Follow_Status').style.background = 'none';
       isFollowing = false;
     },
 
     onProfilePictureTouch:function(){
       touches = event.touches;
       first_touch = touches[0];
+      //alert("H:"+ document.body.clientHeight + " W: " + document.body.clientWidth);
     },
 
     onProfilePictureDrag:function() {
       touches = event.touches[0];
-      var angle = (1/userBloc.data.length)*2*Math.PI;
+      var angle = (1/userBloc.weight.length)*2*Math.PI;
       var direction = Math.atan2(touches.pageY - first_touch.pageY, touches.pageX - first_touch.pageX);
       direction += (Math.PI);
       direction = Math.floor(direction/angle);
@@ -482,6 +489,7 @@ var userBloc = {
         alert("Going to slice:" + userBloc.last_slice);
         document.getElementById("user_Profile_slice_" +userBloc.last_slice).style['stroke-width'] = 60;
         document.getElementById("user_Profile_breakdown_" +userBloc.last_slice).style.opacity= 0.5;
+
       } else {
         document.getElementById("user_Profile_slice_" +userBloc.last_slice).style['stroke-width'] = 60;
         document.getElementById("user_Profile_breakdown_" +userBloc.last_slice).style.opacity= 0.5;
@@ -500,7 +508,6 @@ var userBloc = {
       }
       db.transaction(userBloc.getOtherInfo, dataManager.errorCB);
     },
-
 
     followBack:function() {
       document.getElementById('user_Follow_Status').style['border-top-style'] = "solid";

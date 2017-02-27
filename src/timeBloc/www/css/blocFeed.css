@@ -11,6 +11,8 @@
   margin:0px;
   padding:0px;
 
+	z-index: 100;
+
   -webkit-backface-visibility: hidden;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -50,10 +52,10 @@
   left:0%;
 
   margin:0px;
-  padding:0px 0px 0px 2%;
-  z-index:1;
+  padding:0px 0px 0px 0;
   color:grey;
-  box-shadow: 0px 4px 5px #8c8c8c;
+	z-index: 101;
+  box-shadow: 0px 2px 5px #8c8c8c;
 
   -webkit-backface-visibility: hidden;
   overflow: hidden;
@@ -134,7 +136,6 @@
   margin: 0px;
   padding:0px;
 
-  font-family: arial;
   font-size: 130%;
   font-style: bold;
   display:none;
@@ -155,7 +156,6 @@
   vertical-align: middle;
   line-height: normal;
 
-  font-family: arial;
   font-size: 6vw;
   font-weight: bold;
 }
@@ -181,7 +181,6 @@
   font-size: 7vw;
   color: #b3b3b3;
   font-weight: 900;
-  font-family: Ltc;
 
   transform: rotate(180deg);
 }
@@ -217,10 +216,4 @@
 
   margin:0px;
   padding:10% -10% 10% 10%;
-}
-
-
-@font-face {
-  font-family: Ltc;
-  src:url(..res/Lantinghei-TC.ttf);
 }

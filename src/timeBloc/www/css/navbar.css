@@ -7,6 +7,9 @@ body {
      /* prevent webkit from resizing text to fit */
   -webkit-user-select: none;
   background-attachment:fixed;
+
+  font-family: "main_font"
+
   height:100%;
   width:100%;
   margin:0px;
@@ -16,13 +19,15 @@ body {
 
 .mastHead{
   background-color: #ff932e;
-  height:5.25%;
+  height:8.5vw;
   width:100%;
   margin: 0;
   padding: 4% 2% 2% 2%;
   font-size: 9vw;
-  
-  box-shadow: 0px 1px 5px #8c8c8c;
+
+    z-index:9999;
+
+  box-shadow: 0px 1px 5px #404040;
 }
 
 .mastHead a{
@@ -31,11 +36,10 @@ body {
   text-decoration: none;
   color: #f2f2f2;
 
-  font-family: Ltc;
   font-weight: bold;
   display: block;
 
-  text-shadow: 1px 1px 2px #bfbfbf
+  text-shadow: 1px 1px 2px #bfbfbf;
 }
 
 
@@ -143,7 +147,6 @@ li{
 li a{
   width:50%;
   text-decoration: none;
-  font-family: arial;
   font-size: 6vw;
   text-decoration: none;
   color: #cc7300;
@@ -151,6 +154,6 @@ li a{
 }
 
 @font-face {
-  font-family: Ltc;
-  src:url(..res/Lantinghei-TC.ttf);
+  font-family: "main_font";
+  src:url(../res/Nova-Plain.ttf);
 }

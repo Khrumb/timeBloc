@@ -43,12 +43,12 @@
 
 .current_userPP{
   position:absolute;
-  top:80vw;
+  top:67.5vw;
   left:50vw;
 	width: 18vw;
   height:10vw;
 
-  margin: -10vh 0px 0px -9vw;
+  margin: -9vw 0px 0px -9vw;
   display:none;
 
 	height:auto;
@@ -107,7 +107,7 @@
 
 	display: none;
 	-webkit-backface-visibility: hidden;
-	
+
 }
 
 

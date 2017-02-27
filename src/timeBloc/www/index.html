@@ -18,19 +18,22 @@
     </head>
     <body id="mass_container">
 			<div id="navbar">
-       <div id='sidebar' class="sidebar" ontouchstart="sidebar.init();" ontouchmove="sidebar.move();" ontouchend="sidebar.rubberband();">
-        <h1 class="mastHead" ><a href="#blocfeed" ontouchend="sidebar.slideOff();blocFeed.setup();">timeBloc</a></h1>
+       <div id='sidebar' class="sidebar" ontouchstart="sidebar.onTouch();" ontouchmove="sidebar.onSlide();" ontouchend="sidebar.onTouchEnd();">
+        <h1 class="mastHead" ><a href="#blocfeed" ontouchstart="sidebar.slide();" ontouchend="blocFeed.setup();">timeBloc</a></h1>
         <ul>
-          <li id="link_blocFeed"><a href="#blocFeed" ontouchend="sidebar.slideOff();blocFeed.setup();">blocFeed</a></li>
-					<li id="link_blocFeed"><a href="#blocFeed" ontouchend="sidebar.slideOff();bloc.setup(0);">temp_bloc</a></li>
-
+					<li ontouchstart="sidebar.slide();" ontouchend="userBloc.setup(3);">Active Profile</li>
+          <li ontouchstart="sidebar.slide();" ontouchend="blocFeed.setup();">blocFeed</li>
+					<li ontouchstart="sidebar.slide();" ontouchend="bloc.setup(1);">Kanye Bloc</li>
         </ul>
        </div>
        <div class="navbar top">
          <div class="navbar top menu" ontouchstart="sidebar.slide();">
         	</div>
+				<!--	<div class="navbar_title">
+ 				  	Yeezus Tour
+ 				 </div>-->
 	      </div>
-				<div id="debug" class="debug" ontouchend="uiControl.setDebugger();">
+				<div id="debug" class="debug">
 				</div>
 		  </div>
 
@@ -120,8 +123,7 @@
     </div>
 
 		 <div data-anchor="blocFeed" id="blocFeed" class="blocFeed">
-			 <div id="blocFeed_actionbar" class="blocFeed_actionbar">
-			 </div>
+
 			 <div id="blocFeed_slideable" class="blocFeed_slideable">
 			 </div>
 			 <!--
@@ -152,7 +154,6 @@
 	       <div id="bloc_creater" class="bloc_creater"></div>
 			 </div>
 			 <div class="bloc_content_selecter">
-
 				 <div class="bloc_content_selecter_titles"  ontouchend="bloc.toggleOut();">
 					 <div id="bloc_blog" class="bloc_blog">
 					  B
@@ -166,12 +167,16 @@
 			 <div class="bloc_container">
 				 <div id="bloc_media_container" class="bloc_media_container">
 					 <div id="bloc_media_content" class="bloc_content">
-						 
+						 <div class="bloc_empty_content">
+						 	No Posts Yet :(
+						 </div>
 					 </div>
 				 </div>
 				 <div id="bloc_blog_container" class="bloc_blog_container">
 					 <div id="bloc_blog_content" class="bloc_content">
-					 	No Posts Yet :(
+						 <div class="bloc_empty_content">
+						 	No Posts Yet :(
+						 </div>
 					 </div>
 				 </div>
 			 </div>
@@ -185,7 +190,7 @@
 				</div>
 		 </div>
 
-		 <div class="base">
+		 <div id="base" class="base">
 			 <img class="logo" src="assets/logo.png" alt="" />
 		 </div>
 		  <script type="text/javascript" src="cordova.js"></script>

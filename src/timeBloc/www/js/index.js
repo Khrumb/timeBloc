@@ -7,6 +7,9 @@ var movement;
 
 var page_log = [];
 var page_log_uid = [];
+var page_log_bid = [];
+var current_page = null;
+
 var uid = 3;
 
 var timer;
@@ -39,9 +42,12 @@ var app = {
 					uiControl.setDebugger();
 	        //uiControl.populate();
 					setTimeout(function () {
-						//blocFeed.setup();
-						bloc.setup(0);
+						blocFeed.setup();
+						//bloc.setup(1);
 						//alert("setup called");
+						setTimeout(function () {
+							document.getElementById('base').style.display = "none";
+							}, 200);
 					}, 700);
 	        //userBloc.setup(1);
 	    },
@@ -53,31 +59,12 @@ var app = {
 					if(page_log[page_log.length-1] == 'userBloc'){
 						page_log_uid.pop();
 					}
-
-					switch (page_log.pop()) {
-						case 'userBloc':
-							userBloc.taredown();
-							break;
+					current_page = page_log.pop();
+					var id = page_log[page_log.length-1];
+					switch (id) {
 						case 'blocFeed':
-							blocFeed.taredown();
-							break;
-						case 'personalPage':
-							personalPage.taredown();
-							break;
-						case 'bloc':
-							bloc.taredown();
-							break;
-						case 'dialog':
-							uiControl.select(-2);
-							break;
-						case 'calander':
-							calander.slide_step = (width)/50;
-							calander.slide_animation = setInterval(calander.popIn, 4);
-						default:
-							uiControl.turnCurrentItemOff();
-
-					}
-					switch (page_log.pop()) {
+								blocFeed.setup();
+								break;
 						case 'userBloc':
 								userBloc.setup(page_log_uid.pop());
 							break;
@@ -85,10 +72,10 @@ var app = {
 								personalPage.setup();
 								break;
 						case 'bloc':
-								bloc.setup(0);
+								bloc.setup(page_log_bid.pop());
 								break;
 						default:
-							blocFeed.setup();
+							alert("wut");
 					}
 				}
 			},
@@ -116,12 +103,12 @@ var network = {
 var dataManager = {
 
   initialize:function() {
-		height = screen.availHeight;
+		height = window.innerHeight;
 		width = screen.availWidth;
 		uiControl.updateDebugger("screenX", height);
 		uiControl.updateDebugger("screenY", width);
-		document.body.style.minHeight = document.body.clientHeight + "px";
-		document.body.style.minWidth = document.body.clientWidth + "px";
+		document.body.style.height = height + "px";
+		document.body.style.width = width + "px";
     db = window.openDatabase("timeBloc", "0.1", "dmgr", 20000000);
     db.transaction(dataManager.populateDB, dataManager.errorCB);
   },
@@ -180,17 +167,17 @@ var dataManager = {
 
 
 		//tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (<seq#>, <uid>, <bid>, <imagedata>)');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (1, 3, 0, "img/1_bloc_bg.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (2, 3, 1, "img/2_bloc_bg.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (3, 3, 0, "img/bloc_1_4.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (4, 3, 0, "img/bloc_1_1.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (5, 3, 0, "img/bloc_1_5.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (6, 3, 0, "img/bloc_1_5.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (7, 3, 0, "img/bloc_1_6.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (8, 3, 0, "img/bloc_1_4.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (9, 3, 0, "img/bloc_1_5.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (10, 3, 0, "img/bloc_1_2.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (11, 3, 0, "img/bloc_1_3.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (1, 3, 1, "img/1_bloc_bg.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (2, 3, 0, "img/2_bloc_bg.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (3, 3, 1, "img/bloc_1_1.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (4, 3, 1, "img/bloc_1_2.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (5, 3, 1, "img/bloc_1_3.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (6, 3, 1, "img/bloc_1_4.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (7, 3, 1, "img/bloc_1_5.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (8, 3, 1, "img/bloc_1_6.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (9, 3, 1, "img/bloc_1_2.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (10, 3, 1, "img/bloc_1_4.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (11, 3, 1, "img/bloc_1_6.jpg")');
 
 
 
@@ -198,7 +185,8 @@ var dataManager = {
 		tx.executeSql('INSERT INTO permission_list(plid, uid, bid, permission_level, date_added) VALUES (0, 3, 0, 5 ,"-Null-")');
 
 		//tx.executeSql('INSERT INTO bloc(bid, uid, pl_id, title, pid, location, date) VALUES (<seq#>, <uid>, <pl_id>, "<title>",  <pid>, <location>, <current_date> )');
-		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, pid, location) VALUES (0, 3, 0, "Yeezus Tour",  1, "CO - USA" )');
+		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, pid, location) VALUES (0, 0, 0, "Default Bloc",  2, "NA - USA" )');
+		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, pid, location) VALUES (1, 3, 0, "Yeezus Tour",  1, "CO - USA" )');
 
     //template for regex: tx.executeSql('INSERT INTO bloc(bid, userID, message) VALUES (<bid>, "<username>", "<message>")');
     tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (0, 0, "Oldest")');
@@ -284,15 +272,6 @@ var uiControl = {
 			uiControl.setDebugger();
 		},
 
-		removeDebugger:function(id) {
-			if(uiControl.metrics.indexOf(id) >  0){
-				var pos = uiControl.metrics.indexOf(id);
-				uiControl.metrics.splice(pos);
-				uiControl.values.splice(pos);
-				uiControl.setDebugger();
-			}
-		},
-
     toBeImplemented:function(ev) {
       alert('This feature is not working.');
     },
@@ -327,9 +306,37 @@ var uiControl = {
 
     turnCurrentItemOff:function(){
       if(page_log.length >= 1){
-        var id = page_log[page_log.length-1];
-        //uiControl.turnItemOff(id);
-				window[id]["taredown"];
+				var id;
+				if(current_page != null){
+					id = current_page;
+					current_page = null;
+				} else {
+				  id = page_log[page_log.length-1];
+				}
+				//iControl.updateDebugger("tco", id);
+				switch (id) {
+					case 'userBloc':
+						userBloc.taredown();
+						break;
+					case 'blocFeed':
+						blocFeed.taredown();
+						break;
+					case 'personalPage':
+						personalPage.taredown();
+						break;
+					case 'bloc':
+						bloc.taredown();
+						break;
+					case 'dialog':
+						uiControl.select(-2);
+						break;
+					case 'calander':
+						calander.slide_step = (width)/50;
+						calander.slide_animation = setInterval(calander.popIn, 4);
+						break;
+					default:
+						alert("Unhandled Page: " + id);
+				}
       }
     },
 
@@ -344,7 +351,6 @@ var uiControl = {
       if(document.getElementById(id).classList.contains("off")){
         document.getElementById(id).classList.remove('off');
       }
-
       document.getElementById(id).classList.add('on');
     },
 
@@ -356,7 +362,7 @@ var uiControl = {
     },
 
 		addItem:function(id) {
-
+			alert();
 		},
 
 		dialog:function(options, cbk) {
@@ -406,74 +412,107 @@ var uiControl = {
 
 var sidebar = {
 
-  init: function() {
-    touches = event.touches;
-    first_touch = touches[0].pageX;
-    //width = document.body.clientWidth *0.7;
-  },
+	width:0,
+	animation: null,
+	c_pos:0,
+	slide_step:0,
+
 
   slide: function() {
-    if(!sidebar_isOn){
-      sidebar.slideOn();
-    } else {
-      sidebar.slideOff();
-    }
+		if(sidebar.animation != null){
+			clearInterval(sidebar.animation);
+			sidebar.animation = null;
+		}
+		if(!sidebar_isOn){
+			sidebar_isOn = true;
+			sidebar.c_pos = 0;
+			sidebar.slide_step = width/15;
+			sidebar.animation = setInterval(sidebar.slideOn, 5);
+		} else{
+			sidebar_isOn = false;
+			sidebar.c_pos = width;
+			sidebar.slide_step = width/15;
+			sidebar.animation = setInterval(sidebar.slideOff, 5);
+		}
   },
 
-  slideOn: function(){
-    if(!sidebar_isOn){
-      document.getElementById('sidebar').classList.remove('off');
-      document.getElementById('sidebar').classList.add('on');
-      document.getElementById('sidebar').style.left = 0 +'%';
-      sidebar_isOn = true;
-    }
-  },
+	slideOn:function () {
+		sidebar.c_pos += sidebar.slide_step;
+		if(sidebar.c_pos < width){
+			document.getElementById("sidebar").style["-webkit-transform"] = "translateX(" + sidebar.c_pos+ "px)";
+		} else{
+			clearInterval(sidebar.animation);
+			sidebar.animation = null;
+			sidebar_isOn = true;
+			document.getElementById("sidebar").style["-webkit-transform"] = "translateX(" + width + "px)";
+		}
+	},
 
-  slideOff: function(){
-    if(sidebar_isOn){
-      document.getElementById('sidebar').classList.remove('on');
-      document.getElementById('sidebar').classList.add('off');
-      document.getElementById('sidebar').style.left = -70 +'%';
-      sidebar_isOn = false;
-    }
-  },
+	slideOff:function () {
+		sidebar.c_pos -= sidebar.slide_step;
+		if(sidebar.c_pos > 0){
+			document.getElementById("sidebar").style["-webkit-transform"] = "translateX(" + sidebar.c_pos+ "px)";
+		} else{
+			clearInterval(sidebar.animation);
+			sidebar.animation = null;
+			sidebar_isOn = false;
+			document.getElementById("sidebar").style["-webkit-transform"] = "translateX(0px)";
+		}
+	},
 
-  move: function() {
-    touches = event.touches;
-    movement = (touches[0].pageX - first_touch);
-    if(movement < 0){
-      document.getElementById('sidebar').style.left = movement + 'px';
-    }
-  },
+	onTouch:function() {
+		if(sidebar_isOn == true){
+		touches = event.touches[0];
+		first_touch = touches;
+		sidebar.c_pos = width;
+		sidebar.animation = setInterval(sidebar.updater,5);
+		}
+	},
 
-  rubberband: function() {
-    //alert(-width*0.2);
-    if(movement < -width*0.4){
-      //sidebar.slideOff();
-    } else {
-      //sidebar.slideOn();
-    }
-  }
+	updater:function() {
+			document.getElementById("sidebar").style["-webkit-transform"] = "translateX(" + sidebar.c_pos + "px)";
+	},
+
+	onSlide:function() {
+		var temp = width-(first_touch.pageX - event.touches[0].pageX);
+		if(temp <  width){
+			sidebar.c_pos = temp;
+		}
+	},
+
+	onTouchEnd:function() {
+		if(sidebar_isOn == true){
+			clearInterval(sidebar.animation);
+			sidebar.animation = null;
+			if(sidebar.c_pos  >= (25*width)/36){
+				sidebar.slide_step = width/30;
+				sidebar.animation = setInterval(sidebar.slideOn, 5);
+			} else{
+				sidebar.slide_step = width/18;
+				sidebar.animation = setInterval(sidebar.slideOff, 5);
+			}
+		}
+	}
 };
 
 var blocFeed ={
 
   //all page data load events here
   setup:function() {
-		uiControl.turnCurrentItemOff();
     this.requestData();
   },
 
   //all ui load evenets here
   setupCallBack:function() {
-		uiControl.turnItemOn("blocFeed");
-		document.getElementById("userBloc").style.display = "block";
+		uiControl.turnCurrentItemOff();
+		document.getElementById("blocFeed").style.display = "block";
     document.getElementById("blocFeed").style['z-index'] = page_log.length+1;
+		uiControl.turnItemOn("blocFeed");
   },
 
   taredown:function() {
 		uiControl.turnItemOff("blocFeed");
-		document.getElementById("userBloc").style.display = "none";
+		document.getElementById("blocFeed").style.display = "none";
 		document.getElementById("blocFeed").style['z-index'] = 0;
   },
 
@@ -555,12 +594,13 @@ var userBloc = {
 
     setup:function(id) {
       userBloc.id = parseInt(id);
-			uiControl.turnCurrentItemOff();
+			page_log_uid.push(id);
       db.transaction(userBloc.getUserInfo, dataManager.errorCB);
 			calander.setup();
     },
 
 		setupCallBack:function(){
+			uiControl.turnCurrentItemOff();
 			document.getElementById("userBloc").style.display = "block";
 			document.getElementById("userBloc").style.left = "0%";
 			document.getElementById("userBloc").style['z-index'] = page_log.length+4;
@@ -570,10 +610,7 @@ var userBloc = {
 		taredown:function() {
 			clearInterval(userBloc.animation);
 			uiControl.turnItemOff("userBloc");
-
-			uiControl.removeDebugger("angle");
-			uiControl.removeDebugger("time");
-			uiControl.removeDebugger("PL");
+			//uiControl.updateDebugger("td", "userBloc");
 			setTimeout(function () {
 				document.getElementById("userBloc").style['z-index'] = 0;
 				document.getElementById("userBloc").style.display = "none";
@@ -589,7 +626,6 @@ var userBloc = {
 		setupUserElements: function(tx,results) {
       var user = results.rows.item(0);
 			userBloc.c_user = user;
-      page_log_uid.push(user.uid);
 			document.getElementById('userBloc').style.backgroundImage = "url("+ user.profileBackground+")";
       document.getElementById('user_Profile_Picture').src = user.profilePicture;
       document.getElementById('user_Display_Name').textContent = user.display_name;
@@ -597,7 +633,7 @@ var userBloc = {
 			document.getElementById('user_Info').textContent = user.birthday + " | " + user.location;
       document.getElementById('user_bio').textContent = user.bio;
 			uiControl.setTheme(user.theme);
-
+			userBloc.getOtherInfo(tx);
 			userBloc.getWeights(tx);
     },
 
@@ -617,9 +653,8 @@ var userBloc = {
 			}
 			userBloc.weight = replace_weight;
 			userBloc.position_list = replace_pos;
-			uiControl.updateDebugger("PL", userBloc.position_list);
 			userBloc.generateSelf();
-			userBloc.getOtherInfo(tx);
+			userBloc.setupCallBack();
 		},
 
     getOtherInfo:function(tx){
@@ -661,7 +696,6 @@ var userBloc = {
 						userBloc.unfollow();
 				}
 			}
-			userBloc.setupCallBack();
 		},
 
     generateSelf:function() {
@@ -713,14 +747,11 @@ var userBloc = {
       var cd = 360*((Math.atan2(touches.pageY -  window.innerHeight*0.40, touches.pageX - window.innerWidth*0.50)+Math.PI)/(2*Math.PI));
       userBloc.delta_a = userBloc.start_angle-cd;
       userBloc.start_angle = cd;
-			uiControl.updateDebugger("angle", userBloc.current_angle.toPrecision(3));
     },
 
     onProfilePictureEnd:function() {
       clearInterval(userBloc.animation);
       var wedge_angle = 360/(userBloc.weight.length);
-			uiControl.updateDebugger("time",((performance.now() - timer)/1000).toPrecision(3));
-
 			var i = (Math.round(userBloc.current_angle/wedge_angle)-userBloc.last_slice)%userBloc.weight.length;
 			while(i != 0){
 				if(i > 0){
@@ -731,7 +762,6 @@ var userBloc = {
 					i++;
 				}
 			}
-			uiControl.updateDebugger("PL", userBloc.position_list);
       userBloc.last_slice = Math.round(userBloc.current_angle/wedge_angle);
 			userBloc.start_angle = userBloc.current_angle;
       userBloc.current_angle = userBloc.last_slice * wedge_angle;
@@ -795,7 +825,6 @@ var userBloc = {
         db.transaction(userBloc.setFollow, dataManager.errorCB);
       } else if(confirm("Are you sure you want to unfollow?")){
         db.transaction(userBloc.setUnfollow, dataManager.errorCB);
-
       }
       db.transaction(userBloc.getOtherInfo, dataManager.errorCB);
     },
@@ -897,8 +926,6 @@ var personalPage = {
 			document.getElementById("finished_profile").style.display = "none";
 			document.getElementById("bottom_line").style.display = "none";
 			uiControl.setTheme(userBloc.c_user.theme);
-
-			userBloc.setup(userBloc.c_user.uid);
 		}, 200);
 	},
 
@@ -1081,9 +1108,17 @@ var bloc = {
 	container_animation: null,
 
 	setup:function(id) {
-		uiControl.turnCurrentItemOff();
-		bloc.id = id;
+		bloc.id = parseInt(id);
+		page_log_bid.push(id);
 		db.transaction(bloc.getSetupInfo, dataManager.errorCB);
+	},
+
+
+	setupCallBack:function(){
+		uiControl.turnCurrentItemOff();
+		document.getElementById("bloc").style.display = "block";
+		document.getElementById("bloc").style['z-index'] = 1;
+		uiControl.turnItemOn("bloc");
 	},
 
 	getSetupInfo:function(tx) {
@@ -1093,8 +1128,7 @@ var bloc = {
 	setupBloc:function(tx, results) {
 		bloc.c_bloc = results.rows.item(0);
 		document.getElementById("bloc_title").textContent = bloc.c_bloc.title;
-		document.getElementById("bloc_location").textContent = bloc.c_bloc.location
-
+		document.getElementById("bloc_location").textContent = bloc.c_bloc.location;
 		tx.executeSql('SELECT * FROM picture where bid = '+ bloc.c_bloc.bid, [], bloc.setupPictures, dataManager.errorCB);
 	},
 
@@ -1128,7 +1162,13 @@ var bloc = {
 				piccounter++;
 			}
 		}
-		document.getElementById("bloc_media_content").innerHTML = pictures;
+		if(pictures != "" ){
+			document.getElementById("bloc_media_content").innerHTML = pictures;
+		} else {
+			document.getElementById("bloc_media_content").innerHTML =	"<div class='bloc_empty_content'>" +
+																																	"No Posts Yet :(" +
+																																"</div>";
+		}
 		tx.executeSql('SELECT * FROM user where uid = '+ bloc.c_bloc.uid, [], bloc.setupUserInfo, dataManager.errorCB);
 	},
 
@@ -1138,16 +1178,10 @@ var bloc = {
 		bloc.setupCallBack();
 	},
 
-	setupCallBack:function(){
-		setTimeout(function () {
-			document.getElementById("bloc").style['z-index'] = page_log.length+5;
-			uiControl.turnItemOn("bloc");
-		}, 200);
-	},
-
 	taredown:function() {
 		uiControl.turnItemOff("bloc");
 		setTimeout(function () {
+			document.getElementById("bloc").style.display = "none";
 			document.getElementById("bloc").style['z-index'] = 0;
 		}, 200);
 	},
@@ -1174,7 +1208,6 @@ var bloc = {
 
 	onTabTouchEnd:function() {
 		bloc.c_pos  = touches.pageX -width;
-
 		clearInterval(bloc.container_animation);
 		if(bloc.c_pos  >= -width*0.5){
 			bloc.slide_step = (width + bloc.c_pos)/10;

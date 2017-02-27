@@ -5,13 +5,15 @@
   top:0vw;
   left:0vw;
 
-  height:100%;
-  width:100%;
+  height:100vh;
+  width:100vw;
 
   margin:0px;
   padding:0px;
 
-	z-index: 0;
+	display:none;
+	border:none;
+	z-index: 1;
   overflow: hidden;
 }
 
@@ -43,10 +45,8 @@
   left:0vw;
 	background-size: cover;
 
-
-
-  height:50vw;
-  width:100%;
+  height:50.5vw;
+  width:100vw;
 
 	margin:0 0px 0vw 0px;
 
@@ -55,8 +55,6 @@
 
 	z-index: 0;
   overflow: hidden;
-
-
 	background-repeat: no-repeat;
 }
 
@@ -72,6 +70,9 @@
 
 	background-color: white;
 	border-bottom:  .28vw solid #ffb16e;
+	border-top: .28vw solid #f2f2f2;
+	border-left: .28vw solid #f2f2f2;
+
 }
 
 
@@ -99,8 +100,6 @@
 	font-size: 3vw;
 
 	margin:-2.5vw 0px 0vw 0px;
-
-
 }
 
 .bloc_creater{
@@ -162,6 +161,7 @@
 
 	/*border-right: .5vw solid #ffb16e;*/
 	border-left: .28vw solid #ffb16e;
+	border-top: .28vw solid #f2f2f2;
 
 	-webkit-backface-visibility: hidden;
 
@@ -180,6 +180,7 @@
 
 	margin-bottom: -0.28vw;
 	padding: 3vw 0vw 3vw 0vw;
+	border-top: .28vw solid #f2f2f2;
 	border-left: .28vw solid #ffb16e;
 	-webkit-backface-visibility: hidden;
 
@@ -247,17 +248,24 @@
   overflow-x: hidden;
 }
 
+.bloc_empty_content{
+	padding-top: 30vw;
+}
+
 .bloc_photo_row{
 	position: relative;
-	height:50vw;
+	height:58.66vw;
+	margin: 0.35vw 0vw 0vw 0vw;
 	width:100vw;
+	-webkit-backface-visibility: hidden;
 }
 
 .bloc_photo_container{
 	position: absolute;
-	height:50vw;
-	width:32vw;
+	height:58.66vw;
+	width:33vw;
 	vertical-align:middle;
+	-webkit-backface-visibility: hidden;
 }
 
 .c1{
@@ -265,11 +273,12 @@
 }
 
 .c2{
-	left:34vw;
+	left:33.5vw;
 }
 
 .c3{
-	left:68vw;
+	/*DONT FUCKING ASK*/
+	right:-1px;
 }
 
 .bloc_photo{
@@ -277,11 +286,10 @@
 	top: 50%;
   -webkit-transform: translateY(-50%);
 	height:auto;
-	width:32vw;
+	width:33vw;
 	margin: 0;
 	vertical-align: middle;
 	-webkit-backface-visibility: hidden;
-
 }
 
 @font-face {

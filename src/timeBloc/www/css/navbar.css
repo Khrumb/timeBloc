@@ -4,8 +4,8 @@
 
 body {
   -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
-  -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
-  -webkit-user-select: none; 
+     /* prevent webkit from resizing text to fit */
+  -webkit-user-select: none;
   background-attachment:fixed;
   height:100%;
   width:100%;

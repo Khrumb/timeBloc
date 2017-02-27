@@ -33,15 +33,14 @@ var app = {
 
 	    onDeviceReady: function() {
 	        //alert("DEVICE READY");
-					uiControl.updateDebugger("screenX", screen.availHeight);
-					uiControl.updateDebugger("screenY", screen.availWidth);
-					//alert(uiControl.metrics.length);
 	        dataManager.initialize();
-	        //alert("DB INITILIZED");
+	        //alert("DB INITILIZED")
 	        network.initialize();
 					uiControl.setDebugger();
 	        //uiControl.populate();
-	       	blocFeed.setup();
+					setTimeout(function () {
+						blocFeed.setup();
+					}, 700);
 	        //userBloc.setup(1);
 	    },
 
@@ -71,6 +70,9 @@ var app = {
 						case 'userBloc':
 								userBloc.setup(page_log_uid.pop());
 							break;
+						case 'personalPage':
+								personalPage.setup();
+								break;
 						default:
 							blocFeed.setup();
 					}
@@ -100,7 +102,13 @@ var network = {
 var dataManager = {
 
   initialize:function() {
-    db = window.openDatabase("timeBloc", "0.1", "dmgr", 200000);
+		height = screen.availHeight;
+		width = screen.availWidth;
+		uiControl.updateDebugger("screenX", height);
+		uiControl.updateDebugger("screenY", width);
+		document.body.style.minHeight = document.body.clientHeight + "px";
+		document.body.style.minWidth = document.body.clientWidth + "px";
+    db = window.openDatabase("timeBloc", "0.1", "dmgr", 20000000);
     db.transaction(dataManager.populateDB, dataManager.errorCB);
   },
 
@@ -114,10 +122,10 @@ var dataManager = {
     tx.executeSql('DROP TABLE IF EXISTS user');
     tx.executeSql('DROP TABLE IF EXISTS bloc');
     tx.executeSql('DROP TABLE IF EXISTS follower_list');
-	  tx.executeSql('DROP TABLE IF EXISTS weight_list');
+		tx.executeSql('DROP TABLE IF EXISTS weight_list');
 
     tx.executeSql('CREATE TABLE IF NOT EXISTS personal (session_key Primary Key ASC, uid Refrences USER uid)');
-    tx.executeSql('CREATE TABLE IF NOT EXISTS user (uid Primary Key ASC, username, display_name, bio, theme, birthday, location, date_joined)');
+    tx.executeSql('CREATE TABLE IF NOT EXISTS user (uid Primary Key ASC, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS bloc (bid Primary Key ASC, uid Refrences USER uid, message, posted_time)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS follower_list (uid Refrences USER uid, fuid Refrences USER uid, date_followed)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS weight_list (uid Refrences USER uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6)');
@@ -132,11 +140,11 @@ var dataManager = {
 		tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (2, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, -1)');
 		tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (3, 0.1, 0.25, 0.65, 1, -1, -1, -1)');
 
-    //template for regex: tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (<uid>, "<username>", "<display_name>", "<bio>", "<theme>", "<birthday>", "<location>", "<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (1, "hyte", "John Gregg", "Lead Programmer on timeBloc.<br><br>Too Cool 5 You.", "dark", "January, 5th", "WV - USA", "<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (2, "the_reelist_condor", "Connor Thomas", "BYU<br>Also a noob.", "dark", "December, 4th", "UT - USA","<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (3, "serbian_slayer", "Brane Pantovic", "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.", "light", "March, 14th", "NY - USA","<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (0, "user", "default_user", "<message>", "light", "NULL, 00th", "N/A - N/A", "<date_joined>")');
+    //template for regex: tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (<uid>, "<username>", "<display_name>", "<bio>", "<theme>", "<birthday>", "<location>", "<date_joined>", "img/<uid>_profile_picture.jpg", "img/<uid>_profile_background.jpg")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (1, "hyte", "John Gregg", "Lead Programmer on timeBloc.", "dark", "January, 5th", "WV - USA", "<date_joined>", "img/1_profile_picture.jpg", "img/1_profile_background.jpg")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (2, "the_reelist_condor", "Connor Thomas", "BYU. Also a noob.", "dark", "December, 4th", "UT - USA", "<date_joined>", "img/2_profile_picture.jpg", "img/2_profile_background.jpg")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (3, "serbian_slayer", "Brane Pantovic", "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.", "light", "March, 14th", "NY - USA","<date_joined>", "img/3_profile_picture.jpg", "img/3_profile_background.jpg")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (0, "user", "default_user", "<message>", "light", "NULL, 00th", "N/A - N/A", "<date_joined>", "img/0_profile_picture.jpg", "img/0_profile_background.jpg")');
 
     //template for regex: tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES (<uid>, <fuid>, "<date_joined>")');
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 1, 2, "<date_joined>")');
@@ -171,18 +179,14 @@ var dataManager = {
 
   },
 
-  successCB:function() {
-    //alert("Tables Created");
-    //db.transaction(dataManager.queryDB, dataManager.errorCB);
-  },
-
-  querySuccess:function (tx, results) {
-    alert(results.rows.item(0).uid);
-  },
-
   errorCB:function(err) {
       alert("Error processing SQL: "+ err.message);
   },
+
+	getTheme:function(imgdata) {
+		uiControl.updateDebugger("is in byte", 2*imgdata.length);
+		return "light";
+	},
 
   numberToString:function(num) {
     var i = 10;
@@ -261,9 +265,9 @@ var uiControl = {
     },
 
     turnCurrentItemOff:function(){
-      if(page_log.length > 1){
+      if(page_log.length >= 1){
         var id = page_log[page_log.length-1];
-        uiControl.turnItemOff(id);
+        //uiControl.turnItemOff(id);
 				window[id]["taredown"];
       }
     },
@@ -283,7 +287,16 @@ var uiControl = {
         document.getElementById(id).classList.remove('on');
       }
       document.getElementById(id).classList.add('off');
-    }
+    },
+
+		dialog:function(id, title, options) {
+				switch(id){
+					case 1:
+						break;
+					default:
+						break;
+				}
+		},
 
 };
 
@@ -345,18 +358,18 @@ var blocFeed ={
 
   //all page data load events here
   setup:function() {
+		uiControl.turnCurrentItemOff();
     this.requestData();
   },
 
   //all ui load evenets here
   setupCallBack:function() {
-    uiControl.turnCurrentItemOff();
-    document.getElementById("blocFeed").style['z-index'] = 100;
-    uiControl.turnItemOn("blocFeed");
+		uiControl.turnItemOn("blocFeed");
+    document.getElementById("blocFeed").style['z-index'] = page_log.length+1;
   },
 
   taredown:function() {
-		uiControl.turnCurrentItemOff();
+		uiControl.turnItemOff("blocFeed");
 		document.getElementById("blocFeed").style['z-index'] = 0;
   },
 
@@ -425,7 +438,7 @@ var blocFeed ={
 var userBloc = {
 
     id: 0,
-		weight:[0, 0.166, 0.166, 0.166, 0.166, 0.166, 0.166],
+		weight:[0.166, 0.166, 0.166, 0.166, 0.166, 0.166, 0.166],
     last_slice: 0,
 		current_angle: 0,
     start_angle: 0,
@@ -443,7 +456,7 @@ var userBloc = {
     },
 
 		setupCallBack:function(){
-			document.getElementById("userBloc").style['z-index'] = 500;
+			document.getElementById("userBloc").style['z-index'] = page_log.length+2;
 			uiControl.turnItemOn("userBloc");
 		},
 
@@ -467,13 +480,14 @@ var userBloc = {
       var user = results.rows.item(0);
 			userBloc.c_user = user;
       page_log_uid.push(user.uid);
+			document.getElementById('userBloc').style.backgroundImage = "url("+ user.profileBackground+")";
       document.getElementById('user_Profile_Picture').src = "img/"+ user.uid +"_profile_picture.jpg";
-      document.getElementById('userBloc_background').src = "img/"+ user.uid +"_profile_background.jpg";
-      document.getElementById('user_Display_Name').innerHTML = user.display_name;
-      document.getElementById('user_Handle').innerHTML = "@" + user.username;
-			document.getElementById('user_Info').innerHTML = user.birthday + " | " + user.location;
-      document.getElementById('user_bio').innerHTML = user.bio;
+      document.getElementById('user_Display_Name').textContent = user.display_name;
+      document.getElementById('user_Handle').textContent = "@" + user.username;
+			document.getElementById('user_Info').textContent = user.birthday + " | " + user.location;
+      document.getElementById('user_bio').textContent = user.bio;
 			userBloc.setTheme(user.theme);
+
 			userBloc.getWeights(tx);
     },
 
@@ -505,20 +519,20 @@ var userBloc = {
     },
 
 		setupFollowers: function(tx,results) {
-			document.getElementById('followers').innerHTML = dataManager.numberToString(results.rows.length);
+			document.getElementById('followers').textContent = dataManager.numberToString(results.rows.length);
 		},
 
 		setupFollowing: function(tx,results) {
-			document.getElementById('following').innerHTML = dataManager.numberToString(results.rows.length);
+			document.getElementById('following').textContent = dataManager.numberToString(results.rows.length);
 		},
 
 		setFollowButton: function(tx,results) {
 			//alert(results.rows.length);
 			userBloc.resetFollowButton();
 			if (userBloc.id == uid) {
-				document.getElementById('user_Follow_Status').style.border = '.8vw dashed #bfbfbf';
+				document.getElementById('user_Follow_Status').style.border = '.8% dashed #bfbfbf';
 				document.getElementById('user_Follow_Status').style.background = '#bfbfbf';
-				document.getElementById('user_Follow_Status_message').innerHTML = "Edit Profile";
+				document.getElementById('user_Follow_Status_message').textContent = "Edit Profile";
 				document.getElementById('user_Follow_Status').ontouchend = personalPage.setup;
 			} else {
 				switch (results.rows.length) {
@@ -564,13 +578,13 @@ var userBloc = {
 
     onProfilePictureTouch:function(){
       touches = event.touches[0];
-			var direction = Math.atan2(touches.pageY -  window.innerHeight*0.43, touches.pageX - window.innerWidth*0.50) + Math.PI;
+			var direction = Math.atan2(touches.pageY -  window.innerHeight*0.40, touches.pageX - window.innerWidth*0.50) + Math.PI;
 			userBloc.start_angle = 360*(direction/(2*Math.PI));
 			if(userBloc.animation == null){
-				userBloc.animation = setInterval(this.translateCircle,10);
+				userBloc.animation = setInterval(this.translateCircle,20);
 			} else {
 				clearInterval(userBloc.animation);
-				userBloc.animation = setInterval(this.translateCircle,10);
+				userBloc.animation = setInterval(this.translateCircle,20);
 			}
 			userBloc.sw = 16;
 			userBloc.op = 0.5;
@@ -586,7 +600,7 @@ var userBloc = {
     onProfilePictureDrag:function() {
       touches = event.touches[0];
       userBloc.current_angle = userBloc.current_angle%360;
-      var cd = 360*((Math.atan2(touches.pageY -  window.innerHeight*0.43, touches.pageX - window.innerWidth*0.50)+Math.PI)/(2*Math.PI));
+      var cd = 360*((Math.atan2(touches.pageY -  window.innerHeight*0.40, touches.pageX - window.innerWidth*0.50)+Math.PI)/(2*Math.PI));
       userBloc.delta_a = userBloc.start_angle-cd;
       userBloc.start_angle = cd;
 			uiControl.updateDebugger("angle", userBloc.current_angle.toPrecision(3));
@@ -673,7 +687,7 @@ var userBloc = {
 			document.getElementById('user_Follow_Status').ontouchend = userBloc.toggleFollow;
 			document.getElementById('user_Follow_Status').style.border = '.8vw dashed #bfbfbf';
 			//document.getElementById('user_Follow_Status').style.background = "#f2f2f2";
-			document.getElementById('user_Follow_Status_message').innerHTML = "Follow";
+			document.getElementById('user_Follow_Status_message').textContent = "Follow";
 			document.getElementById('userFollowingStatus_fbarrow').style.display = "none";
 			document.getElementById('userFollowingStatus_farrow').style.display = "none";
 			document.getElementById('user_Follow_Status').style.background = 'none';
@@ -709,7 +723,7 @@ var userBloc = {
       document.getElementById('user_Follow_Status').style['border-right-style'] = "solid";
       document.getElementById('user_Follow_Status').style['border-right-color'] = "#ffcb80";
       document.getElementById('userFollowingStatus_farrow').style.display = "block";
-      document.getElementById('user_Follow_Status_message').innerHTML = "Following";
+      document.getElementById('user_Follow_Status_message').textContent = "Following";
       isFollowing = true;
     },
 
@@ -719,7 +733,7 @@ var userBloc = {
 
     unfollow: function() {
       document.getElementById('user_Follow_Status').ontouchend = userBloc.toggleFollow;
-      document.getElementById('user_Follow_Status_message').innerHTML = "Follow";
+      document.getElementById('user_Follow_Status_message').textContent = "Follow";
       isFollowing = false;
     }
 
@@ -727,24 +741,17 @@ var userBloc = {
 
 var personalPage = {
 
+	image: "",
+	t_window: "",
+
 	setup:function() {
-		uiControl.turnCurrentItemOff();
-		document.getElementById('current_Profile_Picture').src = "img/"+ userBloc.c_user.uid +"_profile_picture.jpg";
-		document.getElementById('current_background').src = "img/"+ userBloc.c_user.uid +"_profile_background.jpg";
-
-
-		document.getElementById('set_username').value = userBloc.c_user.display_name;
-		/*document.getElementById('user_Handle').innerHTML = "@" + userBloc.c_user.username;
-		document.getElementById('user_Birthday').innerHTML = userBloc.c_user.birthday;*
-		document.getElementById('ation').innerHTML = userBloc.c_user.location;
-		document.getElementById('user_bio').innerHTML = userBloc.c_user.bio;
-		userBloc.setTheme(userBloc.c_user.theme);*/
-		document.getElementById("personalPage").style['z-index'] = 700;
+		//document.getElementById("user_Display_Name").prop('readonly', false);
+		document.getElementById("user_Display_Name").style['z-index'] = page_log.length+2;
 		personalPage.setupCallBack();
 	},
 
 	setupCallBack:function(){
-		document.getElementById("personalPage").style['z-index'] = 700;
+		document.getElementById("personalPage").style['z-index'] = page_log.length+2;
 		uiControl.turnItemOn("personalPage");
 	},
 
@@ -755,23 +762,63 @@ var personalPage = {
 		}, 200);
 	},
 
-  selectBackground:function(){
-		var destinationType=navigator.camera.DestinationType;
-		var handle = navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
-        destinationType: destinationType.DATA_URL });
-		alert(handle);
+	selectPictureSource:function() {
+		//keyboard.show();
+		uiControl.updateDebugger("conf", Keyboard );
+		//navigator.notification.prompt('Select Source',personalPage.selectSource,'Picture',["Camera", "PhotoLibrary"," WUT" , "Cancel"]);
 	},
 
-  selectBackground:function(imageData) {
+	selectSource:function(results) {
+		uiControl.updateDebugger("conf", results);
+	},
+
+	selectCameraAlbum:function(){
+		var camera = navigator.camera;
+	 	camera.getPicture(this.encodeProfile, this.error, { quality: 50, sourceType: Camera.PictureSourceType.SAVEDPHOTOALBUM,destinationType: Camera.DestinationType.DATA_URL});
+	},
+
+  selectPhotoAlbum:function(){
+		var camera = navigator.camera;
+	 	camera.getPicture(this.encodeBackground, this.error, { quality: 50, sourceType: Camera.PictureSourceType.CAMERA,destinationType: Camera.DestinationType.DATA_URL});
+	},
+
+  encodeBackground:function(imageData) {
 		if(imageData != null){
-    uiControl.updateDebugger("id", imageData);
-		var bgimg = document.getElementById('current_background');
-		bgimg.src = "data:image/jpeg;base64," + imageData;
+			personalPage.image = "data:image/jpeg;base64," + imageData;
+			db.transaction(personalPage.setBackground, dataManager.errorCB);
 		}
   },
 
+	encodeProfilePicture:function(imageData) {
+		if(imageData != null){
+			personalPage.image = "data:image/jpeg;base64," + imageData;
+			db.transaction(personalPage.setBackground, dataManager.errorCB);
+		}
+	},
+
+	setBackground:function(tx) {
+		  tx.executeSql('UPDATE user SET profileBackground = "' + personalPage.image + '" where uid = ' + userBloc.c_user.uid);
+			tx.executeSql('UPDATE user SET theme = "' + dataManager.getTheme(personalPage.image) + '" where uid = ' + userBloc.c_user.uid);
+			//document.getElementById('userBloc_background').src = personalPage.image;
+			document.getElementById('userBloc_background').src = personalPage.image;
+			personalPage.image = "";
+	},
+
+	setProfilePicture:function(tx) {
+		  tx.executeSql('UPDATE user SET profilePicture = "' + personalPage.image + '" where uid = ' + userBloc.c_user.uid);
+			//document.getElementById('userBloc_background').src = personalPage.image;
+			document.getElementById('user_Profile_Picture').src = personalPage.image;
+			personalPage.image = "";
+	},
+
+	resize:function() {
+		uiControl.updateDebugger("screenX", screen.height);
+		uiControl.updateDebugger("screenY", screen.width);
+		//window.resizeTo(height, width);
+	},
+
   error:function() {
-    alert("NEGATIVE GHOST-RIDER");
+    //alert("NEGATIVE GHOST-RIDER");
   }
 
 };
@@ -783,7 +830,7 @@ var bloc = {
 	},
 
 	setupCallBack:function(){
-		document.getElementById("bloc").style['z-index'] = 700;
+		document.getElementById("bloc").style['z-index'] = page_log.length+2;
 		uiControl.turnItemOn("bloc");
 	},
 

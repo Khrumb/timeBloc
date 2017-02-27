@@ -98,16 +98,134 @@
 .userPP{
   position:absolute;
   background-size:contain;
-  top:13%;
-  left:18%;
-  width:30%;
-  height:19%;
-  margin:-15% 0px 0px -15%;
+  top:35%;
+  left:50%;
+  width:50%;
+  height:31%;
+  margin:-25% 0px 0px -25%;
   display:block;
 
   z-index: 200;
 
   border-radius:400px;
+}
+
+.user_Profile_breakdown_container{
+  width:100%;
+  height:60%;
+}
+
+/*150.8*/
+.user_Profile_breakdown_0{
+  position:absolute;
+  background-size:contain;
+  left:5%;
+  top:0%;
+  opacity: 0.50;
+}
+
+.user_Profile_slice_0{
+  fill: none;
+  stroke: #ff8787;
+  stroke-width: 60;
+  stroke-dasharray: 29.29% 191%;
+}
+
+.user_Profile_breakdown_1{
+  position:absolute;
+  background-size:contain;
+
+  left:5%;
+  top:0%;
+  opacity: 0.5;
+}
+
+.user_Profile_slice_1{
+  fill: none;
+  stroke: #fff891;
+  stroke-width:60 ;
+  stroke-dasharray: 29.29% 191%;
+}
+
+.user_Profile_breakdown_2{
+  position:absolute;
+  background-size:contain;
+
+  left:5%;
+  top:0%;
+
+  opacity: 0.50;
+}
+
+.user_Profile_slice_2{
+  fill: none;
+  stroke: #82ffd1;
+  stroke-width: 60;
+  stroke-dasharray: 29.29% 191%;
+}
+
+.user_Profile_breakdown_3{
+  position:absolute;
+  background-size:contain;
+
+  left:5%;
+  top:0%;
+  opacity: 0.50;
+}
+
+.user_Profile_slice_3{
+  fill: none;
+  stroke: #ff9eea;
+  stroke-width: 60;
+  stroke-dasharray: 29.29% 191%;
+}
+
+.user_Profile_breakdown_4{
+  position:absolute;
+  background-size:contain;
+
+  left:5%;
+  top:0%;
+  opacity: 0.50;
+}
+
+.user_Profile_slice_4{
+  fill: none;
+  stroke: #6369ff;
+  stroke-width: 60;
+  stroke-dasharray: 29.29% 191%;
+}
+
+.user_Profile_breakdown_5{
+  position:absolute;
+  background-size:contain;
+
+  left:5%;
+  top:0%;
+  opacity: 0.50;
+}
+
+.user_Profile_slice_5{
+  fill: none;
+  stroke: #C69BFF;
+  stroke-width: 60;
+  stroke-dasharray: 29.29% 191%;
+}
+
+.user_Profile_breakdown_6{
+  position:absolute;
+  background-size:contain;
+
+  left:5%;
+  top:0%;
+  opacity: 0.50;
+}
+
+.user_Profile_slice_6{
+  fill: none;
+  stroke: #b5fff9;
+  stroke-width: 60;
+    stroke-dasharray: 29.29% 191%;
 }
 
 .userFollowingStatus{
@@ -189,195 +307,6 @@
   -webkit-backface-visibility: hidden;
   overflow-y: scroll;
   overflow-x: hidden;
-}
-
-.ublocFeed_container{
-  position: relative;
-  height:20.5%;
-  width:100%;
-
-  margin:3% 0px 0px 0px;
-  padding:0px;
-
-  box-shadow: 0px 1px 5px #8c8c8c;
-  overflow: hidden;
-}
-
-.ublocFeed_bloc_top{
-  background-color:white;
-  position:absolute;
-
-  top:0%;
-  left:0%;
-
-  height:100%;
-  width:100%;
-
-  margin:0px;
-  padding:0px;
-}
-
-.ublocFeed_bloc_picture{
-  position:absolute;
-
-  top:6%;
-  left:2%;
-
-  height:90%;
-  width:14%;
-
-  margin:0px;
-  padding:0px;
-
-  box-shadow: 1px 1px 2px #8c8c8c;
-  border-radius: 400px;
-
-}
-
-.ublocFeed_bloc_title{
-  position: absolute;
-  left:18%;
-  top:50%;
-
-  width:70%;
-  height:100%;
-
-  margin: 0px;
-  padding:0% 0%;
-
-  display: inline-block;
-  vertical-align: middle;
-  line-height: normal;
-
-  font-family: arial;
-  font-size: 6vw;
-  font-weight: bold;
-}
-
-.ublocFeed_bloc_title p{
-  position: relative;
-   top: -50%;
-}
-
-.ublocFeed_bloc_expander{
-  position:absolute;
-
-  top:-40%;
-  left:77%;
-
-  height:100%;
-  width:20%;
-
-  margin:0px;
-  padding:0px;
-
-  text-align: center;
-  font-size: 7vw;
-  color: #b3b3b3;
-  font-weight: 900;
-  font-family: Ltc;
-
-  transform: rotate(180deg);
-}
-
-.ublocFeed_bloc_expander.on{
-  left:77%;
-  top:31%;
-  transform: rotate(0deg);
-}
-
-.ublocFeed_bloc_expander.off{
-  top:-40%;
-  left:77%;
-
-  transform: rotate(180deg);
-}
-
-.ublocFeed_bloc_expander p{
-  text-decoration: none;
-}
-
-
-
-.day {
-  margin:0px;
-  padding: 3px 0px 0px 0px;
-}
-
-.calendar{
-  position:absolute;
-  top:75%;
-  height:40%;
-  width:100%;
-  margin:0px;
-  padding:0px;
-  border-radius: 5px;
-
-  text-align: center;
-  font-size: 3.5vw;
-}
-
-.calendar.day1{
-  background-color: white;
-  top: 0%;
-  left:85%;
-  height:25%;
-  width:13%;
-  box-shadow: 0px 1px 5px #8c8c8c;
-}
-
-.calendar.day2{
-  background-color: white;
-  top: 0%;
-  left:71%;
-  height:25%;
-  width:13%;
-  box-shadow: 0px 1px 5px #8c8c8c;
-}
-
-.calendar.day3{
-  background-color: white;
-  top: 0%;
-  left:57%;
-  height:25%;
-  width:13%;
-  box-shadow: 0px 1px 5px #8c8c8c;
-}
-
-.calendar.day4{
-  background-color: white;
-  top: 0%;
-  left:43%;
-  height:25%;
-  width:13%;
-  box-shadow: 0px 1px 5px #8c8c8c;
-}
-
-.calendar.day5{
-  background-color: white;
-  top: 0%;
-  left:29%;
-  height:25%;
-  width:13%;
-  box-shadow: 0px 1px 5px #8c8c8c;
-}
-
-.calendar.day6{
-  background-color: white;
-  top: 0%;
-  left:15%;
-  height:25%;
-  width:13%;
-  box-shadow: 0px 1px 5px #8c8c8c;
-}
-
-.calendar.day7{
-  background-color: white;
-  top: 0%;
-  left:1%;
-  height:25%;
-  width:13%;
-  box-shadow: 0px 1px 5px #8c8c8c;
 }
 
 .content_box{

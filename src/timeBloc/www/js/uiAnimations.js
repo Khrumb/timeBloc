@@ -152,8 +152,8 @@ var uiControl = {
         dataManager.initialize();
         //alert("DB INITILIZED");
         network.initialize();
-        uiControl.populate();
-        blocFeed.setup();
+        //uiControl.populate();
+        userBloc.setup(1);
     },
 
     onBackKeyDown: function() {
@@ -302,7 +302,7 @@ var blocFeed ={
   },
 
   generateFeed:function(tx, results) {
-    var bf = document.getElementById('blocFeed_slideable');
+    var bf = document.getElementById('blocFeed');
     var full_bloc = "";
     for(var i = results.rows.length-1; i >=0 ; i--){
       full_bloc += blocFeed.generateBloc(results.rows.item(i));
@@ -356,13 +356,16 @@ var blocFeed ={
 
 var userBloc = {
 
-    id: 0,
+    id: 2,
+
+    angles : ["51"],
 
     setup:function(id) {
       userBloc.id = parseInt(id);
       db.transaction(userBloc.getUserInfo, dataManager.errorCB);
-      db.transaction(userBloc.getBlocs, dataManager.errorCB);
+      //db.transaction(userBloc.getBlocs, dataManager.errorCB);
       db.transaction(userBloc.getOtherInfo, dataManager.errorCB);
+      userBloc.generateSelf();
       setTimeout(function () {
         uiControl.turnCurrentItemOff();
         uiControl.turnItemOff("userBloc");
@@ -381,7 +384,7 @@ var userBloc = {
     getOtherInfo:function(tx){
       tx.executeSql('SELECT * FROM follower_list where fuid = '+ userBloc.id, [], userBloc.setupFollowers, dataManager.errorCB);
       tx.executeSql('SELECT * FROM follower_list where uid = '+ userBloc.id, [], userBloc.setupFollowing, dataManager.errorCB);
-      tx.executeSql('SELECT * FROM follower_list where uid = '+ uid +' AND fuid = ' + userBloc.id, [], userBloc.setFollowButton, dataManager.errorCB);
+      //tx.executeSql('SELECT * FROM follower_list where uid = '+ uid +' AND fuid = ' + userBloc.id, [], userBloc.setFollowButton, dataManager.errorCB);
     },
 
     setupUserElements: function(tx,results) {
@@ -389,17 +392,23 @@ var userBloc = {
       page_log_uid.push(user.uid);
       document.getElementById('user_Profile_Picture').src = "img/"+ user.uid +"_profile_picture.jpg";
       document.getElementById('userBloc_background').src = "img/"+ user.uid +"_profile_background.jpg";
-      document.getElementById('user_Display_Name').innerHTML = user.display_name;
-      document.getElementById('user_Handle').innerHTML = "@" + user.username;
+      //document.getElementById('user_Display_Name').innerHTML = user.display_name;
+      //document.getElementById('user_Handle').innerHTML = "@" + user.username;
     },
 
-    generateSelf:function(tx, results) {
-      var bf = document.getElementById('user_blocFeed');
-      var full_bloc = "";
-      for(var i = results.rows.length-1; i >=0 ; i--){
-        full_bloc += userBloc.generateBloc(results.rows.item(i));
+    //tx, results
+    generateSelf:function() {
+      var data = [0,1,2,3,4,5,6];
+      var current_angle = -90;
+      var angle = (1/data.length)*360;
+      var dasharray = ((1/data.length)-1) + "%"+" 190%";
+      for(var i = 0; (current_angle+angle) < 270; i++){
+        document.getElementById("user_Profile_breakdown_" + i).style.transform= "rotate(" + current_angle + "deg)";
+        //document.getElementById("user_Profile_slice_" + i).style.stroke
+        current_angle += angle;
       }
-      bf.innerHTML = full_bloc;
+
+
     },
 
     setupFollowers: function(tx,results) {
@@ -424,31 +433,33 @@ var userBloc = {
       }
     },
 
-    generateBloc:function(b){
-      var basic_template = "<div class='ublocFeed_container'>"+
-                                "<div class='ublocFeed_bloc_top'>" +
-                                "<a href='#userBloc' >" +
-                                "<img id='bloc_<bloc_id>_pic' class='ublocFeed_bloc_picture' src='img/<username>_profile_picture_icon.jpg'/>" +
-                                "</a>" +
-                                "<div class='ublocFeed_bloc_username' id='bloc_<bloc_id>_name'>" +
-                                "</div>" +
-                                "<div class='ublocFeed_bloc_title'>"+
-                                " <p id='bloc_<bloc_id>_title'><message></p>" +
-                                "</div>" +
-                                "<a href='#Expanded' ontouchend='blocFeed.expand(<bloc_id>);'>" +
-                                " <p id='blocFeed_bloc_expander_<bloc_id>' class='ublocFeed_bloc_expander'>^</p>"+
-                                "</a>"+
-                              "</div>"+
-                            "</div>";
-      basic_template = basic_template.replace(/<bloc_id>/g, b.bid);
-      basic_template = basic_template.replace(/<username>/g, b.uid);
-      basic_template = basic_template.replace(/<message>/g, b.message);
-      return basic_template;
+
+    onProfilePictureTouch:function(){
+      touches = event.touches;
+      first_touch = touches[0];
     },
+
+    onProfilePictureDrag:function() {
+      touches = event.touches[0];
+      var direction = Math.atan2(touches.pageY - first_touch.pageY, touches.pageX - first_touch.pageX);
+      alert(direction);
+    },
+
+
+    onProfilePictureEnd:function() {
+    },
+
+
+
 
     toBeImplemented:function(ev) {
       alert('To be Implemented');
     },
+
+
+
+
+
 
     toggleFollow:function() {
       if(!isFollowing){
@@ -465,6 +476,14 @@ var userBloc = {
         tx.executeSql('INSERT INTO follower_list (uid, fuid, date_followed) VALUES ( '+ uid +', '+ userBloc.id+', "<date_joined>")');
     },
 
+    follow: function(){
+      document.getElementById('user_Follow_Status').ontouchend = userBloc.toggleFollow;
+      document.getElementById('user_Follow_Status').color = 'white';
+      document.getElementById('user_Follow_Status').style.background = '#80ff80';
+      document.getElementById('user_Follow_Status').innerHTML = "Following";
+      isFollowing = true;
+    },
+
     setUnfollow: function(tx) {
         tx.executeSql('DELETE FROM follower_list where uid = '+ uid +' AND fuid = '+ userBloc.id);
     },
@@ -475,13 +494,6 @@ var userBloc = {
       document.getElementById('user_Follow_Status').style.background = '#ffc980';
       document.getElementById('user_Follow_Status').innerHTML = "Follow";
       isFollowing = false;
-    },
-
-    follow: function(){
-      document.getElementById('user_Follow_Status').ontouchend = userBloc.toggleFollow;
-      document.getElementById('user_Follow_Status').color = 'white';
-      document.getElementById('user_Follow_Status').style.background = '#80ff80';
-      document.getElementById('user_Follow_Status').innerHTML = "Following";
-      isFollowing = true;
     }
+
 };

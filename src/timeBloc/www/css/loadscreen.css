@@ -21,37 +21,20 @@
   -webkit-animation-timing-function: ease-out;
 }
 
-.load.icon_border{
-  background-color: #B56800;
-  position:absolute;            /* position in the center of the screen */
-  left:50%;
-  top:50%;
-  height:80px;                   /* text area height */
-  width:80px;                   /* text area width */
-  text-align:center;
-  color: white;
-  margin:-40px 0px 0px -40px;  /* offset vertical: half of image height and text area height */
-  border-width: thin;
-  border-radius: 40px;
-  display:block;
-  animation:fade 3000ms infinite;
-  -webkit-animation:fade 3000ms infinite;
-}
-
 .load.icon{
   background:url(../img/logo.png) no-repeat center top; /* 170px x 200px */
   position:absolute;            /* position in the center of the screen */
   background-size: contain;
   left:50%;
   top:50%;
-  height:74px;                   /* text area height */
-  width:74px;                   /* text area width */
+  height:10%;                   /* text area height */
+  width:18%;                   /* text area width */
   text-align:center;
   color: white;
-  margin:-37px 0px 0px -37px;  /* offset vertical: half of image height and text area height */
+  margin:-9.05% 0px 0px -9.05%;  /* offset vertical: half of image height and text area height */
   border-width: thin;
-  border-radius: 40px;
-  -webkit-border-radius:40px;
+  border-radius: 100%;
+  -webkit-border-radius:100%;
   display:block;
 }
 

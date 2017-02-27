@@ -1,0 +1,394 @@
+
+.userBloc {
+
+  background-attachment:fixed;
+
+  position:absolute;
+
+  top:7.5%;
+  left:-100%;
+
+  height:92.5%;
+  width:100%;
+
+  margin:0px;
+  padding:0px;
+
+  transform: translate3d(0,0,0);
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.userBloc_background{
+  height:100%;
+  width:100%;
+  transform: translate3d(0,0,0);
+  position:absolute;
+}
+
+.userBloc.off{
+  left:-100%;
+  /*-webkit-animation: page_slide_off 300ms;
+  -webkit-backface-visibility: hidden;*/
+}
+
+@-webkit-keyframes page_slide_off {
+  from {-webkit-transform: translate(100%,0);}
+  to {-webkit-transform: translate(200%,0);}
+
+}
+
+.userBloc.on{
+  left:0%;
+/*  -webkit-animation: page_slide_on 300ms;
+  -webkit-backface-visibility: hidden;*/
+}
+
+@-webkit-keyframes page_slide_on {
+  from {-webkit-transform: translate(100%,0);}
+  to {-webkit-transform: translate(0,0);}
+
+}
+
+.filter{
+  background:url(../img/gradient.png) no-repeat center; /* 170px x 200px */
+  background-attachment:fixed;
+  background-size:100% 100%;
+
+  position:absolute;
+  left:0%;
+  height:100%;
+  width:100%;
+  margin:0px;
+  padding:0px;
+
+  overflow: hidden;
+}
+
+.userProfile{
+  position:absolute;
+  background-size: contain;
+  left:0%;
+  height:100%;
+  width:100%;
+  margin:0px;
+  padding:0px;
+
+  color:grey;
+
+}
+
+.userPP{
+  position:absolute;
+  background-size:100% 100%;
+  top:13%;
+  left:18%;
+  width:30%;
+  height:19%;
+  margin:-15% 0px 0px -15%;
+  display:block;
+
+  z-index: 200;
+
+  border-radius:400px;
+}
+
+.userFollowingStatus{
+  position:absolute;
+  background-color: #ffc980;
+  color: white;
+  top:12.5%;
+  left:35%;
+  width:25%;
+
+  z-index:105;
+
+  padding:2%;
+
+  text-align: center;
+  font-size: 120%;
+
+  border-radius:3px;
+  text-shadow: -1px -1px 2px #8c8c8c;
+  box-shadow: 0px 2px 5px #8c8c8c;
+}
+
+.userFollowingStatus:active{
+  box-shadow:none;
+}
+
+.userDisplayName{
+  position:absolute;
+  background-color: #f2f2f2;
+  color: #cc7300;
+  top:5%;
+  left:21%;
+  width:25%;
+
+  padding:0% 7% 13% 14%;
+
+  text-align: left;
+  font-size: 150%;
+
+  z-index:100;
+
+  border-radius:3px;
+  text-shadow: 1px 1px 2px #8c8c8c;
+  box-shadow: 1px 1px 2px #8c8c8c;
+}
+
+.userHandle{
+  position:absolute;
+
+  top:9%;
+  left:21.5%;
+  width:25%;
+
+  padding:0% 7% 0% 14%;
+
+  text-align: left;
+
+  z-index:100;
+
+  text-shadow: 1px 1px 2px #8c8c8c;
+}
+
+
+.userblocFeed{
+  position:absolute;
+
+  width:100%;
+  height:48%;
+
+  top:23%;
+  left:0%;
+
+  margin:0px;
+  padding:0px;
+
+  transform: translate3d(0,0,0);
+  -webkit-backface-visibility: hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.ublocFeed_container{
+  position: relative;
+  height:20.5%;
+  width:100%;
+
+  margin:3% 0px 0px 0px;
+  padding:0px;
+
+  box-shadow: 0px 1px 5px #8c8c8c;
+  overflow: hidden;
+
+  transform: translate3d(0,0,0);
+}
+
+.ublocFeed_bloc_top{
+  background-color:white;
+  position:absolute;
+
+  top:0%;
+  left:0%;
+
+  height:100%;
+  width:100%;
+
+  margin:0px;
+  padding:0px;
+}
+
+.ublocFeed_bloc_picture{
+  position:absolute;
+
+  top:6%;
+  left:2%;
+
+  height:50px;
+  width:50px;
+
+  margin:0px;
+  padding:0px;
+
+  border-radius: 400px;
+
+  transform: translate3d(0,0,0);
+}
+
+.ublocFeed_bloc_title{
+  position: absolute;
+  left:18%;
+  top:50%;
+
+  width:70%;
+  height:100%;
+
+  margin: 0px;
+  padding:0% 0%;
+
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+
+  font-family: arial;
+  font-size: 130%;
+  font-weight: bold;
+}
+
+.ublocFeed_bloc_title p{
+  position: relative;
+   top: -50%;
+}
+
+.ublocFeed_bloc_expander{
+  position:absolute;
+
+  top:-40%;
+  left:77%;
+
+  height:100%;
+  width:20%;
+
+  margin:0px;
+  padding:0px;
+
+  text-align: center;
+  font-size: 150%;
+  color: #b3b3b3;
+  font-weight: 900;
+  font-family: Ltc;
+
+  transform: rotate(180deg);
+}
+
+.ublocFeed_bloc_expander.on{
+  left:77%;
+  top:31%;
+  transform: rotate(0deg);
+}
+
+.ublocFeed_bloc_expander.off{
+  top:-40%;
+  left:77%;
+
+  transform: rotate(180deg);
+}
+
+.ublocFeed_bloc_expander p{
+
+  text-decoration: none;
+}
+
+
+
+.day {
+  margin:0px;
+  padding: 3px 0px 0px 0px;
+}
+
+.calendar{
+  position:absolute;
+  top:75%;
+  height:40%;
+  width:100%;
+  margin:0px;
+  padding:0px;
+  border-radius: 5px;
+
+  text-align: center;
+  font-size: 80%;
+}
+
+.calendar.day1{
+  background-color: white;
+  top: 0%;
+  left:85%;
+  height:25%;
+  width:13%;
+  box-shadow: 0px 1px 5px #8c8c8c;
+}
+
+.calendar.day2{
+  background-color: white;
+  top: 0%;
+  left:71%;
+  height:25%;
+  width:13%;
+  box-shadow: 0px 1px 5px #8c8c8c;
+}
+
+.calendar.day3{
+  background-color: white;
+  top: 0%;
+  left:57%;
+  height:25%;
+  width:13%;
+  box-shadow: 0px 1px 5px #8c8c8c;
+}
+
+.calendar.day4{
+  background-color: white;
+  top: 0%;
+  left:43%;
+  height:25%;
+  width:13%;
+  box-shadow: 0px 1px 5px #8c8c8c;
+}
+
+.calendar.day5{
+  background-color: white;
+  top: 0%;
+  left:29%;
+  height:25%;
+  width:13%;
+  box-shadow: 0px 1px 5px #8c8c8c;
+}
+
+.calendar.day6{
+  background-color: white;
+  top: 0%;
+  left:15%;
+  height:25%;
+  width:13%;
+  box-shadow: 0px 1px 5px #8c8c8c;
+}
+
+.calendar.day7{
+  background-color: white;
+  top: 0%;
+  left:1%;
+  height:25%;
+  width:13%;
+  box-shadow: 0px 1px 5px #8c8c8c;
+}
+
+.content_box{
+  position:absolute;
+  top:75%;
+  height:20%;
+  width:100%;
+  margin:0px;
+  padding:0px;
+  border-radius: 5px;
+
+  text-align: center;
+  font-family: arial;
+  font-size: 110%;
+}
+
+.content_box.weeks{
+  left:10%;
+  width:30%;
+}
+
+.content_box.following{
+  left:35%;
+  width:30%;
+}
+
+.content_box.followers{
+  left:60%;
+  width:30%;
+}

@@ -5,18 +5,110 @@
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-tap-highlight" content="no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <title>loadingScreen</title>
+        <meta name="viewport" content="user-scalable=no, initial-scale=3, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/navbar.css" />
+        <link rel="stylesheet" type="text/css" href="css/userBloc.css" />
+        <link rel="stylesheet" type="text/css" href="css/blocFeed.css" />
+        <title>timeBloc</title>
     </head>
     <body>
-        <iframe id="full_frame" class="full_frame" src="navbar.html" scrolling="no"></iframe>
-        <iframe class="app_frame"src=""></iframe>
+      <div id="navbar">
 
-        <script type="text/javascript" src="js/index.js"></script>
-        <script type="text/javascript" src="js/uiLib.js"></script>
-        <script type="text/javascript">
-        ui.initialize();
-        </script>
+        <div id='sidebar' class="sidebar" ontouchstart="sidebar.init();" ontouchmove="sidebar.move();" ontouchend="sidebar.rubberband();">
+          <h1 class="mastHead" ><a href="#blocfeed" ontouchend="sidebar.slideOff();uiControl.setPage('blocFeed');blocFeed.setup('user');">timeBloc</a></h1>
+          <ul>
+            <li id="link_blocFeed"><a href="#blocFeed" ontouchend="sidebar.slideOff();uiControl.setPage('blocFeed');">blocFeed</a></li>
+            <li id="link_userBloc"><a href="#userBloc" ontouchend="sidebar.slideOff();uiControl.setPage('userBloc');userBloc.setup('0');">Personal Bloc</a></li>
+          </ul>
+        </div>
+        <div class="navbar top">
+          <div class="navbar top menu" ontouchstart="sidebar.slide();">
+          </div>
+        </div>
+      </div>
+
+      <div data-anchor="blocFeed" id="blocFeed" class="blocFeed">
+        <!--
+        <div class='blocFeed_container'>\
+          <div class='blocFeed_bloc_top'>\
+          <a href='#userBloc' ontouchend='sidebar.slideOff();uiControl.setPage(userBloc);userBloc.setup(<username>);'>\
+          <img id='bloc_<bloc_id>_pic' class='blocFeed_bloc_picture' src='img/<username>_profile_picture.jpg'/>\
+          </a>\
+          <div class='blocFeed_bloc_username' id='bloc_<bloc_id>_name'>\
+          </div>\
+          <div class='blocFeed_bloc_title'>\
+           <p id='bloc_<bloc_id>_title'><message></p>\
+          </div>\
+          <a href='#Expanded' ontouchend='blocFeed.expand(<bloc_id>);'>\
+           <p id='blocFeed_bloc_expander_<bloc_id>' class='blocFeed_bloc_expander'>^</p>\
+          </a>\
+        </div>\
+      </div>\
+      -->
+      </div>
+
+     <div data-anchor="userBloc"  id="userBloc" class="userBloc">
+      <img  id="userBloc_background" class="userBloc_background" src="img/user_background_picture.jpg"/>
+       <div id="filter" class="filter">
+        <div class="userProfile">
+          <img id="user_Profile_Picture" class="userPP" src="img/user_profile_picture.png" />
+          <div id="user_Display_Name" class="userDisplayName"></div>
+          <div id="user_Handle" class="userHandle"></div>
+          <div id="user_Follow_Status" class="userFollowingStatus" onTouchEnd="userBloc.toggleFollow();">Follow</div>
+          <div class="userblocFeed" id="user_blocFeed"></div>
+          <div class="calendar">
+            <div id='day0' class="calendar day1">
+              <p id='day0_date' class="day">Today</p>
+              <hr>
+            </div>
+            <div id='day1' class="calendar day2">
+              <p id='day1_date' class="day">N/A</p>
+              <hr>
+            </div>
+            <div id='day2' class="calendar day3">
+              <p id='day2_date' class="day">N/A</p>
+              <hr>
+            </div>
+            <div id='day3' class="calendar day4">
+              <p id='day3_date' class="day">N/A</p>
+            <hr>
+            </div>
+          <div id='day4' class="calendar day5">
+              <p id='day4_date' class="day">N/A</p>
+              <hr>
+            </div>
+            <div id='day5' class="calendar day6">
+              <p id='day5_date' class="day">N/A</p>
+            <hr>
+            </div>
+            <div id='day6' class="calendar day7">
+            <p id='day6_date' class="day">N/A</p>
+              <hr>
+            </div>
+          </div>
+          <div class="content_box">
+            <div class="content_box weeks">
+              <div id="weeks" >- -</div>
+              Weeks
+            </div>
+            <div class="content_box followers">
+              <div id="followers" >- -</div>
+              Followers
+            </div>
+            <div class="content_box following">
+              <div id="following" >- -</div>
+              Following
+            </div>
+          </div>
+        </div>
+      </div>
+     </div>
+
+      <script type="text/javascript" src="cordova.js"></script>
+      <script type="text/javascript" src="js/navagator.js"></script>
+      <script type="text/javascript" src="js/uiAnimations.js"></script>
+      <script type="text/javascript">
+        uiControl.initialize();
+      </script>
     </body>
 </html>

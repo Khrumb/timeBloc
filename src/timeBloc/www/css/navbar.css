@@ -1,96 +1,153 @@
-
 * {
     -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
 }
 
+body {
+  -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
+  -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
+  -webkit-user-select: none; 
+  background-attachment:fixed;
+  height:100%;
+  width:100%;
+  margin:0px;
+  padding:0px;
+  z-index: 9998;
+}
+
+.mastHead{
+  background-color: #ff9d1a;
+  height:6%;
+  width:100%;
+  margin: 0;
+  padding: 2%;
+
+  box-shadow: 0px 1px 5px #8c8c8c;
+}
+
+.mastHead a{
+  width:70%;
+
+  text-decoration: none;
+  color: #f2f2f2;
+
+  font-family: Ltc;
+  font-weight: bold;
+  display: block;
+
+  text-shadow: 1px 1px 2px #bfbfbf
+}
+
+
 .navbar{
-    -webkit-user-drag: none;
- }
-
-.top_bar{
-  background-color: #FF9200;
   position:absolute;
-  left:0%;
-  top:0%;
-  height: 50px;
+  height: 7.5%;
   width: 100%;
+  margin:0px;
+  padding:0px;
+  border:none;
+  z-index: 9998;
+  overflow: hidden;
 }
 
-.bottom_bar{
-    background-color: #FF9200;
-    position:absolute;
-    bottom:0%;
-    left:0%;
-    height: 50px;
-    width: 100%;
-  }
-
-.logo{
-    background:url(../img/topbar.png) no-repeat center top;
-    position:absolute;
-    background-size: contain;
-    text-align:center;
-    z-index: 0;
-    left:50%;
-    top:50%;
-    height:40px;
-    width:40%;
-    margin:-20px 0px 0px -20%;
-  }
-
-.sidebar.in{
-  background-color: #FF92FF;
-  position:absolute;
-  width:150px;
-  height:100%;
-  left:0%
-  top:0%;
-  z-index:1;
-  animation: slidein 200ms;
-  animation-timing-function: ease-out;
-  -webkit-animation:slidein 200ms;
-  -webkit-animation-timing-function: ease-out;
+.navbar.top{
+  background-color: #ff9d1a;
+  background-size: cover;
+  left:0px;
+  top:0px;
+  border:none;
+  box-shadow: 0px 1px 5px #8c8c8c;
 }
 
-.sidebar_out{
-  background-color: #FF92FF;
+.navbar.top.menu{
+  background:url(../img/navbar_menu_button.png) no-repeat center top;
+  background-color: #ff9200;
+  background-size: contain;
   position:absolute;
-  width:150px;
-  height:100%;
-  left:0%;
-  top:0%;
-  z-index: 1;
-  animation: slideout 200ms;
-  animation-timing-function: ease-out;
-  -webkit-animation:slideout 200ms;
-  -webkit-animation-timing-function: ease-out;
-}
-
-.slidebar_button{
-  background-color: #FFFFFF;
-  position:absolute;
-  width:40px;
-  height:40px;
-  left:1%;
+  width:10%;
+  height:75%;
+  left:89%;
   top:10%;
+
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+
+  box-shadow: none;
 }
 
-@keyframes slideout{
-  from {left:-150px; top: 0px}
-  to {left:0px; top: 0px}
+.navbar.top.menu:active{
+  border-color: black;
+  background-color: #cf6727;
 }
 
-@-webkit-keyframes slideout{
-  from {left:-150px; top: 0px}
-  to {left:0px; top: 0px}
+.navbar.bottom{
+  background:url(../img/Bottom_bar.png) no-repeat center top;
+  background-size: cover;
+  left:0px;
+  bottom:0px;
+  border:none;
 }
 
-@keyframes slidein{
-  from {top: 0px}
-  to {left:-150px; top: 0px}
+.sidebar{
+  background-color: #f2f2f2;
+  background-size: cover;
+  position:absolute;
+  width:70%;
+  height:100%;
+  top:0%;
+  left:-70%;
+  z-index: 9999;
+  overflow: hidden;
 }
 
-@-webkit-keyframes slidein{
-  from {top: 0px}
-  to {left:-150px; top: 0px}
+.sidebar.off{
+  left:-70%;
+  animation:nav_drawer_slide_in 250ms ease;
+  -webkit-animation:nav_drawer_slide_in 250ms ease;
+   -webkit-backface-visibility: hidden;
+}
+
+@-webkit-keyframes nav_drawer_slide_in {
+  from {-webkit-transform: translate(70%,0);}
+  to {-webkit-transform: translate(0,0);}
+
+}
+
+.sidebar.on{
+  left: 0%;
+  animation:nav_drawer_slide_out 250ms ease;
+  -webkit-animation:nav_drawer_slide_out 250ms ease;
+   -webkit-backface-visibility: hidden;
+}
+
+@-webkit-keyframes nav_drawer_slide_out {
+  from {-webkit-transform: translate(-70%,0);}
+  to {-webkit-transform: translate(0,0);}
+
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+li{
+  height:10%;
+  padding: 10% 0% 10% 10%;
+  box-shadow: 0px 1px 5px #8c8c8c;
+}
+
+li a{
+  width:50%;
+  text-decoration: none;
+  font-family: arial;
+  font-size: 130%;
+  text-decoration: none;
+  color: #000;
+  display: block;
+}
+
+@font-face {
+  font-family: Ltc;
+  src:url(..res/Lantinghei-TC.ttf);
 }

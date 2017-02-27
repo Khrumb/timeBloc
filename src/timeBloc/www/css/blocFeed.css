@@ -11,7 +11,7 @@
   margin:0px;
   padding:0px;
 
-	z-index: 100;
+	z-index: 0;
 
   -webkit-backface-visibility: hidden;
   overflow-y: scroll;
@@ -19,27 +19,22 @@
 }
 
 .blocFeed.off{
-  left:-100%;
+  z-index: 100;
 /*  -webkit-animation: page_slide_off 300ms;
   -webkit-backface-visibility: hidden;*/
 }
 
-@-webkit-keyframes page_slide_off {
-  from {-webkit-transform: translate(100%,0);}
-  to {-webkit-transform: translate(200%,0);}
-
-}
 
 .blocFeed.on{
-  left:0%;
-  -webkit-animation: page_slide_on 300ms cubic-bezier(1,0,.91,.57);
-  -webkit-backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+  -webkit-animation: fade_on 200ms;
 }
 
-@-webkit-keyframes bpage_slide_on {
-  from {-webkit-transform: translate(100%,0);}
-  to {-webkit-transform: translate(0,0);}
+@-webkit-keyframes fade_on {
+  from {opacity: 0.0}
+  to {opacity: 1.0}
 }
+
 
 .blocFeed_actionbar{
   background-color: white;

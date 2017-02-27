@@ -1,0 +1,18 @@
+<svg id ="user_Profile_breakdown_1" class="user_Profile_breakdown_1" width="100%" height="70%" >
+	<circle id="user_Profile_slice_1" class="user_Profile_slice_1" r="34%" cx="50%" cy="50%"/>
+</svg>
+<svg id ="user_Profile_breakdown_2" class="user_Profile_breakdown_2" width="100%" height="70%" >
+	<circle id="user_Profile_slice_2"class="user_Profile_slice_2" r="34%" cx="50%" cy="50%"/>
+</svg>
+<svg id ="user_Profile_breakdown_3" class="user_Profile_breakdown_3" width="100%" height="70%" >
+	<circle id="user_Profile_slice_3" class="user_Profile_slice_3" r="34%" cx="50%" cy="50%"/>
+</svg>
+<svg id ="user_Profile_breakdown_4" class="user_Profile_breakdown_4" width="100%" height="70%" >
+	<circle id="user_Profile_slice_4" class="user_Profile_slice_4" r="34%" cx="50%" cy="50%"/>
+</svg>
+<svg id ="user_Profile_breakdown_5" class="user_Profile_breakdown_5" width="100%" height="70%" >
+	<circle id="user_Profile_slice_5" class="user_Profile_slice_5" r="34%" cx="50%" cy="50%"/>
+</svg>
+<svg id ="user_Profile_breakdown_6" class="user_Profile_breakdown_6" width="100%" height="70%" >
+	<circle id="user_Profile_slice_6" class="user_Profile_slice_6" r="34%" cx="50%" cy="50%"/>
+</svg>

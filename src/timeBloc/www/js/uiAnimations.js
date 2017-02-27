@@ -178,6 +178,9 @@ var uiControl = {
 					case 'blocFeed':
 						blocFeed.taredown();
 						break;
+					case 'personalPage':
+						personalPage.taredown();
+						break;
           default:
 						uiControl.turnCurrentItemOff();
 
@@ -217,8 +220,8 @@ var uiControl = {
     turnCurrentItemOff:function(){
       if(page_log.length > 1){
         var id = page_log[page_log.length-1];
-        document.getElementById(id).classList.remove('on');
-        document.getElementById(id).classList.add('off');
+        uiControl.turnItemOff(id);
+				window[id]["taredown"];
       }
     },
 
@@ -299,10 +302,12 @@ var blocFeed ={
     this.requestData();
     uiControl.turnCurrentItemOff();
     uiControl.turnItemOn("blocFeed");
+		document.getElementById("blocFeed").style['z-index'] = 100;
   },
 
   taredown:function() {
 		uiControl.turnCurrentItemOff();
+		document.getElementById("blocFeed").style['z-index'] = 0;
   },
 
   requestData:function() {
@@ -373,6 +378,7 @@ var userBloc = {
 		c_angle: 0,
 		position_list: [0,1,2,3,4,5,6],
     weight:[0, 0.166, 0.166, 0.166, 0.166, 0.166, 0.166],
+		c_user: null,
 
     setup:function(id) {
       userBloc.id = parseInt(id);
@@ -381,15 +387,14 @@ var userBloc = {
     },
 
 		setupCallBack:function(){
-			uiControl.turnItemOff("userBloc");
+			document.getElementById("userBloc").style['z-index'] = 500;
 			uiControl.turnItemOn("userBloc");
-			document.getElementById("userBloc").style.left = 0 + '%';
 		},
 
 		taredown:function() {
 			uiControl.turnItemOff("userBloc");
 			setTimeout(function () {
-				document.getElementById("userBloc").style.left = -100 + '%';
+				document.getElementById("userBloc").style['z-index'] = 0;
 			}, 200);
 		},
 
@@ -399,15 +404,16 @@ var userBloc = {
 
 		setupUserElements: function(tx,results) {
       var user = results.rows.item(0);
+			userBloc.c_user = user;
       page_log_uid.push(user.uid);
       document.getElementById('user_Profile_Picture').src = "img/"+ user.uid +"_profile_picture.jpg";
       document.getElementById('userBloc_background').src = "img/"+ user.uid +"_profile_background.jpg";
-			userBloc.setTheme(user.theme);
       document.getElementById('user_Display_Name').innerHTML = user.display_name;
       document.getElementById('user_Handle').innerHTML = "@" + user.username;
 			document.getElementById('user_Birthday').innerHTML = user.birthday;
 			document.getElementById('user_Location').innerHTML = user.location;
       document.getElementById('user_bio').innerHTML = user.bio;
+			userBloc.setTheme(user.theme);
 			userBloc.getWeights(tx);
     },
 
@@ -452,7 +458,7 @@ var userBloc = {
 				document.getElementById('user_Follow_Status').style.border = '.8vw dashed #bfbfbf';
 				document.getElementById('user_Follow_Status').style.background = '#bfbfbf';
 				document.getElementById('user_Follow_Status_message').innerHTML = "Edit Profile";
-				document.getElementById('user_Follow_Status').ontouchend = userBloc.toBeImplemented;
+				document.getElementById('user_Follow_Status').ontouchend = personalPage.setup;
 			} else {
 				switch (results.rows.length) {
 					case 2:
@@ -474,10 +480,9 @@ var userBloc = {
 		},
 
     generateSelf:function() {
-			userBloc.c_angle = 240/(userBloc.weight.length-1);
-			var begin_angle = -25.15;
-			var limit = 215+ userBloc.c_angle/2;
-			var dasharray = (135/(userBloc.weight.length-1)) + "%" + " 195%";
+			userBloc.c_angle = 360/(userBloc.weight.length);
+			var begin_angle = (userBloc.c_angle/2);
+			var dasharray = (205/(userBloc.weight.length)) + "%" + " 195%";
       for(var i = 0; i < 7; i++){
 			  if(userBloc.position_list[i] != null){
         	document.getElementById("user_Profile_breakdown_" + userBloc.position_list[i]).style.transform= "rotate(" + (begin_angle+(userBloc.c_angle*(i-1))) + "deg)";
@@ -490,37 +495,28 @@ var userBloc = {
 					//document.getElementById("user_Profile_slice_"  + userBloc.last_slice).style['stroke-width'] = 23 + '%';
 				}
 			}
-			document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.transform= "rotate(-145.38deg)";
-			document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = 1.0;
-			document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style['stroke-dasharray']= 	"70% 195%";
-			document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style['stroke-width'] = '23%';
-			document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = 1.0;
     },
 
     onProfilePictureTouch:function(){
       touches = event.touches[0];
 			var direction = Math.atan2(touches.pageY -  window.innerHeight*0.43, touches.pageX - window.innerWidth*0.50) + Math.PI;
-			userBloc.c_angle = (direction/(2*Math.PI/120));
-			//userBloc.c_angle = Math.round(userBloc.c_angle/30)*30;
-			//document.getElementById('followers').innerHTML = userBloc.c_angle;
+			userBloc.c_angle = 360*(direction/(2*Math.PI));
 		},
 
     onProfilePictureDrag:function() {
       touches = event.touches[0];
       var direction = Math.atan2(touches.pageY -  window.innerHeight*0.43, touches.pageX - window.innerWidth*0.50)+Math.PI;
-			var dt = (direction/(2*Math.PI/120));
+			var dt = 360*(direction/(2*Math.PI));
 			var step = dt -  userBloc.c_angle;
-			document.getElementById("weeks").innerHTML = 	userBloc.position_list;
-			if(step > 20 && step < 30  || step < -40 ){
-				userBloc.position_list.unshift(userBloc.position_list.pop());
-				userBloc.generateSelf();
+			document.getElementById("weeks").innerHTML = 	dt.toPrecision(3);
+			if(step > 23 && step < 28  || step < -40 ){
+				document.getElementById('user_Profile_breakdown_container').style.transform = "rotate(" + dt + "deg)";
 				userBloc.c_angle = dt;
-			} else if(step < -20  && step > -30 || step > 40){
-				userBloc.position_list.push(userBloc.position_list.shift());
-				userBloc.generateSelf();
+			} else if(step < -23  && step > -28 || step > 40){
+				document.getElementById('user_Profile_breakdown_container').style.transform = "rotate(" + dt + "deg)";
 				userBloc.c_angle = dt;
 			}
-			//document.getElementById('user_Profile_breakdown_container').style.transform = "rotate(" + dt + "deg)";
+
     },
 
     onProfilePictureEnd:function() {
@@ -534,7 +530,9 @@ var userBloc = {
     },
 
 		setTheme:function(id) {
-			var classes = ['user_Display_Name', 'user_Handle', 'user_Follow_Status', 'user_bio', 'user_Birthday', 'user_Location', 'wks', 'fr', 'fi'];
+			var classes = ['user_Display_Name', 'user_Handle', 'user_Follow_Status',
+										 'user_bio', 'user_Birthday', 'user_Location', 'page_break',
+										 'wks', 'fr', 'fi'];
 			var current_block;
 			for(var i = 0; i < classes.length; i++){
 				current_block = document.getElementById(classes[i]);
@@ -559,8 +557,9 @@ var userBloc = {
     toggleFollow:function() {
       if(!isFollowing){
         db.transaction(userBloc.setFollow, dataManager.errorCB);
-      } else {
+      } else if(confirm("Are you sure you want to unfollow?")){
         db.transaction(userBloc.setUnfollow, dataManager.errorCB);
+
       }
       db.transaction(userBloc.getOtherInfo, dataManager.errorCB);
     },
@@ -600,26 +599,53 @@ var userBloc = {
 
 };
 
-var bloc = {
-	setup:function(id) {
-		userBloc.id = parseInt(id);
-		db.transaction(userBloc.getUserInfo, dataManager.errorCB);
-		//db.transaction(userBloc.getBlocs, dataManager.errorCB);
-		db.transaction(userBloc.getOtherInfo, dataManager.errorCB);
-		userBloc.generateSelf();
+var personalPage = {
+
+	setup:function() {
+		document.getElementById('current_Profile_Picture').src = "img/"+ userBloc.c_user.uid +"_profile_picture.jpg";
+		document.getElementById('current_background').src = "img/"+ userBloc.c_user.uid +"_profile_background.jpg";
+
+		/*
+		document.getElementById('user_Display_Name').innerHTML = userBloc.c_user.display_name;
+		document.getElementById('user_Handle').innerHTML = "@" + userBloc.c_user.username;
+		document.getElementById('user_Birthday').innerHTML = userBloc.c_user.birthday;*
+		document.getElementById('user_Location').innerHTML = userBloc.c_user.location;
+		document.getElementById('user_bio').innerHTML = userBloc.c_user.bio;
+		userBloc.setTheme(userBloc.c_user.theme);*/
+		document.getElementById("personalPage").style['z-index'] = 700;
+		personalPage.setupCallBack();
+	},
+
+	setupCallBack:function(){
+		document.getElementById("personalPage").style['z-index'] = 700;
+		uiControl.turnItemOn("personalPage");
+	},
+
+	taredown:function() {
+		uiControl.turnItemOff("personalPage");
 		setTimeout(function () {
-			uiControl.turnCurrentItemOff();
-			uiControl.turnItemOff("userBloc");
-			uiControl.turnItemOn("userBloc");
-			document.getElementById("userBloc").style.left = 0 + '%';
-		}, 100);
+			document.getElementById("personalPage").style['z-index'] = 0;
+		}, 200);
+	}
+
+};
+
+var bloc = {
+
+	setup:function() {
+		personalPage.setupCallBack();
+	},
+
+	setupCallBack:function(){
+		document.getElementById("bloc").style['z-index'] = 700;
+		uiControl.turnItemOn("bloc");
 	},
 
 	taredown:function() {
 		uiControl.turnItemOff("bloc");
 		setTimeout(function () {
-			document.getElementById("userBloc").style.left = -100 + '%';
-		}, 200);
+			document.getElementById("bloc").style['z-index'] = 0;
+		}, 205);
 	}
 
 };

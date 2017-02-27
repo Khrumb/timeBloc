@@ -6,20 +6,20 @@
   position:absolute;
 
   top:7.5vh;
-  left:-100vw;
+  left:0vw;
 
   height:92.5vh;
   width:100vw;
 
   margin:0px;
   padding:0px;
-  z-index:500;
+  z-index:0;
 
   overflow: hidden;
 }
 
 .userBloc.on{
-	left:0vw;
+	-webkit-backface-visibility: hidden;
   -webkit-animation: fade_on 200ms;
 
 }
@@ -30,7 +30,7 @@
 }
 
 .userBloc.off{
-	left:0vh;
+	-webkit-backface-visibility: hidden;
   -webkit-animation: fade_off 200ms ;
 }
 
@@ -102,18 +102,21 @@
   margin:-25.5vw 0px 0px -25.5vw;
   display:block;
 
-  z-index: 200;
-
   border-radius:400px;
 }
 
 
 .user_Profile_breakdown_container{
+	position: absolute;
+	top:0vh;
 	left:0;
   width:100vw;
-  height:65vh;
+  height:100vh;
 	margin:0px;
 	padding:0px;
+	z-index:200;
+
+	transform-origin: 50% 35%;
 }
 
 .user_Profile_breakdown_0{
@@ -231,7 +234,7 @@
 .userFollowingStatus{
   position:absolute;
 
-  top:-1.25vh;
+  top:63.75vh;
   left:63vw;
   width:25vw;
 
@@ -295,7 +298,7 @@
 .user_Display_Name{
   position:absolute;
   color: #ff9633;
-  top:-4vh;
+  top:61vh;
   left:0;
   max-width:54vw;
 
@@ -315,22 +318,32 @@
 }
 
 .user_Display_Name.dark{
-	color:#ff9633;
+	color:#ff891a;
 }
 
 .page_break{
   position:absolute;
-  top:7vh;
+  top:72vh;
   left:0px;
 	border-bottom-width: 1vw;
   width:100vw;
   opacity:0.20;
 }
 
+.page_break.light{
+	border-color: white;
+	opacity:0.20;
+}
+
+.page_break.dark{
+	border-color: #292929;
+	opacity: 0.30;
+}
+
 .user_Handle{
   position:absolute;
 
-  top:1.75vh;
+  top:66.5vh;
   left:4vw;
   width:25vw;
 
@@ -351,7 +364,7 @@
 .user_Birthday{
   position:absolute;
 
-  top:4.25vh;
+  top:69vh;
   left:18vw;
   width:25vw;
 
@@ -373,7 +386,7 @@
 .user_Location{
   position:absolute;
 
-  top:4.25vh;
+  top:69vh;
   left:4.5vw;
   width:25vw;
 
@@ -395,7 +408,7 @@
 .content_box{
 	position:absolute;
 	/*background-color: white;*/
-	/*top:6.75vh;*/
+	top:66vh;
 	height:40vh;
 	width:100vw;
 	margin:0px;

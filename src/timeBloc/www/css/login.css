@@ -1,0 +1,117 @@
+.login {
+	background-color: rgba(128, 128, 128, 0.5);
+  background-attachment:fixed;
+
+  position:absolute;
+
+  top:7.5vh;
+  left:0vw;
+
+  height:92.5vh;
+  width:100vw;
+
+  margin:0px;
+  padding:0px;
+
+
+  overflow: hidden;
+}
+
+.login.on{
+	-webkit-backface-visibility: hidden;
+  -webkit-animation: fade_on 200ms;
+
+}
+
+@-webkit-keyframes fade_on {
+  from {opacity: 0.0}
+  to {opacity: 1.0}
+}
+
+.login.off{
+	-webkit-backface-visibility: hidden;
+  -webkit-animation: fade_off 200ms ;
+}
+
+@-webkit-keyframes fade_off {
+  from {opacity: 1.0}
+  to {opacity: 0.0}
+}
+
+.login_container{
+  position:absolute;
+  background-color: white;
+  font-size:5vw;
+	top:16vh;
+	height:auto;
+  z-index: 5;
+	left:16.85vw;
+	width:70%;
+  border-radius: 2vw;
+}
+
+.login_message{
+  text-align: center;
+  color:#ffb16e;
+  margin:5vw 0 2.5vw 0;
+  font-size: 6vw;
+}
+
+.login_field{
+  position:relative;
+  font-size: 5vw;
+  left:5%;
+  width:90%;
+  color:gray;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  padding: 3vw 0vw 0vw 0vw;
+  margin:0 0 0 0;
+}
+
+.top_field{
+  border-top-left-radius: 2vw;
+  border-top-right-radius: 2vw;
+}
+
+.bottom_field{
+  border-bottom-left-radius: 2vw;
+  border-bottom-right-radius: 2vw;
+}
+
+.login_button{
+  position: relative;
+  background-color: #ffb16e;
+  color: white;
+  left:35%;
+  width:30%;
+  padding: 2vw 0 2vw 0;
+  margin: 5vw 0 5vw 0;
+  text-align: center;
+  border-radius: 2vw;
+}
+
+.create_account_button{
+  position: relative;
+  background-color: #ffb16e;
+  color: white;
+  left:20%;
+  width:60%;
+  padding: 2vw 0 2vw 0;
+  margin: 5vw 0 5vw 0;
+  text-align: center;
+  border-radius: 2vw;
+}
+
+.failed_top{
+  border-top-left-radius: 2vw;
+  border-top-right-radius: 2vw;
+  border:.5vw solid red;
+}
+
+.failed_bottom{
+  border-bottom-left-radius: 2vw;
+  border-bottom-right-radius: 2vw;
+  border:.5vw solid red;
+}

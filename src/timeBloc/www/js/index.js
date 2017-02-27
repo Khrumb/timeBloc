@@ -11,7 +11,7 @@ var page_log_bid = [];
 var page_log_mid = [];
 var current_page = null;
 
-var uid = 3;
+var uid = -1;
 var comment_number = 0;
 
 var timer;
@@ -21,7 +21,11 @@ var sidebar_isOn = false;
 var blocFeed_bloc_on = false;
 var isFollowing = false;
 
-var version = "0.54.11";
+var version = "0.54.14";
+var server = "http://98.236.77.7";
+var login_server = server + ":750";
+var content_server = server + ":700";
+
 var db;
 
 var app = {
@@ -35,25 +39,23 @@ var app = {
 	        document.addEventListener('backbutton', this.onBackKeyDown, false);
 	        document.addEventListener('online', this.onlineCheck, false);
 	        document.addEventListener('offline', this.offlineCheck, false);
+					//document.addEventListener('pause', this.onPause, false);
+					//document.addEventListener('resume', this.onResume, false);
 	    },
 
 	    onDeviceReady: function() {
-	        //alert("DEVICE READY");
-	        dataManager.initialize();
-	        //alert("DB INITILIZED")
-	        network.initialize();
-					uiControl.setDebugger();
-	        //uiControl.populate();
-					setTimeout(function () {
-						//blocFeed.setup();
-						bloc.setup(1);
-						//alert("setup called");
-						setTimeout(function () {
-							document.getElementById('base').style.display = "none";
-							}, 200);
-					}, 700);
-	        //userBloc.setup(1);
+				uiControl.setDebugger();
+	      dataManager.initialize();
 	    },
+
+			deviceReadyCallBack:function() {
+				blocFeed.setup();
+				//bloc.setup(1);
+				//alert("setup called");
+				setTimeout(function () {
+					document.getElementById('base').style.display = "none";
+					}, 200);
+			},
 
 			onBackKeyDown: function() {
 
@@ -90,11 +92,8 @@ var app = {
 							uiControl.select(-2);
 							current_page = null;
 							break;
-						case "fullScreenMedia":
-							current_page = null;
-							break;
 						default:
-						uiControl.updateDebugger("pl", current_page);
+						//uiControl.updateDebugger("pl", current_page);
 
 						var id = page_log[page_log.length-1];
 						switch (id) {
@@ -132,16 +131,86 @@ var app = {
 
 			offlineCheck:function(){
 				online = false;
+			},
+
+			onPause:function() {
+			},
+
+			onResume:function() {
+				network.getServerStatus();
 			}
+
+
 };
 
 var network = {
-  ftp:21,
 
-  initialize:function() {
-    //alert("Server Attempt:");
-    //var server = new WebSocket("ws://echo.websocket.org ", "80");
-    //alert("Server Attempt: " + server.readyState);
+	sendLoginRequest:function(username, password) {
+		if(online){
+			var socket = io(login_server);
+			socket.on('connect', function () {
+				uiControl.updateDebugger("Login_Server", "ONLINE");
+				socket.emit("login_request", username+":sep:"+password);
+			 });
+
+			 socket.on('login_succeed', function (msg) {
+ 				socket.disconnect();
+				uid = parseInt(msg);
+				uiControl.turnCurrentItemOff();
+				page_log.pop();
+				uiControl.updateDebugger("Login_Server", "Logged In");
+				app.deviceReadyCallBack();
+ 			 });
+
+			 socket.on('login_failed', function () {
+				login.loginFailed();
+ 				socket.disconnect();
+				uiControl.updateDebugger("Login_Server", "Login Failed");
+ 			 });
+		} else {
+			alert("Phone Is offline.");
+		}
+	},
+
+	sendCreateUserRequest:function(username, password, display_name) {
+		if(online){
+			var socket = io(login_server);
+			socket.on('connect', function () {
+				uiControl.updateDebugger("Login_Server", "ONLINE");
+				socket.emit("user_create_request", username + ":sep:" + password +":sep:" + display_name);
+			 });
+			 socket.on('user_create_request_succeed', function (msg) {
+ 				socket.disconnect();
+				uid = parseInt(msg);
+				uiControl.turnCurrentItemOff();
+				page_log.pop();
+				uiControl.updateDebugger("Login_Server", "Account Created");
+				app.deviceReadyCallBack();
+ 			 });
+			 socket.on('user_create_request_failed', function () {
+ 				socket.disconnect();
+				uiControl.updateDebugger("Login_Server", "Login Failed");
+ 			 });
+		} else {
+			alert("Phone Is offline.");
+		}
+	},
+
+  getServerStatus:function() {
+		if(online){
+			var socket = io(content_server);
+			socket.on('connect', function () {
+				uiControl.updateDebugger("Content_Server", "ONLINE");
+				socket.emit("ping");
+				socket.disconnect();
+			 });
+			 socket.on('reconnect', function () {
+ 				socket.disconnect();
+				uiControl.updateDebugger("Content_Server", "OFFLINE");
+ 			 });
+		} else {
+			alert("Phone Is offline.");
+		}
   }
 
 };
@@ -149,6 +218,7 @@ var network = {
 var dataManager = {
 
   initialize:function() {
+
 		height = screen.availHeight;
 		width = screen.availWidth;
 		uiControl.updateDebugger("build", "pre-alpha");
@@ -158,19 +228,39 @@ var dataManager = {
 		//document.body.style.height = height + "px";
 		//document.body.style.width = width + "px";
     db = window.openDatabase("timeBloc", "0.1", "dmgr", 20000000);
-    db.transaction(dataManager.populateDB, dataManager.errorCB);
+		db.transaction(dataManager.populateDB, dataManager.errorCB);
+
+    db.transaction(dataManager.getLoginInfo, dataManager.errorCB);
   },
 
+	getLoginInfo:function(tx) {
+		tx.executeSql('SELECT * FROM personal', [], dataManager.setUser, dataManager.errorCB);
+	},
+
+	setUser:function(tx, results) {
+		//alert(results.rows.item(0).uid);
+		if(results.rows.length == 0){
+			//network.sendCreateUserRequest();
+			login.setup();
+			setTimeout(function () {
+				document.getElementById('base').style.display = "none";
+				}, 200);
+			//app.deviceReadyCallBack();
+		} else {
+			network.sendLoginRequest(results.rows.item(0).uid, results.rows.item(0).secret);
+		}
+	},
+
 	resetUserData:function() {
-		db.transaction(dataManager.populateDB, dataManager.errorCB);
+		db.transaction(dataManager.resetDB, dataManager.errorCB);
 	},
 
   //user (uid, username, display_name, date_joined)
   //bloc (bid, uid , message);
   //follower_list(uid, fuid, date_joined)
   populateDB:function(tx) {
-
     //remove after live host server
+
     tx.executeSql('DROP TABLE IF EXISTS user');
     tx.executeSql('DROP TABLE IF EXISTS bloc');
 		tx.executeSql('DROP TABLE IF EXISTS bloc_temp');
@@ -183,8 +273,7 @@ var dataManager = {
 
 
 
-
-    tx.executeSql('CREATE TABLE IF NOT EXISTS personal (session_key Primary Key ASC, uid Refrences USER uid)');
+    tx.executeSql('CREATE TABLE IF NOT EXISTS personal (uid Refrences USER uid, session_key Primary Key)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS user (uid Primary Key ASC, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground)');
 
 		tx.executeSql('CREATE TABLE IF NOT EXISTS bloc_temp (bid Primary Key ASC, uid Refrences USER uid, message, posted_time)');
@@ -209,12 +298,21 @@ var dataManager = {
 		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (6, 3, 3, 1, "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium")');
 		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (7, -1, 1, 1, "Bruh Calm down.")');
 		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (8, 5, 2, 1, "LOL, im the bot.")');
-		comment_number=9;
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (9, 3, 3, 1, "This is my test bloc i guess?")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (10, 0, 1, 1, "Any idea on how i can get myself one of these?")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (11, 5, 2, 1, "riprip")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (12, -1, 2, 1, "riprip")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (13, 1, 0, 1, "BOT_DETECTED")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (14, 12, 2, 1, "RandomStoof")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (15, 2, 0, 1, "01000100 01101111 01100101 01110011 00100000 01110100 01101000 01101001 01110011 00100000 01100011 01101111 01110101 01101110 01110100 00100000 01100001 01110011 00100000 01100001 01101110 00100000 01000101 01100001 01110011 01110100 01100101 01110010 01100101 01100111 01100111 00111111")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (16, 9, 3, 1, "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (17, -1, 1, 1, "Bruh Calm down.")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (18, 5, 2, 1, "LOL, im the bot.")');
+		comment_number=19;
 
 		//Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium
 
     //template for regex: tx.executeSql('INSERT INTO personal(session_key, uid) VALUES (<session_id>, <uid>)');
-    tx.executeSql('INSERT INTO personal(session_key, uid) VALUES (1, 1)');
 
 		//tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (<uid> , <weight_0>, <weight_1>, <weight_2>, <weight_3>, <weight_4>, <weight_5>, <weight_6>)');
 		tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (0, 1, 1, 1, 1, 1, 1, 1)');
@@ -295,9 +393,7 @@ var dataManager = {
 		return "light";
 	},
 
-	setUser:function() {
-		uid = prompt("Enter UID of user:");
-	},
+
 
   numberToString:function(num) {
     var i = 10;
@@ -422,6 +518,9 @@ var uiControl = {
 					case 'fullScreenMedia':
 						fullScreenMedia.taredown();
 						break;
+					case 'login':
+						login.taredown();
+						break;
 					default:
 						alert("TCO Unhandled Page: " + id);
 				}
@@ -510,6 +609,10 @@ var uiControl = {
 			setTimeout(function () {
 				document.getElementById("dialog").style.display ="none";
 			}, 200);
+		},
+
+		decelerate:function() {
+
 		}
 };
 
@@ -597,6 +700,57 @@ var sidebar = {
 		}
 	}
 };
+
+var login = {
+	setup:function() {
+		login.setupCallBack();
+	},
+
+
+	setupCallBack:function(){
+		document.getElementById('navbar_menu_button').style.opacity =0.0;
+		document.getElementById('navbar_menu_button').ontouchstart = "";
+		uiControl.turnCurrentItemOff();
+		document.getElementById("login").style.display = "block";
+		document.getElementById("login").style['z-index'] = 1;
+		uiControl.turnItemOn("login");
+	},
+
+	taredown:function() {
+		uiControl.turnItemOff("login");
+		setTimeout(function () {
+			document.getElementById('navbar_menu_button').style.opacity =1.0;
+			document.getElementById('navbar_menu_button').ontouchstart = sidebar.slide;
+			document.getElementById("login").style.display = "none";
+			document.getElementById("login").style['z-index'] = 0;
+		}, 200);
+	},
+
+	submit:function() {
+		network.sendLoginRequest(document.getElementById('login_username').value, document.getElementById('login_password').value);
+	},
+
+	loginFailed:function() {
+		document.getElementById('login_password').value = null;
+		document.getElementById('login_username').value = null;
+		document.getElementById('login_username').classList.add("failed_top");
+		document.getElementById('login_password').classList.add("failed_bottom");
+	},
+
+	created: false,
+	createAccount:function() {
+		if(!login.created){
+			document.getElementById('login_content').style.display = 'none';
+			document.getElementById('account_content').style.display = 'block';
+			login.created = true;
+		} else {
+			network.sendCreateUserRequest(document.getElementById('login_username').value, document.getElementById('login_password').value, document.getElementById('display_name').value);
+		}
+
+
+	}
+
+}
 
 var blocFeed ={
 
@@ -715,6 +869,8 @@ var userBloc = {
 		taredown:function() {
 			clearInterval(userBloc.animation);
 			uiControl.turnItemOff("userBloc");
+			document.getElementById("userBloc_bloc_preview").style.display = "none";
+
 			//uiControl.updateDebugger("td", "userBloc");
 			document.getElementById("userBloc").style['z-index'] = 0;
 			document.getElementById("userBloc").style.display = "none";
@@ -730,7 +886,7 @@ var userBloc = {
       var user = results.rows.item(0);
 			userBloc.c_user = user;
 			document.getElementById('userBloc').style.backgroundImage = "url("+ user.profileBackground+")";
-      document.getElementById('user_Profile_Picture').src = user.profilePicture;
+      document.getElementById('user_Profile_Picture').style.backgroundImage = "url("+ user.profilePicture +")";
       document.getElementById('user_Display_Name').textContent = user.display_name;
       document.getElementById('user_Handle').textContent = "@" + user.username;
 			document.getElementById('user_Info').textContent = user.birthday + " | " + user.location;
@@ -757,6 +913,7 @@ var userBloc = {
 			userBloc.weight = replace_weight;
 			userBloc.position_list = replace_pos;
 			userBloc.generateSelf();
+
 			userBloc.setupCallBack();
 		},
 
@@ -836,6 +993,7 @@ var userBloc = {
 			userBloc.sw = 16;
 			userBloc.op = 0.5;
       if(document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).classList.contains("darken")){
+				document.getElementById("userBloc_bloc_preview").style.display = "none";
         document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).classList.toggle("darken");
         document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = 0.5;
   			document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style['stroke-width'] = 16 + '%';
@@ -888,19 +1046,18 @@ var userBloc = {
 				if(userBloc.delta_a <= 1){
           clearInterval(userBloc.animation);
 					document.getElementById('user_Profile_breakdown_container').style['-webkit-transform'] = "rotate("+ userBloc.current_angle +"deg)";
-          //document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).classList.toggle("expand");
+					document.getElementById("userBloc_bloc_preview").style.display = "block";
           document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).classList.toggle("darken");
           document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style["stroke-width"] = "23%";
           document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = 1.0;
-
 				}
 			} else {
 				userBloc.delta_a -= userBloc.delta_a*step;
 				if(userBloc.delta_a >= -1){
           clearInterval(userBloc.animation);
 					document.getElementById('user_Profile_breakdown_container').style['-webkit-transform'] = "rotate("+ userBloc.current_angle +"deg)";
-          //document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).classList.toggle("expand");
-          document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).classList.toggle("darken");
+					document.getElementById("userBloc_bloc_preview").style.display = "block";
+					document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).classList.toggle("darken");
           document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style["stroke-width"] = "23%";
           document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = 1.0;
 				}
@@ -976,7 +1133,6 @@ var personalPage = {
 	imageB: null,
 	callback: null,
 
-
 	setup:function() {
 		//document.getElementById("user_Display_Name").prop('readonly', false);
 		uiControl.setTheme("editing");
@@ -1036,7 +1192,7 @@ var personalPage = {
 	},
 
 	getGeoLocation:function() {
-		 navigator.geolocation.getCurrentPosition(onSuccess, onError);
+		 navigator.geolocation.getCurrentPosition(personalPage.onSuccess, onError);
 	},
 
 	onSuccess:function(position) {
@@ -1068,12 +1224,12 @@ var personalPage = {
 
 	selectPhotoAlbum:function(){
 		var camera = navigator.camera;
-	 	camera.getPicture(personalPage.callback, this.error, { quality: 50, sourceType: Camera.PictureSourceType.SAVEDPHOTOALBUM,destinationType: Camera.DestinationType.DATA_URL});
+	 	camera.getPicture(personalPage.callback, this.error, { quality: 100, sourceType: Camera.PictureSourceType.SAVEDPHOTOALBUM,destinationType: Camera.DestinationType.DATA_URL, correctOrientation: true});
 	},
 
   selectCamera:function(){
 		var camera = navigator.camera;
-	 	camera.getPicture(personalPage.callback, this.error, { quality: 50, sourceType: Camera.PictureSourceType.CAMERA,destinationType: Camera.DestinationType.DATA_URL});
+	 	camera.getPicture(personalPage.callback, this.error, { quality: 100, sourceType: Camera.PictureSourceType.CAMERA,destinationType: Camera.DestinationType.DATA_URL, correctOrientation: true});
 	},
 
   encodeBackground:function(imageData) {
@@ -1086,7 +1242,7 @@ var personalPage = {
 	encodeProfilePicture:function(imageData) {
 		if(imageData != null){
 			personalPage.imageP = "data:image/jpeg;base64," + imageData;
-			document.getElementById('user_Profile_Picture').src = personalPage.imageP;
+			document.getElementById('user_Profile_Picture').style.backgroundImage = "url("+ personalPage.imageP +")";
 		}
 	},
 
@@ -1215,9 +1371,6 @@ var bloc = {
 	slide_step:0,
 	container_animation: null,
 	scrollAnimation: null,
-	heightListener:null,
-	scrollHeight: null,
-	scrollThreshhold:0,
 	scrollLimit:0,
 	containerPosition:0,
 
@@ -1225,8 +1378,6 @@ var bloc = {
 		if(bloc.id != parseInt(id)){
 			bloc.id = parseInt(id);
 			page_log_bid.push(bloc.id);
-			bloc.scrollThreshhold = Math.floor(2*(width*0.5876));
-			bloc.scrollLimit = Math.floor(width*0.444444444444444444);
 			bloc.reply_id = -1;
 			if(!bloc.mediaIsOut){
 				bloc.wasToggled = true;
@@ -1237,8 +1388,14 @@ var bloc = {
 	},
 
 	setupCallBack:function(){
+		document.getElementById("bloc_container").style.height = -bloc.scrollLimit+ "px";
+		document.getElementById("bloc_blog_container").style.height = -bloc.scrollLimit*1.2+ "px";
+		document.getElementById("bloc_blog_content").style.height = -bloc.scrollLimit*1.2+ "px";
+		document.getElementById("bloc_content_container").style["-webkit-transform"] = "translateY(0px)";
+		document.getElementById("bloc_container").style["-webkit-transform"] = "translateY(0px)";
+		bloc.containerPosition = 0;
+
 		uiControl.turnCurrentItemOff();
-		bloc.heightListener = setInterval(bloc.scrollListener, 5);
 
 		document.getElementById("bloc").style.display = "block";
 		document.getElementById("bloc").style['z-index'] = 1;
@@ -1288,6 +1445,8 @@ var bloc = {
 				piccounter++;
 			}
 		}
+		bloc.scrollLimit = -(((Math.ceil(piccounter/3)-2)*(width*0.587))+ (width*0.1375));
+
 		if(pictures != "" ){
 			document.getElementById("bloc_media_content").innerHTML = pictures;
 		} else {
@@ -1303,38 +1462,53 @@ var bloc = {
 	comments:[],
 	comment_connections:[],
 	visited:[],
+	visible: [],
 	base_id:0,
 	setupDiscussion:function(tx, results) {
 		bloc.base_id = results.rows.item(0).cid;
 		bloc.comments = [];
 		bloc.comment_connections = [];
-		bloc.visited = [];
+
 		for(var i = 0; i < results.rows.length; i++){
 			bloc.comments[i] = results.rows.item(i);
 			bloc.comment_connections.push(results.rows.item(i).reply);
+			if(bloc.comments[i].reply == -1){
+				bloc.visible[i] = true;
+			} else {
+				bloc.visible[i] = false;
+			}
 		}
+
+		bloc.loadDiscussion();
+	},
+
+	loadDiscussion:function() {
 		var discussion = "";
+		bloc.visited = [];
 		bloc.children =[];
-		for(var i = 0; i < results.rows.length ; i++){
+		for(var i = 0; i < bloc.comments.length ; i++){
 			bloc.children.push(0);
 		}
-		for(var i = 0; i < results.rows.length ; i++){
+		for(var i = 0; i < bloc.comments.length ; i++){
 			if(bloc.visited.indexOf(i) == -1){
 				bloc.visited.push(i);
 				discussion += bloc.generateThreadHead(i);
 			}
 		}
 		document.getElementById('bloc_blog_content').innerHTML = discussion;
-		for(var i = 0; i < results.rows.length ; i++){
-			document.getElementById("bloc_comment_"+i+"_poster").textContent = '@'+ bloc.comments[i].username;
-			if(bloc.comments[i].reply != -1){
-				var parent = bloc.comments[i].reply;
-				document.getElementById('bloc_comment_parent_'+i).textContent = "@" + bloc.comments[parent].username+ " ";
+		for(var i = 0; i <  bloc.comments.length ; i++){
 
+				document.getElementById("bloc_comment_"+i+"_poster").textContent = '@'+ bloc.comments[i].username;
+				if(bloc.comments[i].reply != -1){
+					var parent = bloc.comments[i].reply;
+					document.getElementById('bloc_comment_parent_'+i).textContent = "@" + bloc.comments[parent].username+ " ";
+				}
+				document.getElementById("bloc_comment_children_"+i).textContent = bloc.children[i];
+				document.getElementById("bloc_comment_"+i+"_text").textContent = bloc.comments[i].text;
+			if(!bloc.visible[i]){
+				document.getElementById("bloc_comment_"+ i + "_reply_container").style.display = "none";
 			}
-			document.getElementById("bloc_comment_children_"+i).textContent = bloc.children[i];
 
-			document.getElementById("bloc_comment_"+i+"_text").textContent = bloc.comments[i].text;
 		}
 	},
 
@@ -1350,13 +1524,13 @@ var bloc = {
 												'<p id="bloc_comment_'+ id +'_text" class="bloc_comment_text"></p>'+
 												'<p class="bloc_comment_children"><span class="bloc_comment_cute_little_plus">+</span><span id="bloc_comment_children_'+ id +'">0</span></p>'+
 											'</div>'+
-											'<div id="bloc_comment_'+ id +'_reply_container" class="bloc_comment_reply_container">'+ bloc.findChildren(id,0) +'</div>'+
+											'<div id="bloc_comment_'+ id +'_reply_container" class="bloc_comment_reply_container">'+ bloc.findChildren(id) +'</div>'+
 									'</div>';
 		return comment;
 	},
 
-	generateReply:function(id, deapth) {
-		var comment = '<div id="bloc_comment_"'+ id +' class="comment">' +
+	generateReply:function(id) {
+		var comment = '<div id="bloc_comment_'+ id +'" class="comment">' +
 										'<img id="bloc_comment_'+ id +'_picture" class ="bloc_commenter_picture reply_picture" src="'+ bloc.comments[id].profilePicture +'" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'userBloc\', '+bloc.comments[id].uid+');" />';
 		if(uid == bloc.comments[id].uid){
 			comment += '<div class="comment_info_container reply_content self" ontouchstart="bloc.pictureTouchStart();" onTouchEnd="bloc.selectiveSetup(\'comment_tap\', '+ id +');">';
@@ -1366,27 +1540,22 @@ var bloc = {
 		comment +=    			'<p id="bloc_comment_'+ id +'_poster" class="bloc_comment_poster"></p>'+
 												'<p class="bloc_comment_text"><span id="bloc_comment_parent_'+id+'" class="bloc_comment_parent"></span><span id="bloc_comment_'+ id +'_text" ></span></p>'+
 												'<p class="bloc_comment_children"><span class="bloc_comment_cute_little_plus">+</span><span id="bloc_comment_children_'+ id +'">0</span></p>'+
-											'</div>';
-			if(deapth < 1 || bloc.reply_id == id){
-				comment += '<div id="bloc_comment_'+ id +'_reply_container" class="bloc_comment_reply_container">'+ bloc.findChildren(id,deapth) +'</div>'+'</div>';
-			}
-			else{
-				comment += '<div id="bloc_comment_'+ id +'_reply_container" class="bloc_comment_reply_container" style="display:none">'+ bloc.findChildren(id,deapth) +'</div>'+'</div>';
-			}
-
+											'</div>'+
+										 '<div id="bloc_comment_'+ id +'_reply_container" class="bloc_comment_reply_container">'+ bloc.findChildren(id) +'</div>'+
+										'</div>';
 		return comment;
 	},
 
 
+
 	children:[],
-	findChildren:function(id, deapth) {
+	findChildren:function(id) {
 		var char = "";
-		deapth++;
 		for(var i = 0; i < bloc.comments.length; i++){
 			var nextChild = bloc.comment_connections.indexOf(id,i);
 			if(nextChild != -1 && bloc.visited.indexOf(nextChild) == -1){
 				bloc.visited.push(nextChild);
-				char += bloc.generateReply(nextChild, deapth);
+				char += bloc.generateReply(nextChild);
 				bloc.children[id] += (bloc.children[nextChild]+1);
 				i = nextChild+1;
 			}
@@ -1403,7 +1572,7 @@ var bloc = {
 	taredown:function() {
 		uiControl.turnItemOff("bloc");
 		if(!bloc.mediaIsOut){
-			//bloc.toggleOut();
+			bloc.toggleOut();
 		}
 		clearInterval(bloc.heightListener);
 		clearInterval(bloc.scrollAnimation);
@@ -1455,6 +1624,7 @@ var bloc = {
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+bloc.c_pos)+ "px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
 			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (-(3*bloc.c_pos)/20)+ "px)";
+			bloc.loadDiscussion();
 		} else {
 			clearInterval(bloc.slide_animation);
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + width+ "px)";
@@ -1499,53 +1669,52 @@ var bloc = {
 		}
 	},
 
-	last_state: true,
-	c_scroll_top:0,
-	scrollListener:function() {
-		if(bloc.last_state == bloc.mediaIsOut){
-			if(bloc.mediaIsOut){
-				bloc.scrollHeight =	document.getElementById("bloc_media_content").scrollTop;
+
+	dy:0,
+	scrollStart:function() {
+		first_touch = event.touches[0];
+		bloc.dy = 0;
+		if(bloc.scrollAnimation != null){
+			clearInterval(bloc.scrollAnimation);
+		}
+		bloc.scrollAnimation = setInterval(bloc.containerUpdater, 6);
+	},
+
+	lastLoad:0,
+	containerUpdater:function() {
+		var cpos = (bloc.dy+bloc.containerPosition);
+		if(cpos <=0){
+			if( cpos >= (-width*0.45)){
+				document.getElementById("bloc_content_container").style["-webkit-transform"] = "translateY(" + cpos + "px)";
+
 			} else {
-				bloc.scrollHeight =	document.getElementById("bloc_blog_content").scrollTop;
+				document.getElementById("bloc_content_container").style["-webkit-transform"] = "translateY(" + -(width*0.445) + "px)";
 			}
-		} else {
-				bloc.c_scroll_top = bloc.scrollHeight;
-				bloc.last_state = bloc.mediaIsOut;
-		}
-		if(bloc.scrollHeight >= bloc.scrollThreshhold){
-			if(bloc.scrollAnimation == null){
-				bloc.scrollAnimation = setInterval(bloc.scrollExpand, 5);
-				document.getElementById("bloc_content_slide_tab_left").style.height = (width+bloc.scrollLimit) + "px";
-				document.getElementById("bloc_content_slide_tab_right").style.height = (width+bloc.scrollLimit) + "px";
-				document.getElementById("bloc_media_content").style.height = (width+bloc.scrollLimit) + "px";
-				document.getElementById("bloc_blog_content").style.height = (width+bloc.scrollLimit) + "px";
-			}
-		} else {
-			if(bloc.scrollAnimation != null){
-				clearInterval(bloc.scrollAnimation);
-				document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY(0px)";
-				document.getElementById("bloc_content_slide_tab_left").style.height = width + "px";
-				document.getElementById("bloc_content_slide_tab_right").style.height = width + "px";
-				document.getElementById("bloc_media_content").style.height = width + "px";
-				document.getElementById("bloc_blog_content").style.height = width + "px";
-				bloc.scrollAnimation = null;
+			if(cpos >= bloc.scrollLimit){
+				document.getElementById("bloc_container").style["-webkit-transform"] = "translateY(" + (cpos) + "px)";
 			}
 		}
 	},
 
-	scrollExpand:function() {
-			bloc.containerPosition =  bloc.scrollHeight-bloc.scrollThreshhold;
-			if(bloc.containerPosition <= bloc.scrollLimit){
-					document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY("+-bloc.containerPosition+"px)";
-			} else{
-				clearInterval(bloc.scrollAnimation);
-				document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY("+-bloc.scrollLimit+"px)";
-				bloc.scrollAnimation = null;
-			}
+	scrollMove:function() {
+		bloc.dy = event.touches[0].pageY - first_touch.pageY;
 	},
 
-	pictureTouchStart:function() {
-		bloc.heightTracker = bloc.scrollHeight;
+	scrollFinalize:function() {
+		clearInterval(bloc.scrollAnimation, 6);
+		bloc.scrollAnimation = null;
+		if(bloc.dy+bloc.containerPosition >= bloc.scrollLimit){
+			bloc.containerPosition += bloc.dy;
+			if(!bloc.mediaIsOut && Math.abs(bloc.lastLoad-bloc.containerPosition) > (1.5*width)){
+				//uiControl.updateDebugger("reload", reloade);
+				bloc.loadDiscussion();
+				bloc.lastLoad = cpos;
+			}
+		} else {
+			document.getElementById("bloc_container").style["-webkit-transform"] = "translateY(" + bloc.scrollLimit + "px)";
+			bloc.containerPosition = bloc.scrollLimit;
+			bloc.dy = 0;
+		}
 	},
 
 
@@ -1553,7 +1722,7 @@ var bloc = {
 	last_tap:0,
 	double_tap: false,
 	selectiveSetup:function(page_ID, id) {
-		if(bloc.scrollHeight == bloc.heightTracker){
+		if(bloc.dy < 10 && bloc.dy > -10){
 			switch (page_ID) {
 				case 'userBloc':
 						if((performance.now()- bloc.last_tap) > 200){
@@ -1578,23 +1747,40 @@ var bloc = {
 						setTimeout(function () {
 							if(!bloc.double_tap){
 								if(document.getElementById('bloc_comment_'+ id +'_reply_container').style.display == "none"){
-									document.getElementById('bloc_comment_'+ id +'_reply_container').style.display = 'block';
+									bloc.visible[id] = true;
 								} else {
-									document.getElementById('bloc_comment_'+ id +'_reply_container').style.display = "none";
+									bloc.visible[id] = false;
 								}
+								bloc.loadDiscussion();
 							} else {
 								bloc.replyComment(id);
+								document.getElementById('bloc_comment_textarea').focus();
 								bloc.double_tap = false;
 							}
+							document.getElementById('bloc_blog_content');
 						}, 200);
 						bloc.last_tap = performance.now();
 					} else {
 						bloc.double_tap = true;
 					}
 					break;
+					case 'title_tap':
+						if((performance.now()- bloc.last_tap) > 200){
+							setTimeout(function () {
+								if(bloc.double_tap){
+									alert("title dt");
+									bloc.startThread();
+								}
+							}, 200);
+							bloc.last_tap = performance.now();
+						} else {
+							bloc.double_tap = true;
+						}
+						break;
 				case 'confirm':
 					//alert("comment submit");
 					if(document.getElementById("bloc_comment_textarea").value != ""){
+						bloc.reply_ID = id;
 						db.transaction(bloc.submitComment, dataManager.errorCB);
 					} else {
 						alert("Your Comment is blank!");
@@ -1610,19 +1796,33 @@ var bloc = {
 		}
 	},
 
-	reply_id: 0,
+
+	startThread:function() {
+		if(document.getElementById("bloc_comment_reply") != null){
+			document.getElementById("bloc_comment_reply").remove();
+		}
+		document.getElementById('bloc_comment_'+ id +'_reply_container').style.display = "block";
+		var comment = '<div id="bloc_comment" class="comment">' +
+										'<img id="bloc_comment_'+ id +'_picture" class ="bloc_commenter_reply_cancel" src="assets/cancel.png" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'reply_backout\', '+uid+');" />'+
+										'<img id="bloc_comment_'+ id +'_picture" class ="bloc_commenter_reply_confirm" src="assets/confirm.png" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'confirm\', '+uid+');" />'+
+											'<div class="comment_info_container reply_content self" >'+
+		    								'<p id="bloc_comment_'+ id +'_poster" class="bloc_comment_poster"></p>'+
+												'<textarea id="bloc_comment_textarea" class="bloc_comment_textarea" autofocus rows=3 maxlengh=140></textarea>'+
+												'<p class="bloc_comment_children"><span class="bloc_comment_cute_little_plus">+</span><span id="bloc_comment_children_'+ id +'">0</span></p>'+
+											'</div>'+
+										'<div id="bloc_comment_'+ id +'_reply_container" class="bloc_comment_reply_container"></div>'+
+									'</div>';
+		var comment_node = document.createElement("DIV");
+		comment_node.innerHTML= comment;
+		document.getElementById('bloc_blog_content').insertBefore(comment_node, document.getElementById('bloc_blog_content').childNodes[0]);
+	},
+
+	reply_id: -1,
 	replyComment:function(id) {
 		bloc.reply_id = id;
 		if(document.getElementById("bloc_comment_reply") != null){
 			document.getElementById("bloc_comment_reply").remove();
 		}
-		document.getElementById("bloc_content_slide_tab_left").style.height = (width+bloc.scrollLimit) + "px";
-		document.getElementById("bloc_content_slide_tab_right").style.height = (width+bloc.scrollLimit) + "px";
-		document.getElementById("bloc_media_content").style.height = (width+bloc.scrollLimit) + "px";
-		document.getElementById("bloc_blog_content").style.height = (width+bloc.scrollLimit) + "px";
-		document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY("+-bloc.scrollLimit+"px)";
-
-
 		document.getElementById('bloc_comment_'+ id +'_reply_container').style.display = "block";
 		var comment = '<div id="bloc_comment_reply" class="comment">' +
 										'<img id="bloc_comment_'+ id +'_picture" class ="bloc_commenter_reply_cancel" src="assets/cancel.png" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'reply_backout\', '+uid+');" />'+
@@ -1634,18 +1834,16 @@ var bloc = {
 											'</div>'+
 										'<div id="bloc_comment_'+ id +'_reply_container" class="bloc_comment_reply_container"></div>'+
 									'</div>';
-		document.getElementById('bloc_comment_'+ id +'_reply_container').innerHTML = comment+document.getElementById('bloc_comment_'+ id +'_reply_container').innerHTML;
+		var comment_node = document.createElement("DIV");
+		comment_node.innerHTML= comment;
+		document.getElementById('bloc_comment_'+ id +'_reply_container').insertBefore(comment_node, document.getElementById('bloc_comment_'+ id +'_reply_container').childNodes[0]);
+
 	},
 
 	submitComment:function(tx) {
 			tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES ('+ comment_number +', '+ bloc.reply_id +', '+ uid +', '+ bloc.c_bloc.bid +' , "'+document.getElementById("bloc_comment_textarea").value +'")');
-			tx.executeSql('SELECT * FROM comments Left Outer Join user ON comments.uid = user.uid where bid =' + bloc.c_bloc.bid, [], bloc.setupDiscussion, dataManager.errorCB);
 			comment_number++;
-			document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY(0px)";
-			document.getElementById("bloc_content_slide_tab_left").style.height = width + "px";
-			document.getElementById("bloc_content_slide_tab_right").style.height = width + "px";
-			document.getElementById("bloc_media_content").style.height = width + "px";
-			document.getElementById("bloc_blog_content").style.height = width + "px";
+			tx.executeSql('SELECT * FROM comments Left Outer Join user ON comments.uid = user.uid where bid =' + bloc.c_bloc.bid, [], bloc.setupDiscussion, dataManager.errorCB);
 	}
 
 };

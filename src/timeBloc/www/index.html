@@ -8,6 +8,7 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, target-densitydpi=device-dpi" />
 				<link rel="stylesheet" type="text/css" href="css/base.css" />
 				<link rel="stylesheet" type="text/css" href="css/bloc.css" />
+        <link rel="stylesheet" type="text/css" href="css/login.css" />
 				<link rel="stylesheet" type="text/css" href="css/dialog.css" />
         <link rel="stylesheet" type="text/css" href="css/navbar.css" />
         <link rel="stylesheet" type="text/css" href="css/founders.css" />
@@ -34,11 +35,11 @@
         </div>
        </div>
        <div class="navbar top">
-         <div class="navbar top menu" ontouchstart="sidebar.slide();">
-        	</div>
-				<!--	<div class="navbar_title">
- 				  	Yeezus Tour
- 				 </div>-->
+         <div id="navbar_menu_button" class="navbar top menu" ontouchstart="sidebar.slide();">
+         </div>
+				 <div class="navbar top backbutton" ontouchstart="app.onBackKeyDown();">
+
+				 </div>
 	      </div>
 				<div id="debug" class="debug">
 				</div>
@@ -60,6 +61,9 @@
 
 					 <div id="bottom_line" class="bottom_line"></div>
 				</div>
+       </div>
+       <div id="userBloc_bloc_preview" class="userBloc_bloc_preview">
+        Bloc info Here
        </div>
         <div id='user_Profile_breakdown_container' class="user_Profile_breakdown_container"  ontouchstart="userBloc.onProfilePictureTouch();" ontouchmove="userBloc.onProfilePictureDrag();" ontouchend="userBloc.onProfilePictureEnd();">
          <svg id ="user_Profile_breakdown_0" class="user_Profile_breakdown_0" width="100%" height="70%" >
@@ -84,7 +88,7 @@
            <circle id="user_Profile_slice_6" class="user_Profile_slice_6" r="34%" cx="50%" cy="50%"/>
 				 </svg>
       	</div>
-				<img id="user_Profile_Picture" class="userPP" src="img/user_profile_picture.png"/>
+				<div id="user_Profile_Picture" class="userPP"></div>
 				<div class="userProfile">
 					<div class="userContent">
           	<div id ="user_Display_Name" class ="user_Display_Name"></div>
@@ -152,8 +156,8 @@
 
 		 <div data-anchor="bloc"  id="bloc" class="bloc">
 			 <img id="bloc_bg" class="bloc_bg" alt="" />
-			 <div id="bloc_content_container">
-				 <div class="bloc_info_container">
+			 <div id="bloc_content_container" class="bloc_content_container">
+				 <div class="bloc_info_container" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'title_tap\', 0);" >
 				 	<div id="bloc_title" class="bloc_title"></div>
 				 	<div id="bloc_location" class="bloc_location"></div>
 	       	<div id="bloc_creater" class="bloc_creater"></div>
@@ -169,7 +173,8 @@
   				 </div>
   			 </div>
   			 <div id="bloc_bottom_line" class="bloc_bottom_line"></div>
-  			 <div class="bloc_container">
+        </div>
+  			 <div id="bloc_container" class="bloc_container"  ontouchstart="bloc.scrollStart();" ontouchmove="bloc.scrollMove();" ontouchend="bloc.scrollFinalize();">
   				 <div id="bloc_media_container" class="bloc_media_container">
 						 <div id="bloc_content_slide_tab_left" class="bloc_content_slide_tab left_half" ontouchstart="bloc.onTabTouch();" ontouchmove="bloc.onTabSlide();" ontouchend="bloc.onTabTouchEnd();"></div>
   					 <div id="bloc_media_content" class="bloc_content">
@@ -200,11 +205,11 @@
   					 </div>
   				 </div>
   			 </div>
-			 </div>
+
 		 </div>
 
 		 <div data-anchor="fullScreenMedia"  id="fullScreenMedia" class="fullScreenMedia">
-			 <img id="fullScreenMedia_piture" class="fullScreenMedia_piture" src="" alt="" />
+			 <img id="fullScreenMedia_piture" class="fullScreenMedia_piture" ontouchend="current_page='something';fullScreenMedia.taredown();" src="" alt="" />
 		 </div>
 
      <div data-anchor="founders"  id="founders" class="founders">
@@ -247,22 +252,34 @@
 				</div>
 		 </div>
 
-		 <div id="user_input" class="user_input">
-			 <div class="bgfade"></div>
-			 <div class="input_container">
-				 <div id="input_message"class="input_message">
-
-				 </div>
-			 </div>
-
-
+     <div id="login" class="login">
+       <div id="login_container" class="login_container">
+         <p class = "login_message">
+          Welcome to timeBloc
+        </p>
+        <input type="text" class="login_field" id="login_username" placeholder="username" autocomplete="off">
+        <input type="password" class="login_field" id="login_password" placeholder="password" autocomplete="off">
+         <div id="login_content">
+          <div class="login_button" ontouchend="login.submit();">
+            Login
+          </div>
+         </div>
+         <div id="account_content" style="display:none">
+           <input type="text" class="login_field" id="display_name" placeholder="display name" autocomplete="off">
+         </div>
+         <div class="create_account_button" ontouchend="login.createAccount();">
+           Create Account
+         </div>
+       </div>
 		 </div>
 
 		 <div id="base" class="base">
 			 <img class="logo" src="assets/logo.png" alt="" />
 		 </div>
 		  <script type="text/javascript" src="cordova.js"></script>
+			<script type="text/javascript" src="js/socket.io.js"></script>
       <script type="text/javascript" src="js/index.js"></script>
+
       <script type="text/javascript">
         app.initialize();
       </script>

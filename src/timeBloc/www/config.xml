@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.timeBloc" version="0.1.10" xmlns="" xmlns:gap="">
+    <name>timeBloc</name>
+    <description>
+        Timebloc encourages all users to share the details of their lives, from the mundane to the extraordinary.
+    </description>
+    <author email="jo.gregg@me.com" href="">
+        Lead Developer : John Gregg
+				Designers: Connor Thomas And Brane Pantovic.
+    </author>
+    <allow-intent href="geo:*" />
+
+		<access origin="98.236.77.7:700" />
+
+    <platform name="android">
+				<preference name="orientation" value="portrait" />
+        <preference name="StatusBarOverlaysWebView" value="true" />
+        <preference name="StatusBarBackgroundColor" value="#ffa04d" />
+        <feature name="Camera">
+          <param name="android-package" value="org.apache.cordova.camera.CameraLauncher" />
+        </feature>
+        <feature name="Notification">
+          <param name="android-package" value="org.apache.cordova.dialogs.Notification" />
+        </feature>
+        <feature name="Vibration">
+          <param name="android-package" value="org.apache.cordova.vibration.Vibration" />
+        </feature>
+        <feature name="File">
+          <param name="android-package" value="org.apache.cordova.file.FileUtils" />
+        </feature>
+        <feature name="Capture">
+          <param name="android-package" value="org.apache.cordova.mediacapture.Capture" />
+        </feature>
+    </platform>
+
+    <platform name="ios">
+			<preference name="orientation" value="portrait" />
+			<preference name="CordovaWebViewEngine" value="CDVUIWebViewEngine" />
+      <feature name="Camera">
+        <param name="ios-package" value="CDVCamera" />
+      </feature>
+      <feature name="Notification">
+        <param name="ios-package" value="CDVNotification" />
+      </feature>
+      <feature name="Capture">
+        <param name="ios-package" value="CDVCapture" />
+      </feature>
+    </platform>
+
+
+    <plugin name="cordova-plugin-camera" />
+
+
+		<engines>
+    	<engine name="cordova" version=">=1.7.0" />
+    	<engine name="cordova-android" version=">=1.8.0" />
+    	<engine name="cordova-ios" version=">=1.7.1" />
+		</engines>
+</widget>

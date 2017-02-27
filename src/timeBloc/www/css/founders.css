@@ -37,12 +37,10 @@
   to {opacity: 0.0}
 }
 
-  .founders_title{
+.founders_title{
     position: absolute;
     top:15vw;
     width:100%;
-
-
     color:#ffb16e;
     text-align: center;
     font-size: 9vw;

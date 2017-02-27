@@ -75,8 +75,23 @@ body {
   position:relative;
   width:10%;
   height:9.5vw;
-  margin:2% 0% 2% 0%;
+  margin:2vw 0% 2vw 0;
   left:89%;
+  top:auto;
+
+  border-radius: 8px;
+
+  box-shadow: none;
+}
+
+.navbar.top.backbutton{
+  background:url(../assets/back.png) no-repeat center top;
+  background-size: contain;
+  position:relative;
+  width:10%;
+  height:9.5vw;
+  margin:-11.5vw 0% 2vw 0%;
+  left:2%;
   top:auto;
 
   border-radius: 8px;

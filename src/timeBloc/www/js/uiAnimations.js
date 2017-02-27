@@ -47,7 +47,7 @@ var dataManager = {
 	  tx.executeSql('DROP TABLE IF EXISTS weight_list');
 
     tx.executeSql('CREATE TABLE IF NOT EXISTS personal (session_key Primary Key ASC, uid Refrences USER uid)');
-    tx.executeSql('CREATE TABLE IF NOT EXISTS user (uid Primary Key ASC, username, display_name, bio, theme, birthday, date_joined)');
+    tx.executeSql('CREATE TABLE IF NOT EXISTS user (uid Primary Key ASC, username, display_name, bio, theme, birthday, location, date_joined)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS bloc (bid Primary Key ASC, uid Refrences USER uid, message, posted_time)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS follower_list (uid Refrences USER uid, fuid Refrences USER uid, date_followed)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS weight_list (uid Refrences USER uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6)');
@@ -60,13 +60,13 @@ var dataManager = {
 		tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (0, 1, 1, 1, 1, 1, 1, 1)');
 		tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (1, 0.1, 0.5, 0.8, 0.6, 0.4, 0.8, 0.6)');
 		tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (2, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, -1)');
-		tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (3, 0.5, 0.25, 0.75, 1, -1, -1, -1)');
+		tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (3, 0.1, 0.25, 0.65, 1, -1, -1, -1)');
 
-    //template for regex: tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, date_joined) VALUES (<uid>, "<username>", "<display_name>", "<bio>", "<theme>", "<birthday>", "<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, date_joined) VALUES (1, "hyte", "John Gregg", "I am the Lead Programmer on timeBloc.", "dark", "1/5", "<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, date_joined) VALUES (2, "the_reelist_condor", "Connor Thomas", "BYU<br>Also a noob.", "dark", "12/4","<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, date_joined) VALUES (3, "serbian_slayer", "Brane Pantovic", "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.", "light", "3/14", "<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, date_joined) VALUES (0, "user", "default_user", "<message>", "light", "0/00", "<date_joined>")');
+    //template for regex: tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (<uid>, "<username>", "<display_name>", "<bio>", "<theme>", "<birthday>", "<location>", "<date_joined>")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (1, "hyte", "John Gregg", "Lead Programmer on timeBloc.<br><br>Too Cool 5 You.", "dark", "January, 5th", "WV - USA", "<date_joined>")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (2, "the_reelist_condor", "Connor Thomas", "BYU<br>Also a noob.", "dark", "December, 4th", "UT - USA","<date_joined>")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (3, "serbian_slayer", "Brane Pantovic", "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.", "light", "March, 14th", "NY - USA","<date_joined>")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined) VALUES (0, "user", "default_user", "<message>", "light", "NULL, 00th", "Your Mum", "<date_joined>")');
 
     //template for regex: tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES (<uid>, <fuid>, "<date_joined>")');
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 1, 2, "<date_joined>")');
@@ -405,6 +405,8 @@ var userBloc = {
 			userBloc.setTheme(user.theme);
       document.getElementById('user_Display_Name').innerHTML = user.display_name;
       document.getElementById('user_Handle').innerHTML = "@" + user.username;
+			document.getElementById('user_Birthday').innerHTML = user.birthday;
+			document.getElementById('user_Location').innerHTML = user.location;
       document.getElementById('user_bio').innerHTML = user.bio;
 			userBloc.getWeights(tx);
     },
@@ -449,7 +451,7 @@ var userBloc = {
 			if (userBloc.id == uid) {
 				document.getElementById('user_Follow_Status').style.border = '.8vw dashed #bfbfbf';
 				document.getElementById('user_Follow_Status').style.background = '#bfbfbf';
-				document.getElementById('user_Follow_Status').innerHTML = "Edit Profile";
+				document.getElementById('user_Follow_Status_message').innerHTML = "Edit Profile";
 				document.getElementById('user_Follow_Status').ontouchend = userBloc.toBeImplemented;
 			} else {
 				switch (results.rows.length) {
@@ -476,8 +478,6 @@ var userBloc = {
 			var begin_angle = -25.15;
 			var limit = 215+ userBloc.c_angle/2;
 			var dasharray = (135/(userBloc.weight.length-1)) + "%" + " 195%";
-			//(begin_angle+userBloc.c_angle) <= limit
-		//	alert(userBloc.position_list);
       for(var i = 0; i < 7; i++){
 			  if(userBloc.position_list[i] != null){
         	document.getElementById("user_Profile_breakdown_" + userBloc.position_list[i]).style.transform= "rotate(" + (begin_angle+(userBloc.c_angle*(i-1))) + "deg)";
@@ -534,7 +534,7 @@ var userBloc = {
     },
 
 		setTheme:function(id) {
-			var classes = ['user_Display_Name', 'user_Handle', 'user_Follow_Status', 'user_bio', 'wks', 'fr', 'fi'];
+			var classes = ['user_Display_Name', 'user_Handle', 'user_Follow_Status', 'user_bio', 'user_Birthday', 'user_Location', 'wks', 'fr', 'fi'];
 			var current_block;
 			for(var i = 0; i < classes.length; i++){
 				current_block = document.getElementById(classes[i]);
@@ -549,7 +549,7 @@ var userBloc = {
 			document.getElementById('user_Follow_Status').ontouchend = userBloc.toggleFollow;
 			document.getElementById('user_Follow_Status').style.border = '.8vw dashed #bfbfbf';
 			//document.getElementById('user_Follow_Status').style.background = "#f2f2f2";
-			document.getElementById('user_Follow_Status').innerHTML = "Follow";
+			document.getElementById('user_Follow_Status_message').innerHTML = "Follow";
 			document.getElementById('userFollowingStatus_fbarrow').style.display = "none";
 			document.getElementById('userFollowingStatus_farrow').style.display = "none";
 			document.getElementById('user_Follow_Status').style.background = 'none';
@@ -570,7 +570,7 @@ var userBloc = {
       document.getElementById('user_Follow_Status').style['border-top-color'] = "#e68800";
       document.getElementById('user_Follow_Status').style['border-left-style'] = "solid";
       document.getElementById('user_Follow_Status').style['border-left-color'] = "#e68800";
-      //document.getElementById('userFollowingStatus_fbarrow').style.display = "block";
+      document.getElementById('userFollowingStatus_fbarrow').style.display = "block";
     },
 
     setFollow: function(tx) {
@@ -583,8 +583,8 @@ var userBloc = {
       document.getElementById('user_Follow_Status').style['border-bottom-color'] = "#ffcb80";
       document.getElementById('user_Follow_Status').style['border-right-style'] = "solid";
       document.getElementById('user_Follow_Status').style['border-right-color'] = "#ffcb80";
-      //document.getElementById('userFollowingStatus_farrow').style.display = "block";
-      document.getElementById('user_Follow_Status').innerHTML = "Following";
+      document.getElementById('userFollowingStatus_farrow').style.display = "block";
+      document.getElementById('user_Follow_Status_message').innerHTML = "Following";
       isFollowing = true;
     },
 
@@ -594,7 +594,7 @@ var userBloc = {
 
     unfollow: function() {
       document.getElementById('user_Follow_Status').ontouchend = userBloc.toggleFollow;
-      document.getElementById('user_Follow_Status').innerHTML = "Follow";
+      document.getElementById('user_Follow_Status_message').innerHTML = "Follow";
       isFollowing = false;
     }
 

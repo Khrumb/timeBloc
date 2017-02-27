@@ -231,7 +231,7 @@
 .userFollowingStatus{
   position:absolute;
 
-  top:-1.5vh;
+  top:-1.25vh;
   left:63vw;
   width:25vw;
 
@@ -241,7 +241,7 @@
   text-align: center;
   font-size: 6vw;
   border: .8vw dashed #bfbfbf;
-  border-radius:3px;
+  border-radius:1vw;
 }
 
 .userFollowingStatus.light{
@@ -256,31 +256,35 @@
 .userFollowingStatus_fbarrow{
   position:absolute;
   background-color:#e68800;
-  top:4vh;
-  left:62.6vw;
-  width:0.5vw;
-  height: .5vh;
+	bottom:-0.2vh;
+	height:2vh;
+
+
+  left:-1.35vw;
+	width:.7vw;
+
   z-index:104;
   display:none;
 
-  transform: rotate(-40deg);
-  border-radius:10px;
+  transform: rotate(-25deg);
+	border-radius: 2vw;
 }
 
 .userFollowingStatus_farrow{
   position:absolute;
   background-color:#ffcb80;
-  top:-1.4vh;
-	height: 1vh;
+  top:-0.2vh;
+	height: 2vh;
 
-  left:92.75vw;
-  width:0.5vw;
+  right:-1.35vw;
+  width:.7vw;
+
   z-index:104;
   display:none;
 
-  transform: rotate(140deg);
-  border-radius:10px;
+  transform: rotate(155deg);
 
+	border-radius: 2vw;
 }
 
 
@@ -316,8 +320,9 @@
 
 .page_break{
   position:absolute;
-  top:6vh;
+  top:7vh;
   left:0px;
+	border-bottom-width: 1vw;
   width:100vw;
   opacity:0.20;
 }
@@ -325,7 +330,7 @@
 .user_Handle{
   position:absolute;
 
-  top:1.5vh;
+  top:1.75vh;
   left:4vw;
   width:25vw;
 
@@ -343,7 +348,49 @@
 	color: #292929;
 }
 
+.user_Birthday{
+  position:absolute;
 
+  top:4.25vh;
+  left:18vw;
+  width:25vw;
+
+  padding:0vw 0vw 0vw 2vw;
+  text-align: left;
+  z-index:100;
+  font-size: 3.5vw;
+	font-style: italic;
+}
+
+.user_Birthday.light{
+	color: white;
+}
+
+.user_Birthday.dark{
+	color: #292929;
+}
+
+.user_Location{
+  position:absolute;
+
+  top:4.25vh;
+  left:4.5vw;
+  width:25vw;
+
+  padding:0vw 0vw 0vw 2vw;
+  text-align: left;
+  z-index:100;
+  font-size: 3.5vw;
+	font-style: italic;
+}
+
+.user_Location.light{
+	color: white;
+}
+
+.user_Location.dark{
+	color: #292929;
+}
 
 .content_box{
 	position:absolute;

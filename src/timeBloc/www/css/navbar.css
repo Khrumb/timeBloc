@@ -18,7 +18,7 @@ body {
 }
 
 .mastHead{
-  background-color: #ff932e;
+  background-color: #ffb16e;
   height:8.5vw;
   width:100%;
   margin: 0;
@@ -53,11 +53,10 @@ body {
   border:none;
   z-index: 9998;
   overflow: hidden;
-	opacity: 0.70;
 }
 
 .navbar.top{
-  background-color: #ff932e;
+  background-color: #ffb16e;
   background-size: cover;
   left:0px;
   top:0px;

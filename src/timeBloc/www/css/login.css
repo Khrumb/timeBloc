@@ -10,10 +10,11 @@
   height:92.5vh;
   width:100vw;
 
+
   margin:0px;
   padding:0px;
 
-
+  display: none;
   overflow: hidden;
 }
 

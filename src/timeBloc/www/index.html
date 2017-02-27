@@ -25,11 +25,10 @@
        <div id='sidebar' class="sidebar" ontouchstart="sidebar.onTouch();" ontouchmove="sidebar.onSlide();" ontouchend="sidebar.onTouchEnd();">
         <h1 class="mastHead" ><a href="#blocfeed" ontouchstart="sidebar.slide();" ontouchend="blocFeed.setup();">timeBloc</a></h1>
         <ul>
-					<li ontouchstart="sidebar.slide();" ontouchend="userBloc.setup(3);">Active Profile</li>
+					<li ontouchstart="sidebar.slide();" ontouchend="userBloc.setup();">Active Profile</li>
           <li ontouchstart="sidebar.slide();" ontouchend="blocFeed.setup();">blocFeed</li>
 					<li ontouchstart="sidebar.slide();" ontouchend="bloc.setup(1);">Test Bloc</li>
-					<li ontouchstart="sidebar.slide();" ontouchend="dataManager.setUser();">Set User</li>
-          <li ontouchstart="sidebar.slide();" ontouchend="dataManager.resetUserData();">Reset User Data</li>
+          <li ontouchstart="sidebar.slide();" ontouchend="dataManager.resetUserData();">Logout</li>
         </ul>
         <div class="easterEgg" ontouchstart="sidebar.slide();" ontouchend="founders.setup();">
         </div>
@@ -266,6 +265,8 @@
          </div>
          <div id="account_content" style="display:none">
            <input type="text" class="login_field" id="display_name" placeholder="display name" autocomplete="off">
+					 <input type="text" class="login_field" id="location" placeholder="[STATE CODE] - US" autocomplete="off">
+					 <input type="text" class="login_field" id="birthday" placeholder="[MONTH], [DAY]" autocomplete="off">
          </div>
          <div class="create_account_button" ontouchend="login.createAccount();">
            Create Account

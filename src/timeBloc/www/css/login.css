@@ -85,6 +85,7 @@
 
 .login_error{
 	position:relative;
+	font-size: 4vw;
 	color:red;
 	left:5%;
 	height:auto;

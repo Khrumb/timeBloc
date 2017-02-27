@@ -55,6 +55,11 @@
 
 }
 
+.current_userPP:active{
+  -webkit-transform:scale(0.9,0.9);
+}
+
+
 .edit_container{
 	position: absolute;
 	top: 70.5%;
@@ -222,6 +227,11 @@
 	/*box-shadow: -0.3vw 0.3vw .85vw #a6a6a6;*/
 	white-space: nowrap;
 }
+
+.finished_profile:active{
+  -webkit-transform:scale(0.9,0.9);
+}
+
 
 textarea:focus, input:focus{
   outline: none;

@@ -1,5 +1,5 @@
 .blocFeed{
-  background-color: #f2f2f2;
+  background-color: 'rgba(0, 0, 0, 0.2)';
   position:absolute;
 
   width:100%;
@@ -85,10 +85,14 @@
   margin:1% 0px 1% 0px;
   padding:0px;
 
-  color:grey;
+
+  color:'#292929';
   overflow: hidden;
 }
 
+.updated{
+
+}
 
 .blocFeed_bloc_picture{
   position:absolute;

@@ -23,7 +23,7 @@
     <body id="mass_container">
 			<div id="navbar">
        <div id='sidebar' class="sidebar" ontouchstart="sidebar.onTouch();" ontouchmove="sidebar.onSlide();" ontouchend="sidebar.onTouchEnd();">
-        <h1 class="mastHead" ><a href="#blocfeed" ontouchstart="sidebar.slide();" ontouchend="blocFeed.setup();">timeBloc</a></h1>
+        <h1 class="mastHead" ><a href="#blocfeed" ontouchstart="" ontouchend="blocFeed.setup();">timeBloc</a></h1>
         <ul>
 					<li class="profile_sidebar_link" ontouchstart="sidebar.slide();" ontouchend="userBloc.setup();">
 						<div class="profile_sidebar_link_image_container">
@@ -44,7 +44,7 @@
         <div class="easterEgg" ontouchstart="sidebar.slide();" ontouchend="founders.setup();">
         </div>
        </div>
-       <div class="navbar top">
+       <div id="navbar_top" class="navbar top">
          <div id="navbar_menu_button" class="navbar menu" ontouchstart="sidebar.slide();">
          </div>
 				 <div class="navbar backbutton" ontouchstart="app.onBackKeyDown();">
@@ -68,7 +68,6 @@
 				 <ul id="theme_Selecter" class="theme_Selecter">
 				 	<li id="theme_light" class="theme light" ontouchend="uiControl.setPreviewTheme('light');">Light</li>
 					<li id="theme_dark" class="theme dark" ontouchend="uiControl.setPreviewTheme('dark');">Dark</li>
-					<li id="theme_editing" class="theme editing active_theme" ontouchend="uiControl.setPreviewTheme('editing');">Editing</li>
 				 </ul>
 				 <div class="edit_container">
 					 <input id="username_edit" class="username_edit" type="textbox" maxlength="24"/>
@@ -105,7 +104,7 @@
            <circle id="user_Profile_slice_6" class="user_Profile_slice_6" r="34%" cx="50%" cy="50%"/>
 				 </svg>
       	</div>
-				<div id="user_Profile_Picture" class="userPP"></div>
+				<div id="user_Profile_Picture" class="user_Profile_Picture"></div>
 				<div class="userProfile">
 					<div class="userContent">
           	<div id ="user_Display_Name" class ="user_Display_Name"></div>
@@ -174,7 +173,7 @@
 		 <div data-anchor="bloc"  id="bloc" class="bloc">
 			 <img id="bloc_bg" class="bloc_bg" alt="" />
 			 <div id="bloc_content_container" class="bloc_content_container">
-				 <div class="bloc_info_container" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'title_tap\', 0);" >
+				 <div class="bloc_info_container" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup('title_tap', 0);" >
 				 	<div id="bloc_title" class="bloc_title"></div>
 				 	<div id="bloc_location" class="bloc_location"></div>
 	       	<div id="bloc_creater" class="bloc_creater"></div>
@@ -203,7 +202,7 @@
   				 <div id="bloc_blog_container" class="bloc_blog_container">
 						 <div id="bloc_content_slide_tab_right" class="bloc_content_slide_tab right_half" ontouchstart="bloc.onTabTouch();" ontouchmove="bloc.onTabSlide();" ontouchend="bloc.onTabTouchEnd();"></div>
   					 <div id="bloc_blog_content" class="bloc_content">
-<!--
+              <!--
 							 <div class="comment">
 								 <img class ="bloc_commenter_picture" src="img/3_profile_picture_icon.jpg"/>
 								 <div class="comment_info_container">
@@ -296,7 +295,7 @@
 		 </div>
 
 		 <div id="base" class="base">
-			 <img class="logo" src="assets/logo.png" ontouchend="network.getServerStatus();" />
+			 <img class="logo" src="assets/logo.png" />
 			 <div id="connection_spinner" class="connection_spinner">
 
 			 </div>

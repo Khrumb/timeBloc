@@ -39,7 +39,8 @@ var app = {
 					uiControl.setDebugger();
 	        //uiControl.populate();
 					setTimeout(function () {
-						blocFeed.setup();
+						//blocFeed.setup();
+						bloc.setup(0);
 						//alert("setup called");
 					}, 700);
 	        //userBloc.setup(1);
@@ -150,7 +151,7 @@ var dataManager = {
 		tx.executeSql('CREATE TABLE IF NOT EXISTS weight_list (uid Refrences USER uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS picture (pid Primary Key, uid Refrences USER uid, bid Refrences bloc bid, data)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS permission_list (plid Primary Key, uid Refrences USER uid, bid Refrences bloc bid, permission_level, date_added)');
-		tx.executeSql('CREATE TABLE IF NOT EXISTS bloc (bid Primary Key, uid Refrences USER uid, plid References permission_list(plid), title, pid References picture(pid))');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS bloc (bid Primary Key, uid Refrences USER uid, plid References permission_list(plid), title, pid References picture(pid), location, date)');
 
 
 	  //temp inserts
@@ -187,8 +188,8 @@ var dataManager = {
 		//tx.executeSql('INSERT INTO permission_list(pl_id, uid, bid, date_added) VALUES (<seq#>, <uid>, <bid>, <permission_level>, <current_data>)');
 		tx.executeSql('INSERT INTO permission_list(plid, uid, bid, permission_level, date_added) VALUES (0, 3, 0, 5 ,"-Null-")');
 
-		//tx.executeSql('INSERT INTO bloc(bid, uid, pl_id, title, pid) VALUES (<seq#>, <uid>, <pl_id>, "<title>",  <pid> )');
-		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, pid) VALUES (0, 3, 0, "Movie Night",  2 )');
+		//tx.executeSql('INSERT INTO bloc(bid, uid, pl_id, title, pid, location, date) VALUES (<seq#>, <uid>, <pl_id>, "<title>",  <pid>, <location>, <current_date> )');
+		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, pid, location) VALUES (0, 3, 0, "Yeezus Tour",  1, "CO - USA" )');
 
     //template for regex: tx.executeSql('INSERT INTO bloc(bid, userID, message) VALUES (<bid>, "<username>", "<message>")');
     tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (0, 0, "Oldest")');
@@ -1085,11 +1086,19 @@ var bloc = {
 	setupBloc:function(tx, results) {
 		bloc.c_bloc = results.rows.item(0);
 		document.getElementById("bloc_title").textContent = bloc.c_bloc.title;
+		document.getElementById("bloc_location").textContent = bloc.c_bloc.location
+
 		tx.executeSql('SELECT * FROM picture where pid = '+ bloc.c_bloc.pid, [], bloc.setupPictures, dataManager.errorCB);
 	},
 
 	setupPictures:function(tx, results) {
-		document.getElementById("bloc_bg").src = results.rows.item(0).data;
+		document.getElementById("bloc_bg").style['background-image'] = "url('"+results.rows.item(0).data+"')";
+		tx.executeSql('SELECT * FROM user where uid = '+ bloc.c_bloc.uid, [], bloc.setupUserInfo, dataManager.errorCB);
+	},
+
+	setupUserInfo:function(tx, results) {
+		document.getElementById("bloc_creater").textContent = "@"+results.rows.item(0).username;
+		document.getElementById("bloc_creater").ontouchend = "userBloc.setup("+results.rows.item(0).uid+");";
 		bloc.setupCallBack();
 	},
 
@@ -1120,8 +1129,8 @@ var bloc = {
 		document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+(touches.pageX-width))+ "px)";
 		document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + (touches.pageX-width)+ "px)";
 		document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + (touches.pageX-width)+ "px)";
-		document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + ((0-(touches.pageX-width))/2)+ "px)";
-		document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + ((touches.pageX-width)/2)+ "px)";
+		document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + ((0-(touches.pageX-width))/10)+ "px)";
+		document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + ((touches.pageX-width)/10)+ "px)";
 	},
 
 	onTabSlide:function() {
@@ -1134,10 +1143,10 @@ var bloc = {
 
 		clearInterval(bloc.container_animation);
 		if(bloc.c_pos  >= -width*0.5){
-			bloc.slide_step = (width + bloc.c_pos)/15;
+			bloc.slide_step = (width + bloc.c_pos)/10;
 			bloc.container_animation = setInterval(bloc.mediaOut, 6);
 		} else{
-			bloc.slide_step = (width + bloc.c_pos)/18;
+			bloc.slide_step = (width + bloc.c_pos)/10;
 			bloc.container_animation = setInterval(bloc.blogOut, 6);
 		}
 	},
@@ -1148,15 +1157,15 @@ var bloc = {
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+bloc.c_pos)+ "px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
 			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
-			document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + ((0-bloc.c_pos)/2)+ "px)";
-			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (bloc.c_pos/2)+ "px)";
+			document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + ((0-bloc.c_pos)/10)+ "px)";
+			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (bloc.c_pos/10)+ "px)";
 		} else {
 			clearInterval(bloc.slide_animation);
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + width+ "px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + -width+ "px)";
 			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + -width+ "px)";
-			document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + (width/2)+ "px)";
-			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" +  (-width/2) + "px)";
+			document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + (width/10)+ "px)";
+			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" +  (-width/10) + "px)";
 			document.getElementById("bloc_blog").classList.add("active");
 			document.getElementById("bloc_media").classList.remove("active");
 		}
@@ -1168,8 +1177,8 @@ var bloc = {
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+bloc.c_pos)+ "px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
 			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
-			document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + ((0-bloc.c_pos)/2)+ "px)";
-			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (bloc.c_pos/2)+ "px)";
+			document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + ((0-bloc.c_pos)/10)+ "px)";
+			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (bloc.c_pos/10)+ "px)";
 		} else{
 			clearInterval(bloc.slide_animation);
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(0px)";

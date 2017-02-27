@@ -38,65 +38,91 @@
 }
 
 .bloc_bg{
-	position: absolute;
+	position: relative;
 	top:9.5vw;
   left:0vw;
-	background-size: contain;
+	background-size: cover;
 
-  height:40%;
+
+
+  height:34%;
   width:100%;
 
-  margin: 0vw 0px 0 0px;
+	margin:0 0px 0vw 0px;
+
   padding:0px;
+	border:none;
 
 	z-index: 0;
   overflow: hidden;
+
+
+	background-repeat: no-repeat;
 }
 
-
-.bloc_gradient{
-	position: relative;
-
-
-	left:0%;
-	height:30%;
-	width:100vw;
-
-	margin:34.5vw 0px 0vw 0px;
-
-	opacity:1;
-}
 
 .bloc_title{
 	position: relative;
 	font-family: "main_font";
 	color:#ff891a;
 
-	left:10%;
+	background-color: white;
 
-	font-size: 12vw;
+	left:0;
 
-	margin:-28vw 0px 10vw 0px;
+	font-size: 9vw;
 
+	padding-left: 2vw;
+	padding-bottom: 1.5vw;
+
+	margin:7vw 0px -4vw 0;
+
+	border-bottom:  .5vw solid #ffb16e;
+}
+
+.bloc_location{
+	position: relative;
+	left:6%;
+	font-family: "main_font";
+	color:#ff891a;
+
+	font-size: 3vw;
+
+	margin:-3vw 0px 0vw 0px;
+
+
+}
+
+.bloc_creater{
+	position: relative;
+	left:25%;
+	font-family: "main_font";
+	color:#ff891a;
+
+	font-size: 3vw;
+
+	margin:-4vw 0px -13.25vw 0px;
 }
 
 .bloc_content_selecter.{
 	position: relative;
 	font-family: "main_font";
 
+	left:70%;
 	background-color: white;
-	margin:-28vw 0px 10vw 0px;
+	margin:0vw 0px 20vw 0px;
 	height: auto;
-	width:100%;
+	width:30%;
 }
 
 .bloc_top_line{
 	position:relative;
 	background-color: #ffb16e;
-	left:0;
+	left:80%;
 
 	height:0.5vw;
-	width:50.3%;
+	width:10.3%;
+	margin-top: 0.0vw;
 
 	-webkit-backface-visibility: hidden;
 }
@@ -105,7 +131,7 @@
 .bloc_content_selecter_titles{
 	position:relative;
 	width:100%;
-	margin-bottom:10.5vw;
+	margin-bottom:12.5vw;
 	-webkit-backface-visibility: hidden;
 
 }
@@ -115,13 +141,15 @@
 	background-color: white;
 	color:#d9d9d9;
 	height:auto;
-	left:0%;
-	width:50%;
+	left:80%;
+	width:10%;
 	text-align: center;
-	font-size: 8vw;
+	font-size: 6vw;
 
-	padding: 1vw 0vw 1vw 0vw;
+	padding: 3vw 0vw 3vw 0vw;
 	border-right: .5vw solid #ffb16e;
+	border-left: .5vw solid #ffb16e;
+
 	-webkit-backface-visibility: hidden;
 
 }
@@ -130,13 +158,13 @@
 	position:absolute;
 	background-color: white;
 	color:#d9d9d9;
-	left: 50%;
-	width:50%;
+	left: 90%;
+	width:10%;
 	text-align: center;
-	font-size: 8vw;
+	font-size: 6vw;
 
 
-	padding: 1vw 0vw 1vw 0vw;
+	padding: 3vw 0vw 3vw 0vw;
 	border-left: .5vw solid #ffb16e;
 	-webkit-backface-visibility: hidden;
 
@@ -150,9 +178,9 @@
 	position:relative;
 	background-color: #ffb16e;
 	bottom:auto;
-	left:50%;
+	left:90%;
 	height:0.5vw;
-	width:50.3%;
+	width:10.3%;
 
 	-webkit-backface-visibility: hidden;
 }

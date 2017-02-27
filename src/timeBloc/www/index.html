@@ -45,11 +45,9 @@
         </div>
        </div>
        <div id="navbar_top" class="navbar top">
-         <div id="navbar_menu_button" class="navbar menu" ontouchstart="sidebar.slide();">
-         </div>
-				 <div class="navbar backbutton" ontouchstart="app.onBackKeyDown();">
-
-				 </div>
+				 <div class="navbar backbutton" ontouchstart="app.onBackKeyDown();"></div>
+				 <img id="navbar_active_button" class="navbar newPost" ontouchstart="app.onBackKeyDown();"/>
+				 <div id="navbar_menu_button" class="navbar menu" ontouchstart="sidebar.slide();"></div>
 	      </div>
 				<div id="debug" class="debug">
 				</div>
@@ -146,7 +144,7 @@
         <div id="calander_slide" class="calander_slide_tab" ontouchstart="calander.sideGrab();" ontouchmove="calander.dragOut();" ontouchend="calander.onDragEnd();">
         </div>
         <img class="fuckyou" src="assets/Dickbutt.png" alt="" />
-    </div>
+     </div>
 
 		 <div data-anchor="blocFeed" id="blocFeed" class="blocFeed">
 
@@ -171,24 +169,22 @@
 		 </div>
 
 		 <div data-anchor="bloc"  id="bloc" class="bloc">
+			 <div id="bloc_bg_filter" class="bloc_bg_filter"></div>
 			 <img id="bloc_bg" class="bloc_bg" alt="" />
 			 <div id="bloc_content_container" class="bloc_content_container">
-				 <div class="bloc_info_container" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup('title_tap', 0);" >
-				 	<div id="bloc_title" class="bloc_title"></div>
-				 	<div id="bloc_location" class="bloc_location"></div>
-	       	<div id="bloc_creater" class="bloc_creater"></div>
-				 </div>
-				 <div class="bloc_content_selecter">
-  				 <div class="bloc_content_selecter_titles"  ontouchend="bloc.toggleOut();">
-  					 <div class="bloc_blog">
-  					  <img id="bloc_blog" class="selecter_icon" src="assets/delete_message.png" />
-  					 </div>
-  					 <div  class="bloc_media ">
-							 <img id="bloc_media" class="selecter_icon active" src="assets/media_tab.png" />
-  					 </div>
-  				 </div>
-  			 </div>
-  			 <div id="bloc_bottom_line" class="bloc_bottom_line"></div>
+  				<div  class="bloc_media " ontouchend="bloc.toggleOut();">
+					 <img id="bloc_media" class="selecter_icon active" src="assets/media_tab.png" />
+  				</div>
+
+					<div class="bloc_info_container" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup('title_tap', 0);" >
+						<div id="bloc_title" class="bloc_title"></div>
+						<div id="bloc_creater" class="bloc_creater"></div>
+
+						<div id="bloc_location" class="bloc_location"></div>
+					</div>
+  				<div class="bloc_blog"  ontouchend="bloc.toggleOut();">
+  				  <img id="bloc_blog" class="selecter_icon" src="assets/delete_message.png" />
+  				</div>
         </div>
   			 <div id="bloc_container" class="bloc_container"  ontouchstart="bloc.scrollStart();" ontouchmove="bloc.scrollMove();" ontouchend="bloc.scrollFinalize();">
   				 <div id="bloc_media_container" class="bloc_media_container">

@@ -17,8 +17,7 @@
     <platform name="android">
 				<preference name="AndroidExtraFilesystems" value="files,files-external,documents,sdcard,cache,cache-external,root" />
 				<preference name="orientation" value="portrait" />
-        <preference name="StatusBarOverlaysWebView" value="true" />
-        <preference name="StatusBarBackgroundColor" value="#ffa04d" />
+        <preference name="StatusBarOverlaysWebView" value="false" />
 				<preference name="AndroidPersistentFileLocation" value="Internal" />
 
         <feature name="Camera">
@@ -45,6 +44,8 @@
     </platform>
 
     <platform name="ios">
+			<preference name="StatusBarOverlaysWebView" value="false" />
+			
 			<preference name="orientation" value="portrait" />
 			<preference name="CordovaWebViewEngine" value="CDVUIWebViewEngine" />
 

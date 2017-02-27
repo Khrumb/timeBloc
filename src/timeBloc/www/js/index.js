@@ -21,17 +21,17 @@ var server_online = true;
 var sidebar_isOn = false;
 var block_Reload = false;
 
-var version = "0.55.12.3";
+var version = "0.55.12.7";
 
 //DEV_SERVER
-var server = "http://10.0.0.2";
+var server = "http://10.0.0.00";
 
 //PORTS FOR DEV SERVER
 //var login_server = server + ":650";
 //var content_server = server + ":600";
 
 //LIVE_SERVER
-//var server = "http://98.236.77.7";
+//var server = "http://***.***.***.***";
 
 //PORTS FOR LIVE SERVER
 var login_server = server + ":750";
@@ -249,7 +249,7 @@ var network = {
 				 socket.disconnect();
 				 document.getElementById('connection_message').textContent = "Trying Backup Server...";
 				 if(server == "http://98.236.77.7"){
-					 server = "http://10.0.0.2";
+					 server = "http://10.0.0.22";
 				 } else {
 					 server = "http://98.236.77.7";
 				 }
@@ -321,7 +321,6 @@ var network = {
 				socket.disconnect();
 				db.transaction(function(tx) {
 					tx.executeSql('delete from user where uid = '+ message.uid);
-					//alert("packet recieved");
 					tx.executeSql('INSERT INTO user(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground, version) VALUES ('+message.uid+', "'+message.username+'", "'+message.display_name+'", "'+message.bio+'", "'+message.theme+'", "'+message.birthday+'", "'+message.location+'", "'+message.date_joined+'", "'+message.profilePicture+'", "'+message.profileBackground+'", '+message.version+')');
 					userBloc.getUserInfo(tx);
 					network.requestUserInfo_recieved = true;
@@ -582,7 +581,7 @@ var dataManager = {
 			tx.executeSql('DROP TABLE IF EXISTS bloc_temp');
 			tx.executeSql('CREATE TABLE IF NOT EXISTS bloc_temp (uid Refrences USER uid, message, posted_time)');
 
-
+			dataManager.populateDB(tx);
 		}, dataManager.errorCB);
 		if(page_log.length > 0){
 			uiControl.turnCurrentItemOff();
@@ -624,26 +623,29 @@ var dataManager = {
 	  //temp inserts
 
 		//template for regex: tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (<seq#>, <cid>, <uid>, <bid>, <text>)');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (0, -1, 3, 1, "This is my test bloc i guess?")');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (1, 0, 1, 1, "Any idea on how i can get myself one of these?")');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (2, -1, 2, 1, "riprip")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (0, -1, 9, 1, "This is my test bloc i guess?")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (1, 0, 8, 1, "Any idea on how i can get myself one of these?")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (2, -1, 11, 1, "riprip")');
 		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (3, 1, 0, 1, "BOT_DETECTED")');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (4, 0, 2, 1, "RandomStoof")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (4, 0, 11, 1, "RandomStoof")');
 		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (5, 2, 0, 1, "01000100 01101111 01100101 01110011 00100000 01110100 01101000 01101001 01110011 00100000 01100011 01101111 01110101 01101110 01110100 00100000 01100001 01110011 00100000 01100001 01101110 00100000 01000101 01100001 01110011 01110100 01100101 01110010 01100101 01100111 01100111 00111111")');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (6, 3, 3, 1, "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium")');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (7, -1, 1, 1, "Bruh Calm down.")');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (8, 5, 2, 1, "LOL, im the bot.")');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (9, 3, 3, 1, "This is my test bloc i guess?")');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (10, 0, 1, 1, "Any idea on how i can get myself one of these?")');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (11, 5, 2, 1, "riprip")');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (12, -1, 2, 1, "riprip")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (6, 3, 9, 1, "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (7, -1, 8, 1, "Bruh Calm down.")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (8, 5, 11, 1, "LOL, im the bot.")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (9, 3, 9, 1, "This is my test bloc i guess?")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (10, 0, 8, 1, "Any idea on how i can get myself one of these?")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (11, 5, 11, 1, "riprip")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (12, -1, 11, 1, "riprip")');
 		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (13, 1, 0, 1, "BOT_DETECTED")');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (14, 12, 2, 1, "RandomStoof")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (14, 12, 11, 1, "RandomStoof")');
 		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (15, 2, 0, 1, "01000100 01101111 01100101 01110011 00100000 01110100 01101000 01101001 01110011 00100000 01100011 01101111 01110101 01101110 01110100 00100000 01100001 01110011 00100000 01100001 01101110 00100000 01000101 01100001 01110011 01110100 01100101 01110010 01100101 01100111 01100111 00111111")');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (16, 9, 3, 1, "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium")');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (17, -1, 1, 1, "Bruh Calm down.")');
-		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (18, 5, 2, 1, "LOL, im the bot.")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (16, 9, 9, 1, "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (17, -1, 8, 1, "Bruh Calm down.")');
+		tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES (18, 5, 11, 1, "LOL, im the bot.")');
 		comment_number=19;
+
+
+		tx.executeSql('CREATE TABLE IF NOT EXISTS like (uid Refrences USER uid , type_id, content_id, pn)');
 
 		//Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium
 
@@ -661,10 +663,10 @@ var dataManager = {
 		tx.executeSql('DELETE FROM user WHERE uid = 2');
 		tx.executeSql('DELETE FROM user WHERE uid = 3');
 
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (1, "hyte", "John Gregg", "Lead Programmer on timeBloc.", "dark", "January, 5th", "WV - USA", "<date_joined>", "img/1_profile_picture.jpg", "img/1_profile_background.jpg")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (1, "hyte", "John Gregg", "Lead Programmer on timeBloc.", "dark", "January, 5th", "WV - USA", "<date_joined>", "img/1_profile_picture.jpg", "-1")');
     tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (2, "the_reelist_condor", "Connor Thomas", "BYU. Also a noob.", "dark", "December, 4th", "UT - USA", "<date_joined>", "img/2_profile_picture.jpg", "img/2_profile_background.jpg")');
     tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (3, "serbian_slayer", "Brane Pantovic", "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.", "light", "March, 14th", "NY - USA","<date_joined>", "img/3_profile_picture.jpg", "img/3_profile_background.jpg")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (0, "user", "default_user", "<message>", "light", "NULL, 00th", "N/A - N/A", "<date_joined>", "img/0_profile_picture.jpg", "img/0_profile_background.jpg")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, location, date_joined, profilePicture, profileBackground) VALUES (0, "user", "default_user", "<message>", "light", "NULL, 00th", "N/A - N/A", "<date_joined>", "-1", "-2")');
 
 
 
@@ -718,7 +720,7 @@ var dataManager = {
 
 		//tx.executeSql('INSERT INTO bloc(bid, uid, pl_id, title, mid, location, date) VALUES (<seq#>, <uid>, <pl_id>, "<title>",  <mid>, <location>, <current_date> )');
 		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, mid, location) VALUES (0, 0, 0, "Default Bloc",  0, "NA - USA" )');
-		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, mid, location) VALUES (1, 3, 0, "Brane Test",  0, "CO - USA" )');
+		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, mid, location) VALUES (1, 3, 0, "Kanye West Tour",  0, "CO - USA" )');
 
     //template for regex: tx.executeSql('INSERT INTO bloc(bid, userID, message) VALUES (<bid>, "<username>", "<message>")');
 		/*
@@ -1195,6 +1197,8 @@ var blocFeed ={
   //all ui load evenets here
   setupCallBack:function() {
 		uiControl.turnCurrentItemOff();
+		document.getElementById('navbar_active_button').src = "assets/plus.png";
+		document.getElementById('navbar_active_button').style.display = "block";
 		document.getElementById("blocFeed").style.display = "block";
     document.getElementById("blocFeed").style['z-index'] = 5;
 		uiControl.turnItemOn("blocFeed");
@@ -1202,6 +1206,8 @@ var blocFeed ={
 
   taredown:function() {
 		uiControl.turnItemOff("blocFeed");
+		document.getElementById('navbar_active_button').style.display = "none";
+
 		document.getElementById("blocFeed").style.display = "none";
 		document.getElementById("blocFeed").style['z-index'] = 0;
   },
@@ -1913,6 +1919,7 @@ var bloc = {
 	},
 
 	setupCallBack:function(){
+
 		document.getElementById("bloc_container").style.height = -bloc.scrollLimit+ "px";
 		document.getElementById("bloc_blog_container").style.height = -bloc.scrollLimit*1.2+ "px";
 		document.getElementById("bloc_blog_content").style.height = -bloc.scrollLimit*1.2+ "px";
@@ -1922,12 +1929,19 @@ var bloc = {
 
 		uiControl.turnCurrentItemOff();
 
+		document.getElementById('navbar_active_button').src = "assets/edit.png";
+		document.getElementById('navbar_active_button').style.display = "block";
 		document.getElementById("bloc").style.display = "block";
 		document.getElementById("bloc").style['z-index'] = 1;
 		uiControl.turnItemOn("bloc");
+		setTimeout(function () {
+			document.getElementById("navbar_top").style.backgroundColor = "Transparent";
+		}, 200);
 	},
 
 	taredown:function() {
+		document.getElementById('navbar_active_button').style.display = "none";
+
 		uiControl.turnItemOff("bloc");
 		if(!bloc.mediaIsOut){
 			bloc.toggleOut();
@@ -1939,6 +1953,7 @@ var bloc = {
 		bloc.wasToggled = false;
 		setTimeout(function () {
 			bloc.id = null;
+			document.getElementById("navbar_top").style.backgroundColor = "#ffb16e";
 			document.getElementById("bloc_media_content").scrollTop =  0;
 			document.getElementById("bloc").style.display = "none";
 			document.getElementById("bloc").style['z-index'] = 0;
@@ -1951,7 +1966,7 @@ var bloc = {
 
 	setupBloc:function(tx, results) {
 		bloc.c_bloc = results.rows.item(0);
-		document.getElementById("bloc_title").textContent = bloc.c_bloc.title;
+		document.getElementById("bloc_title").textContent = bloc.c_bloc.title.toUpperCase();
 		document.getElementById("bloc_location").textContent = bloc.c_bloc.location;
 		tx.executeSql('SELECT * FROM media_temp where bid = '+ bloc.c_bloc.bid, [], bloc.setupPictures, dataManager.errorCB);
 
@@ -1965,21 +1980,25 @@ var bloc = {
 			if(results.rows.item(i).mid == bloc.c_bloc.mid){
 				document.getElementById("bloc_bg").style['background-image'] = "url('"+results.rows.item(i).data+"')";
 			} else {
+				var picture = results.rows.item(i).data;
+				if(picture == null){
+					picture = "assets/gradient.png"
+				}
 				switch(piccounter%3){
 					case 0:
 						pictures += "<div class='bloc_photo_row'>"+
 													"<div class='bloc_photo_container c1' ontouchstart='bloc.pictureTouchStart();' onTouchEnd='bloc.selectiveSetup(\"picture\", "+ results.rows.item(i).mid +");'>"+
-														"<img class='bloc_photo' src='"+ results.rows.item(i).data +"' />" +
+														"<img class='bloc_photo' src='"+ picture +"' />" +
 													"</div>";
 						break;
 					case 1:
 						pictures += "<div class='bloc_photo_container c2' ontouchstart='bloc.pictureTouchStart();' onTouchEnd='bloc.selectiveSetup(\"picture\", "+ results.rows.item(i).mid +");'>"+
-														"<img class='bloc_photo' src='"+ results.rows.item(i).data +"' />" +
+														"<img class='bloc_photo' src='"+ picture +"' />" +
 													"</div>";
 						break;
 					case 2:
 						pictures += "<div class='bloc_photo_container c3' ontouchstart='bloc.pictureTouchStart();' onTouchEnd='bloc.selectiveSetup(\"picture\", "+ results.rows.item(i).mid +");'>"+
-													"<img class='bloc_photo' src='"+ results.rows.item(i).data +"' />" +
+													"<img class='bloc_photo' src='"+ picture +"' />" +
 												"</div>"+
 											"</div>";
 						break;
@@ -1998,7 +2017,7 @@ var bloc = {
 																																"</div>";
 		}
 		tx.executeSql('SELECT username,uid FROM user where uid = '+ bloc.c_bloc.uid, [], bloc.setupUserInfo, dataManager.errorCB);
-		tx.executeSql('SELECT cid, reply, text, username, user.uid FROM comments Left Outer Join user ON comments.uid = user.uid where bid =' + bloc.c_bloc.bid, [], bloc.setupDiscussion, dataManager.errorCB);
+		tx.executeSql('SELECT cid, reply, text, username, user.uid, user.profilePicture FROM comments Left Outer Join user ON comments.uid = user.uid where bid =' + bloc.c_bloc.bid, [], bloc.setupDiscussion, dataManager.errorCB);
 	},
 
 
@@ -2006,6 +2025,7 @@ var bloc = {
 	comment_connections:[],
 	visited:[],
 	visible: [],
+	liked:[],
 	base_id:0,
 	setupDiscussion:function(tx, results) {
 		bloc.base_id = results.rows.item(0).cid;
@@ -2014,13 +2034,15 @@ var bloc = {
 
 		for(var i = 0; i < results.rows.length; i++){
 			bloc.comments[i] = results.rows.item(i);
+			bloc.liked.push(false);
 			bloc.comment_connections.push(results.rows.item(i).reply);
 			if(bloc.comments[i].reply == -1){
 				bloc.visible[i] = true;
-			} else {
+			} else if(bloc.visible[i] == null){
 				bloc.visible[i] = false;
 			}
 		}
+
 		bloc.loadDiscussion();
 	},
 
@@ -2039,30 +2061,38 @@ var bloc = {
 		}
 		document.getElementById('bloc_blog_content').innerHTML = discussion;
 		for(var i = 0; i <  bloc.comments.length ; i++){
-
-				document.getElementById("bloc_comment_"+i+"_poster").textContent = '@'+ bloc.comments[i].username;
+				document.getElementById("bloc_comment_"+i+"_poster").textContent = bloc.comments[i].username;
 				if(bloc.comments[i].reply != -1){
 					var parent = bloc.comments[i].reply;
-					document.getElementById('bloc_comment_parent_'+i).textContent = "@" + bloc.comments[parent].username+ " ";
+					document.getElementById('bloc_comment_parent_'+i).textContent = "  @" + bloc.comments[parent].username+ " ";
 				}
 				document.getElementById("bloc_comment_children_"+i).textContent = bloc.children[i];
 				document.getElementById("bloc_comment_"+i+"_text").textContent = bloc.comments[i].text;
 			if(!bloc.visible[i]){
 				document.getElementById("bloc_comment_"+ i + "_reply_container").style.display = "none";
 			}
+			if(bloc.liked[i]){
+				document.getElementById('bloc_comment_'+ i + '_like').src = 'assets/heart_filled.png';
+				document.getElementById('bloc_comment_'+ i + '_like').style.opacity = '1.0';
+			} else {
+				document.getElementById('bloc_comment_'+ i + '_like').src = 'assets/heart_unfilled.png';
+				document.getElementById('bloc_comment_'+ i + '_like').style.opacity = '0.6';
+			}
+			dataManager.getMedia(bloc.comments[i].profilePicture, "bloc_comment_"+ i +"_picture");
 
 		}
 	},
 
 	generateThreadHead:function(id) {
 		var comment = '<div class="comment">'+
-										'<img id="bloc_comment_'+ id +'_picture" class ="bloc_commenter_picture" src="img/'+ bloc.comments[id].uid +'_profile_picture_icon.jpg" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'profilePicture\', '+ id +');"/>';
+										'<div id="bloc_comment_'+ id +'_picture" class ="bloc_commenter_picture" src="img/'+ bloc.comments[id].uid +'_profile_picture_icon.jpg" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'profilePicture\', '+ id +');"></div>';
 		if(uid == bloc.comments[id].uid){
 			comment += '<div class="comment_info_container self" ontouchstart="bloc.pictureTouchStart();" onTouchEnd="bloc.selectiveSetup(\'comment_tap\', '+ id +');">';
 		} else{
 			comment += '<div class="comment_info_container" ontouchstart="bloc.pictureTouchStart();" onTouchEnd="bloc.selectiveSetup(\'comment_tap\', '+ id +');">';
 		}
-		comment +=  				'<p id="bloc_comment_'+ id +'_poster" class="bloc_comment_poster"></p>'+
+		comment +=  				'<div class="bloc_comment_tail_visible"><div class="bloc_comment_tail_bite"></div></div>'+
+												'<p id="bloc_comment_'+ id +'_poster" class="bloc_comment_poster"></p>'+
 												'<img id="bloc_comment_'+ id +'_like" class ="bloc_comment_like" src="assets/heart_unfilled.png" />'+
 												'<p id="bloc_comment_'+ id +'_text" class="bloc_comment_text"></p>'+
 												'<p class="bloc_comment_children"><span class="bloc_comment_cute_little_plus">+</span><span id="bloc_comment_children_'+ id +'">0</span></p>'+
@@ -2074,15 +2104,16 @@ var bloc = {
 
 	generateReply:function(id) {
 		var comment = '<div id="bloc_comment_'+ id +'" class="comment">' +
-										'<img id="bloc_comment_'+ id +'_picture" class ="bloc_commenter_picture reply_picture" src="img/'+ bloc.comments[id].uid +'_profile_picture_icon.jpg" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'profilePicture\', '+ id +');" />';
+										'<div id="bloc_comment_'+ id +'_picture" class ="bloc_commenter_picture reply_picture" src="img/'+ bloc.comments[id].uid +'_profile_picture_icon.jpg" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'profilePicture\', '+ id +');"></div>';
 		if(uid == bloc.comments[id].uid){
 			comment += '<div class="comment_info_container reply_content self" ontouchstart="bloc.pictureTouchStart();" onTouchEnd="bloc.selectiveSetup(\'comment_tap\', '+ id +');">';
 		} else{
 			comment += '<div class="comment_info_container reply_content" ontouchstart="bloc.pictureTouchStart();" onTouchEnd="bloc.selectiveSetup(\'comment_tap\', '+ id +');">';
 		}
-		comment +=    			'<p id="bloc_comment_'+ id +'_poster" class="bloc_comment_poster"></p>'+
+		comment +=			    '<div class="bloc_comment_tail_visible reply_tail"><div class="bloc_comment_tail_bite reply_tail_bite"></div></div>'+
+												'<p class="bloc_comment_poster"><span id="bloc_comment_'+ id +'_poster" ></span><span id="bloc_comment_parent_'+id+'" class="bloc_comment_parent"></span></p>'+
 												'<img id="bloc_comment_'+ id +'_like" class ="bloc_comment_like" src="assets/heart_unfilled.png" />'+
-												'<p class="bloc_comment_text"><span id="bloc_comment_parent_'+id+'" class="bloc_comment_parent"></span><span id="bloc_comment_'+ id +'_text" ></span></p>'+
+												'<p class="bloc_comment_text"><span id="bloc_comment_'+ id +'_text" ></span></p>'+
 												'<p class="bloc_comment_children"><span class="bloc_comment_cute_little_plus">+</span><span id="bloc_comment_children_'+ id +'">0</span></p>'+
 											'</div>'+
 										 '<div id="bloc_comment_'+ id +'_reply_container" class="bloc_comment_reply_container">'+ bloc.findChildren(id) +'</div>'+
@@ -2123,7 +2154,6 @@ var bloc = {
 	tabUpdater:function() {
 		document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+(touches.pageX-width))+ "px)";
 		document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + (touches.pageX-width)+ "px)";
-		document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (-(3*(touches.pageX-width))/20)+ "px)";
 	},
 
 	onTabSlide:function() {
@@ -2147,12 +2177,10 @@ var bloc = {
 		if(bloc.c_pos  > -width){
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+bloc.c_pos)+ "px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
-			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (-(3*bloc.c_pos)/20)+ "px)";
 		} else {
 			clearInterval(bloc.slide_animation);
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + width+ "px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + -width+ "px)";
-			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" +  ((3*width)/20) + "px)";
 			document.getElementById("bloc_blog").classList.add("active");
 			document.getElementById("bloc_media").classList.remove("active");
 			bloc.mediaIsOut = false;
@@ -2164,12 +2192,10 @@ var bloc = {
 		if(bloc.c_pos < 0){
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+bloc.c_pos)+ "px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
-			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (-(3*bloc.c_pos)/20)+ "px)";
 		} else{
 			clearInterval(bloc.slide_animation);
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(0px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(0px)";
-			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(0)";
 			document.getElementById("bloc_media").classList.add("active");
 			document.getElementById("bloc_blog").classList.remove("active");
 			bloc.mediaIsOut = true;
@@ -2202,7 +2228,7 @@ var bloc = {
 			bloc.scrollAnimation = null;
 			bloc.deceleration = null;
 		}
-		bloc.scrollAnimation = setInterval(bloc.containerUpdater, 5);
+		bloc.scrollAnimation = setInterval(bloc.containerUpdater, 7);
 		bloc.timer = performance.now();
 	},
 
@@ -2210,57 +2236,79 @@ var bloc = {
 	containerUpdater:function() {
 		var cpos = (bloc.dy+bloc.containerPosition);
 		if(cpos <=0){
-			if( cpos >= (-width*0.45)){
+			if( cpos >= (-width*0.52)){
 				document.getElementById("bloc_content_container").style["-webkit-transform"] = "translateY(" + cpos + "px)";
-
-			} else {
-				document.getElementById("bloc_content_container").style["-webkit-transform"] = "translateY(" + -(width*0.445) + "px)";
-			}
-			if(cpos >= bloc.scrollLimit){
 				document.getElementById("bloc_container").style["-webkit-transform"] = "translateY(" + (cpos) + "px)";
+				document.getElementById("bloc_bg_filter").style.backgroundColor = "rgba(0,0,0,"+0.5*(cpos/(-width*0.52))+")";
+				if(bloc.mediaIsOut){
+					document.getElementById("bloc_media_content").style["-webkit-transform"] = "translateY(0px)";
+				} else{
+					document.getElementById("bloc_blog_content").style["-webkit-transform"] = "translateY(0px)";
+				}
+			} else {
+				document.getElementById("bloc_content_container").style["-webkit-transform"] = "translateY(" + (-width*0.525) + "px)";
+				document.getElementById("bloc_container").style["-webkit-transform"] = "translateY(" + (-width*0.525) + "px)";
+				if(cpos >= bloc.scrollLimit){
+					if(bloc.mediaIsOut){
+						document.getElementById("bloc_media_content").style["-webkit-transform"] = "translateY(" + (cpos-(-width*0.525)) + "px)";
+					} else{
+						document.getElementById("bloc_blog_content").style["-webkit-transform"] = "translateY(" + (cpos-(-width*0.525)) + "px)";
+					}
+				}
+			}
+
+		} else {
+			document.getElementById("bloc_container").style["-webkit-transform"] = "translateY(0px)";
+			document.getElementById("bloc_content_container").style["-webkit-transform"] = "translateY(0px)";
+			if(cpos >= bloc.scrollLimit){
+				if(bloc.mediaIsOut){
+					document.getElementById("bloc_media_content").style["-webkit-transform"] = "translateY(0px)";
+				} else{
+					document.getElementById("bloc_blog_content").style["-webkit-transform"] = "translateY(0px)";
+				}
 			}
 		}
 	},
 
 	scrollMove:function() {
-		bloc.dy = event.touches[0].pageY - first_touch.pageY;
+		bloc.dy = (event.touches[0].pageY - first_touch.pageY);
 	},
 
 	deceleration:null,
 	scrollFinalize:function() {
 		clearInterval(bloc.scrollAnimation);
 		bloc.scrollAnimation = null;
-
 		bloc.timer = performance.now() - bloc.timer;
 		var velocity = 5*(bloc.dy/bloc.timer)+1;
 		if(bloc.dy+bloc.containerPosition >= bloc.scrollLimit){
 			bloc.containerPosition += bloc.dy;
-
 		} else {
-			document.getElementById("bloc_container").style["-webkit-transform"] = "translateY(" + bloc.scrollLimit + "px)";
 			bloc.containerPosition = bloc.scrollLimit;
 		}
-		bloc.dy = 0;
+		if (Math.abs(bloc.dy) >= 10) {
+			var acceleration = -(velocity/100);
+			var t = 0;
+			bloc.dy = 0;
 
-		bloc.deceleration = setInterval(function() {
-			bloc.containerPosition += velocity;
-			velocity -= ((velocity)/12).toPrecision(6);
-
-			if(bloc.containerPosition < bloc.scrollLimit){
-				velocity == 0;
-				bloc.containerPosition = bloc.scrollLimit;
-			} else if(bloc.containerPosition >= 0){
-				velocity == 0;
-				bloc.containerPosition = 0 ;
-			}
-			bloc.containerUpdater();
-			if(Math.abs(velocity) < 0.1){
-				clearInterval(bloc.deceleration);
-				bloc.deceleration = null;
-			}
-		}, 15);
+			bloc.deceleration = setInterval(function() {
+				bloc.containerPosition += velocity;
+				velocity = velocity + (acceleration*(t*t))/2;
+				t+=0.1;
+				if(bloc.containerPosition < bloc.scrollLimit){
+					velocity == 0;
+					bloc.containerPosition = bloc.scrollLimit;
+				} else if(bloc.containerPosition >= 0){
+					velocity == 0;
+					bloc.containerPosition = 0 ;
+				}
+				bloc.containerUpdater();
+				if(Math.abs(velocity) < Math.abs( (acceleration*(t*t))/2)){
+					clearInterval(bloc.deceleration);
+					bloc.deceleration = null;
+				}
+			}, 5);
+		}
 	},
-
 
 	last_id: -1,
 	last_tap:0,
@@ -2275,8 +2323,14 @@ var bloc = {
 									//userBloc.setup(id);
 								} else {
 									//alert("LIKED LiKE A BAWS");
-									document.getElementById('bloc_comment_'+ id + '_like').src = 'assets/heart_filled.png';
-									document.getElementById('bloc_comment_'+ id + '_like').style.opacity = '1.0';
+									bloc.liked[id] = !bloc.liked[id];
+									if(bloc.liked[id]){
+										document.getElementById('bloc_comment_'+ id + '_like').src = 'assets/heart_filled.png';
+										document.getElementById('bloc_comment_'+ id + '_like').style.opacity = '1.0';
+									} else {
+										document.getElementById('bloc_comment_'+ id + '_like').src = 'assets/heart_unfilled.png';
+										document.getElementById('bloc_comment_'+ id + '_like').style.opacity = '0.6';
+									}
 									bloc.double_tap = false;
 								}
 							}, 200);
@@ -2300,7 +2354,6 @@ var bloc = {
 								bloc.loadDiscussion();
 							} else {
 								bloc.replyComment(id);
-								//document.getElementById('bloc_comment_textarea').focus();
 								bloc.double_tap = false;
 							}
 							document.getElementById('bloc_blog_content');
@@ -2311,10 +2364,14 @@ var bloc = {
 					}
 					break;
 					case 'title_tap':
-						if(!bloc.mediaIsOut && (performance.now()- bloc.last_tap) > 200){
+						if((performance.now()- bloc.last_tap) > 200){
 							setTimeout(function () {
-								if(!bloc.mediaIsOut && bloc.double_tap){
-									bloc.startThread();
+								if (bloc.double_tap) {
+									if(!bloc.mediaIsOut){
+										bloc.startThread();
+									} else {
+										uiControl.dialog(["Photo Library", "Camera"],[bloc.selectPhotoAlbum, bloc.selectCamera]);
+									}
 									bloc.double_tap = false;
 								}
 							}, 200);
@@ -2342,17 +2399,49 @@ var bloc = {
 		}
 	},
 
+	selectPhotoAlbum:function(){
+		block_Reload = true;
+		var camera = navigator.camera;
+		camera.getPicture(bloc.post_picture, personalPage.error, { quality: 80, allowEdit:true, targetWidth: 1080, targetHeight: 1920, sourceType: camera.PictureSourceType.PHOTOLIBRARY,destinationType: camera.DestinationType.FILE_URI});
+	},
+
+	selectCamera:function(){
+		block_Reload = true;
+		var camera = navigator.camera;
+		camera.getPicture(bloc.post_picture, personalPage.error, { quality: 80, allowEdit:true, targetWidth: 1080, targetHeight: 1920, sourceType: camera.PictureSourceType.CAMERA,destinationType: camera.DestinationType.FILE_URI});
+	},
+
+	c_mid:33,
+	post_picture:function(imageData) {
+		if(imageData != null){
+			db.transaction(function(tx) {
+				tx.executeSql('INSERT INTO media_temp(mid, uid, bid, type, data) VALUES ('+ bloc.c_mid +', 3, 1, 0, "'+imageData+'")');
+				bloc.c_mid++;
+				tx.executeSql('SELECT * FROM media_temp where bid = '+ bloc.c_bloc.bid, [], bloc.setupPictures, dataManager.errorCB);
+
+				setTimeout(function () {
+					block_Reload = false;
+				}, 500);
+			}, dataManager.errorCB);
+		} else {
+			alert("Failed to Retrieve Photo.");
+		}
+
+	},
+
 	startThread:function() {
+		id = 0;
 		if(document.getElementById("bloc_comment_reply") != null){
 			document.getElementById("bloc_comment_reply").remove();
 		}
 		document.getElementById('bloc_comment_'+ id +'_reply_container').style.display = "block";
-		var comment = '<div id="bloc_comment" class="comment">' +
+		var comment = '<div id="bloc_comment_reply" class="comment">' +
 										'<img id="bloc_comment_'+ id +'_picture" class ="bloc_commenter_reply_cancel" src="assets/cancel.png" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'reply_backout\', '+uid+');" />'+
 										'<img id="bloc_comment_'+ id +'_picture" class ="bloc_commenter_reply_confirm" src="assets/confirm.png" ontouchstart="bloc.pictureTouchStart();" ontouchend="bloc.selectiveSetup(\'confirm\', '+uid+');" />'+
 											'<div class="comment_info_container reply_content self" >'+
-		    								'<p id="bloc_comment_'+ id +'_poster" class="bloc_comment_poster"></p>'+
-												'<textarea id="bloc_comment_textarea" class="bloc_comment_textarea" autofocus rows=3 maxlengh=140></textarea>'+
+											'<img id="bloc_comment_'+ id +'_like" class ="bloc_comment_like" src="assets/heart_unfilled.png" />'+
+												'<p id="bloc_comment_'+ id +'_poster" class="bloc_comment_poster"></p>'+
+												'<textarea id="bloc_comment_textarea" class="bloc_comment_textarea" autofocus rows=3 maxlengh=140 onfocus="bloc.focusReply();" onblur="bloc.unfocusReply();"></textarea>'+
 												'<p class="bloc_comment_children"><span class="bloc_comment_cute_little_plus">+</span><span id="bloc_comment_children_'+ id +'">0</span></p>'+
 											'</div>'+
 										'<div id="bloc_comment_'+ id +'_reply_container" class="bloc_comment_reply_container"></div>'+
@@ -2360,6 +2449,12 @@ var bloc = {
 		var comment_node = document.createElement("DIV");
 		comment_node.innerHTML= comment;
 		document.getElementById('bloc_blog_content').insertBefore(comment_node, document.getElementById('bloc_blog_content').childNodes[0]);
+		if(bloc.containerPosition >= (-width*0.525)){
+			bloc.containerPosition += (-width*0.07);
+		} else {
+			bloc.containerPosition = (-width*0.525);
+		}
+		bloc.containerUpdater();
 	},
 
 	reply_id: -1,
@@ -2376,7 +2471,7 @@ var bloc = {
 											'<img id="bloc_comment_'+ id +'_like" class ="bloc_comment_like" src="assets/heart_unfilled.png" />'+
 
 												'<p id="bloc_comment_'+ id +'_poster" class="bloc_comment_poster"></p>'+
-												'<textarea id="bloc_comment_textarea" class="bloc_comment_textarea" autofocus rows=3 maxlengh=140></textarea>'+
+												'<textarea id="bloc_comment_textarea" class="bloc_comment_textarea" autofocus rows=3 maxlengh=140 onfocus="bloc.focusReply();" onblur="bloc.unfocusReply();"></textarea>'+
 												'<p class="bloc_comment_children"><span class="bloc_comment_cute_little_plus">+</span><span id="bloc_comment_children_'+ id +'">0</span></p>'+
 											'</div>'+
 										'<div id="bloc_comment_'+ id +'_reply_container" class="bloc_comment_reply_container"></div>'+
@@ -2384,13 +2479,26 @@ var bloc = {
 		var comment_node = document.createElement("DIV");
 		comment_node.innerHTML= comment;
 		document.getElementById('bloc_comment_'+ id +'_reply_container').insertBefore(comment_node, document.getElementById('bloc_comment_'+ id +'_reply_container').childNodes[0]);
+		bloc.containerPosition += (-width*0.07);
+		bloc.containerUpdater();
+	},
 
+	focusReply:function() {
+		document.getElementById("bloc_container").ontouchstart = null;
+		document.getElementById("bloc_container").ontouchmove = null;
+		document.getElementById("bloc_container").ontouchend = null;
+	},
+
+	unfocusReply:function() {
+		document.getElementById("bloc_container").ontouchstart = bloc.scrollStart;
+		document.getElementById("bloc_container").ontouchmove = bloc.scrollMove;
+		document.getElementById("bloc_container").ontouchend = bloc.scrollFinalize;
 	},
 
 	submitComment:function(tx) {
 			tx.executeSql('INSERT INTO comments(cid, reply, uid, bid, text) VALUES ('+ comment_number +', '+ bloc.reply_id +', '+ uid +', '+ bloc.c_bloc.bid +' , "'+document.getElementById("bloc_comment_textarea").value +'")');
 			comment_number++;
-			tx.executeSql('SELECT * FROM comments Left Outer Join user ON comments.uid = user.uid where bid =' + bloc.c_bloc.bid, [], bloc.setupDiscussion, dataManager.errorCB);
+			tx.executeSql('SELECT cid, reply, text, username, user.uid, user.profilePicture FROM comments Left Outer Join user ON comments.uid = user.uid where bid =' + bloc.c_bloc.bid, [], bloc.setupDiscussion, dataManager.errorCB);
 	}
 
 };
@@ -2422,17 +2530,16 @@ var fullScreenMedia ={
 		uiControl.turnItemOn("fullScreenMedia");
 		setTimeout(function () {
 			document.getElementById('navbar_top').style.backgroundColor = "rgba(255, 177, 110, 0.0)";
-
 		}, 100);
 	},
 
 	taredown:function() {
+		uiControl.turnItemOff("fullScreenMedia");
+		//document.getElementById('navbar_top').style.backgroundColor = "rgba(255, 177, 110, 1.0)";
 		if (current_page == null) {
 			page_log.pop();
 			uiControl.turnCurrentItemOff();
 		}
-		document.getElementById('navbar_top').style.backgroundColor = "rgba(255, 177, 110, 1.0)";
-		uiControl.turnItemOff("fullScreenMedia");
 		setTimeout(function () {
 			document.getElementById("fullScreenMedia").style.display = "none";
 			document.getElementById("fullScreenMedia").style['z-index'] = 0;

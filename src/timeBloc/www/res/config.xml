@@ -1,60 +1,25 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.timeBloc" version="0.1.10" xmlns="" xmlns:gap="">
+<widget id="com.timeBloc" version="0.1.10">
     <name>timeBloc</name>
     <description>
         Timebloc encourages all users to share the details of their lives, from the mundane to the extraordinary.
     </description>
     <author email="jo.gregg@me.com" href="">
         Lead Developer : John Gregg
+				Idea Men: Connor Thomas, Brane Pantovic
     </author>
+		<content src="index.html"/>
+		<access origin="*" />
+    <icon src="icon.png"/>
+		<preference name="phonegap-version" value="cli-5.2.0" />
+		<preference name="orientation" value="portrait" />
+		<preference name="fullscreen" value="true" />
 
-
-    <preference name="permissions" value="none" />
-    <preference name="orientation" value="portrait" />
-    <preference name="target-device" value="handset" />
-    <preference name="Fullscreen" value="false" />
-    <preference name="webviewbounce" value="true" />
-    <preference name="prerendered-icon" value="true" />
-    <preference name="stay-in-webview" value="false" />
-    <preference name="ios-statusbarstyle" value="black-opaque" />
-    <preference name="detect-data-types" value="true" />
-    <preference name="exit-on-suspend" value="false" />
-    <preference name="show-splash-screen-spinner" value="true" />
-    <preference name="auto-hide-splash-screen" value="true" />
-    <preference name="android-installLocation" value="auto" />
-		<preference name="android-windowSoftInputMode" value="adjustResize" />
-
-    <icon src="icon.png" />
-
-		<feature name="Camera">
-			<param name="android-package" value="org.apache.cordova.camera.CameraLauncher" />
-		</feature>
-
-
-    <access origin="*" />
-
-		<plugin name="cordova-plugin-whitelist" version="1" />
-    <plugin name="cordova-plugin-camera" version="1" />
-		<plugin name="ionic-plugin-keyboard" version="1" />
-		<plugin name="cordova-plugin-dialogs" version="1" />
-
-
-    <allow-intent href="http://*/*" />
-    <allow-intent href="https://*/*" />
-    <allow-intent href="tel:*" />
-    <allow-intent href="sms:*" />
-    <allow-intent href="mailto:*" />
-    <allow-intent href="geo:*" />
-
+		<feature name="http://api.phonegap.com/1.0/camera" />
 
     <platform name="android">
         <allow-intent href="market:*" />
-				<preference name="Fullscreen" value="true" />
 				<preference name="android-windowSoftInputMode" value="stateUnchanged|adjustResize" />
     </platform>
-    <platform name="ios">
-        <allow-intent href="itms:*" />
-        <allow-intent href="itms-apps:*" />
-    </platform>
-    <engine name="android" spec="~4.1.1" />
+
 </widget>

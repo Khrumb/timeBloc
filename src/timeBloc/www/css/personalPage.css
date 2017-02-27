@@ -30,33 +30,50 @@
   -webkit-animation: fade_off 200ms ;
 }
 
+.bgselect{
+	position:absolute;
+	height:auto;
+	width: 20vw;
+	top:8%;
+	left:0;
+	margin:0;
+	padding: 0;
+	display:none;
+}
 
 .current_userPP{
   position:absolute;
-  top:70vw;
+  top:80vw;
   left:50vw;
 	width: 18vw;
   height:10vw;
 
-  margin: -5vh 0px 0px -9vw;
+  margin: -10vh 0px 0px -9vw;
   display:none;
 
 	height:auto;
 
 }
 
+.edit_container{
+	position: absolute;
+	top: 70.5%;
+	height:auto;
+	width:100%;
+	margin: 0px;
+	padding: 0px;
+}
 
 .username_edit{
-  position:absolute;
+  position:relative;
   text-align: left;
   background-color: transparent;
 
 	left:4.25%;
-	top: 70.5%;
 
   height:auto;
 
-  padding-bottom: -6vw;
+  padding-bottom: -4vw;
 
 	min-width:25vw;
   max-width:60vw;
@@ -70,52 +87,20 @@
   display:none;
 }
 
-.bg_overlay {
-	background-color: black;
-	opacity: 0.25;
-	position:relative;
-	top:0%;
-	left: 0%;
-	width: 100vw;
-	color:#b3b3b3;
-
-	height:100%;
-
-	padding: 0vh 0px 1vh 0px;
-  display:none;
-	font-size: 3.5vh;
-}
-
-.bio_edit {
-  position: absolute;
-  text-align: left;
-  background-color: transparent ;
-  white-space: pre-wrap;
-  top: 80.75%;
-  left:10%;
-  height: auto;
-	padding: 0vh 0vh 0 0vh;
-  font-size: 4vw;
-  width: 81%;
-
-	font-family: "main_font";
-  color:white;
-  border:none;
-
-  display: none;
-}
 
 .location_swap{
-	position: absolute;
+	position: relative;
 	text-align: left;
 	white-space: pre-wrap;
-	top: 77.65%;
+
 	left:25.05%;
 	height: auto;
 	padding: 0vh 0vh 0 0vh;
 	font-size: 3.25vw;
 	font-style: italic;
 	width: auto;
+
+	margin-top: 2vw;
 
 	color:white;
 	border:none;
@@ -124,13 +109,38 @@
 }
 
 
+.bio_edit {
+  position: relative;
+  text-align: left;
+  background-color: transparent ;
+  white-space: pre-wrap;
+  left:10%;
+  height: auto;
+	padding: 0vh 0vh 0 0vh;
+  font-size: 4vw;
+  width: 81%;
+
+	margin-top:2vw;
+	line-height: 5vw;
+
+	font-family: "main_font";
+  color:white;
+  border:none;
+
+  display: none;
+}
+
+
+
 .bottom_line {
-  position:absolute;
+  position:relative;
   background-color:white;
   height:0.5vw;
-  left:10%;
-  bottom:10%;
-  width: 80%;
+  left:7%;
+
+	margin-top: 1vw;
+
+  width: 86%;
   opacity: 0.4;
   display: none;
 }
@@ -166,18 +176,23 @@ textarea:focus, input:focus{
   outline: none;
 }
 
+.bg_overlay {
+	background-color: black;
+	opacity: 0.25;
+	position:relative;
+	top:0%;
+	left: 0%;
+	width: 100vw;
+	color:#b3b3b3;
+
+	height:100%;
+
+	padding: 0vh 0px 1vh 0px;
+  display:none;
+	font-size: 3.5vh;
+}
+
 @font-face {
   font-family: "main_font";
   src:url(../res/Nova-Plain.ttf);
-}
-
-.bgselect{
-	position:absolute;
-	height:auto;
-	width: 20vw;
-	top:8%;
-	left:0;
-	margin:0;
-	padding: 0;
-	display:none;
 }

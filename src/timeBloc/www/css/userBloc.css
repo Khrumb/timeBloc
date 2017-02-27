@@ -398,7 +398,7 @@
   opacity:0.20;
 
 	padding: 0px;
-	margin: .50% 0px 1.75% 0px;
+	margin: .50% 0px 0 0px;
 }
 
 .page_break.light{
@@ -420,14 +420,20 @@
   position: relative;
   text-align: left;
 
+	font-family: "main_font";
 
-/*white-space: nowrap;*/
-	line-height: 3vw;
-  left:10vw;
-  height: 14vw;
+	background-color: transparent;
+	border: none;
+	white-space: pre-wrap;
+  left:10%;
+  height: auto;
+	line-height: 5vw;
+
+	margin-top: 0.6vw;
+
 	padding: 0vh 0vh 0 0vh;
   font-size: 4vw;
-  max-width: 82vw;
+  width: 81%;
 }
 
 

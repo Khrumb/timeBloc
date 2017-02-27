@@ -836,6 +836,8 @@ var personalPage = {
 			document.getElementById("finished_profile").style.display = "none";
 			document.getElementById("bottom_line").style.display = "none";
 			uiControl.setTheme(userBloc.c_user.theme);
+
+			userBloc.setup(userBloc.c_user.uid);
 		}, 200);
 	},
 
@@ -872,6 +874,7 @@ var personalPage = {
 
 	selectPhotoAlbum:function(){
 		var camera = navigator.camera;
+		uiControl.updateDebugger("c", camera);
 	 	camera.getPicture(personalPage.callback, this.error, { quality: 50, sourceType: Camera.PictureSourceType.SAVEDPHOTOALBUM,destinationType: Camera.DestinationType.DATA_URL});
 	},
 
@@ -912,6 +915,8 @@ var personalPage = {
 		tx.executeSql('UPDATE user SET bio = "' + document.getElementById("bio_edit").value + '" where uid = ' + userBloc.c_user.uid);
 		personalPage.imageP = null;
 		personalPage.imageB = null;
+		document.getElementById("user_Display_Name").value = document.getElementById("username_edit").value;
+		document.getElementById("user_bio").value = document.getElementById("bio_edit").value;
 	},
 
   error:function() {

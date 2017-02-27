@@ -80,7 +80,7 @@
 
 .userPP{
   position:absolute;
-  background-size:100% 100%;
+  background-size:contain;
   top:13%;
   left:18%;
   width:30%;
@@ -128,7 +128,7 @@
   padding:0% 7% 13% 14%;
 
   text-align: left;
-  font-size: 150%;
+  font-size: x-large;
 
   z-index:100;
 

@@ -103,14 +103,14 @@ var network = {
 var dataManager = {
 
   initialize:function() {
-		height = window.innerHeight;
+		height = screen.availHeight;
 		width = screen.availWidth;
 		uiControl.updateDebugger("build", "pre-alpha");
-		uiControl.updateDebugger("version", "0.51");
+		uiControl.updateDebugger("version", "0.52.1");
 		//uiControl.updateDebugger("screenX", height);
 		//uiControl.updateDebugger("screenY", width);
-		document.body.style.height = height + "px";
-		document.body.style.width = width + "px";
+		//document.body.style.height = height + "px";
+		//document.body.style.width = width + "px";
     db = window.openDatabase("timeBloc", "0.1", "dmgr", 20000000);
     db.transaction(dataManager.populateDB, dataManager.errorCB);
   },

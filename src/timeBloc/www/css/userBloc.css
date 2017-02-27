@@ -39,6 +39,19 @@
   to {opacity: 0.0}
 }
 
+.userBloc_slide_tab{
+	background-color: transparent;
+	position:absolute;
+	height:100%;
+	width:4.5%;
+
+	right:0%;
+	top:0%;
+	padding: 0;
+	margin: 0;
+  z-index: inherit;
+}
+
 .userPP{
   position:relative;
   background-size:cover;

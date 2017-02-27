@@ -1,27 +1,48 @@
 .calander{
 	background-color: #f2f2f2;
+	background-attachment: fixed;
 	position:absolute;
 	height:100%;
 	width:100%;
 
-	left:100%;
+	left:0;
 	top:0%;
 	padding: 0;
 	margin: 0;
 
-	z-index: 2000;
+	overflow-x: visible;
+	display: none;
+
 	-webkit-backface-visibility: hidden;
-	
+
 }
 
-.slide_tab{
-	background-color: red;
+.calander_slide_tab{
+	background-color: transparent;
 	position:absolute;
 	height:100%;
-	width:5%;
+	width:4.5%;
 
-	left:-5%;
+	left:0%;
 	top:0%;
 	padding: 0;
 	margin: 0;
+}
+
+.fuckyou{
+	position: absolute;
+	top:50%;
+	left:50%;
+	height:auto;
+	width:80vw;
+
+	margin:-40vw 0 0 -40vw;
+
+	-webkit-animation: brethe 1000ms infinite;
+}
+
+@-webkit-keyframes brethe{
+	from{-webkit-transform: scale(1.2,1.2);}
+	50% {-webkit-transform: scale(1,1);}
+	to {-webkit-transform: scale(1.2,1.2);}
 }

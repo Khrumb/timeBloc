@@ -59,6 +59,7 @@ body {
   border:none;
   z-index: 9998;
   overflow-y: hidden;
+  overflow-x: hidden;
   background-size: fixed;
 }
 

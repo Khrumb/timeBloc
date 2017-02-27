@@ -65,6 +65,9 @@ var app = {
 						case 'dialog':
 							uiControl.select(-2);
 							break;
+						case 'calander':
+							calander.slide_step = (width)/50;
+							calander.slide_animation = setInterval(calander.popIn, 4);
 						default:
 							uiControl.turnCurrentItemOff();
 
@@ -251,7 +254,7 @@ var uiControl = {
 		},
 
     toBeImplemented:function(ev) {
-      alert('To be Implemented');
+      alert('This feature is not working.');
     },
 
 		setTheme:function(id) {
@@ -312,6 +315,10 @@ var uiControl = {
       document.getElementById(id).classList.add('off');
     },
 
+		addItem:function(id) {
+
+		},
+
 		dialog:function(options, cbk) {
 			uiControl.callback = cbk;
 			var option;
@@ -339,7 +346,12 @@ var uiControl = {
 		select:function(id) {
 			if(id >= 0){
 				var temp  = uiControl.callback[id];
-				temp.call();
+				if(temp == null){
+					uiControl.toBeImplemented()
+				} else {
+					temp.call();
+
+				}
 			} else if(id == -1)  {
 				page_log.pop();
 			}
@@ -366,8 +378,6 @@ var sidebar = {
     } else {
       sidebar.slideOff();
     }
-		uiControl.updateDebugger("screenX", screen.height);
-		uiControl.updateDebugger("screenY", screen.width);
   },
 
   slideOn: function(){
@@ -417,11 +427,14 @@ var blocFeed ={
   //all ui load evenets here
   setupCallBack:function() {
 		uiControl.turnItemOn("blocFeed");
+		document.getElementById("userBloc").style.display = "block";
+
     document.getElementById("blocFeed").style['z-index'] = page_log.length+1;
   },
 
   taredown:function() {
 		uiControl.turnItemOff("blocFeed");
+		document.getElementById("userBloc").style.display = "none";
 		document.getElementById("blocFeed").style['z-index'] = 0;
   },
 
@@ -505,21 +518,26 @@ var userBloc = {
       userBloc.id = parseInt(id);
 			uiControl.turnCurrentItemOff();
       db.transaction(userBloc.getUserInfo, dataManager.errorCB);
+			calander.setup();
     },
 
 		setupCallBack:function(){
-			document.getElementById("userBloc").style['z-index'] = page_log.length+2;
+			document.getElementById("userBloc").style.display = "block";
+			document.getElementById("userBloc").style['z-index'] = page_log.length+4;
 			uiControl.turnItemOn("userBloc");
 		},
 
 		taredown:function() {
 			clearInterval(userBloc.animation);
 			uiControl.turnItemOff("userBloc");
+
 			uiControl.removeDebugger("angle");
 			uiControl.removeDebugger("time");
 			uiControl.removeDebugger("PL");
 			setTimeout(function () {
 				document.getElementById("userBloc").style['z-index'] = 0;
+				document.getElementById("userBloc").style.display = "none";
+				calander.taredown();
 			}, 200);
 
 		},
@@ -791,6 +809,8 @@ var personalPage = {
 		document.getElementById("current_userPP").style['z-index'] = page_log.length+5;
 		document.getElementById("bgselect").style['z-index'] = page_log.length+5;
 		document.getElementById("finished_profile").style['z-index'] = page_log.length+5;
+		document.getElementById("userBloc_slide_tab").style['z-index'] = 0;
+
 
 		document.getElementById("bio_edit").style.display = "block";
 		document.getElementById("bio_edit").value = userBloc.c_user.bio;
@@ -828,6 +848,7 @@ var personalPage = {
 		document.getElementById("bgselect").style.display = "none";
 
 		setTimeout(function () {
+			document.getElementById("userBloc_slide_tab").style['z-index'] = page_log.length+3;
 			document.getElementById("personalPage").style['z-index'] = 0;
 			document.getElementById("location_swap").style.display = "none";
 			document.getElementById("bio_edit").style.display = "none";
@@ -926,47 +947,84 @@ var personalPage = {
 
 var calander = {
 
-	animation: null,
+	slide_animation: null,
+	slide_step: 0,
+	c_pos: 0,
 
 	setup:function() {
-
+		calander.setupCallBack();
 	},
 
 	setupCallBack:function(){
-
+		document.getElementById("calander").style.left = "0%";
+		document.getElementById("calander").style['z-index'] = page_log.length +3;
 	},
 
 	taredown:function() {
-
-
 		setTimeout(function () {
-
+			document.getElementById("calander").style.display = "none";
+			document.getElementById("calander").style['z-index'] = 0;
+			document.getElementById("calander").style.left = "0%";
 		}, 200);
 	},
 
 	sideGrab:function() {
 		touches = event.touches[0];
-		uiControl.updateDebugger("touch", "happened");
+		if(calander.slide_animation != null){
+			clearInterval(calander.slide_animation);
+		}
+		document.getElementById("calander").style.display = "block";
+		calander.slide_animation = setInterval(this.slideUpdater,5);
+	},
+
+	slideUpdater:function() {
+		//document.getElementById("calander").style["-webkit-transform"] = "translateX(" + (touches.pageX -width)+ "px)";
+		document.getElementById("userBloc").style["-webkit-transform"] = "translateX(" + (touches.pageX -width)+ "px)";
 	},
 
 	dragOut:function () {
 		touches = event.touches[0];
-		uiControl.updateDebugger("xPos", (width-touches.pageX);
-		document.getElementById("calander").style["-webkit-transform"] = "translateX(" + (touches.pageX -width)+ "px)";
-
 	},
 
-	onDragStop:function() {
-		touches = event.touches[0];
 
+	onDragEnd:function() {
+		calander.c_pos  = touches.pageX -width;
+		clearInterval(calander.slide_animation);
+		if(calander.c_pos  <= -width*0.4){
+			if(page_log[page_log.length-1] != "calander"){
+				page_log.push("calander");
+			}
+			calander.slide_step = (width + calander.c_pos)/15;
+			calander.slide_animation = setInterval(calander.popOut, 6);
+		} else{
+			if(page_log[page_log.length-1] == "calander"){
+				page_log.pop();
+			}
+			calander.slide_step = (width + calander.c_pos)/18;
+			calander.slide_animation = setInterval(calander.popIn, 6);
+		}
 	},
 
 	popOut:function () {
-		uiControl.updateDebugger("xPos", width - touches.pageX );
+		calander.c_pos -= calander.slide_step;
+		if(calander.c_pos  > -width){
+			document.getElementById("userBloc").style["-webkit-transform"] = "translateX(" + calander.c_pos+ "px)";
+
+		} else{
+			clearInterval(calander.slide_animation);
+			document.getElementById("userBloc").style["-webkit-transform"] = "translateX("+ -width +"px)";
+		}
 	},
 
 	popIn:function () {
-		uiControl.updateDebugger("xPos", width - touches.pageX );
+		calander.c_pos += calander.slide_step;
+		if(calander.c_pos < 0){
+			document.getElementById("userBloc").style["-webkit-transform"] = "translateX(" + calander.c_pos+ "px)";
+		} else{
+			clearInterval(calander.slide_animation);
+			document.getElementById("calander").style.display = "none";
+			document.getElementById("userBloc").style["-webkit-transform"] = "translateX(0px)";
+		}
 	}
 
 };

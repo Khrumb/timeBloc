@@ -1,6 +1,6 @@
 .bloc{
 	position: absolute;
-	/*background-color: lightblue;*/
+	background-color: white;
 
   top:0vw;
   left:0vw;
@@ -45,7 +45,7 @@
 
 
 
-  height:34%;
+  height:50vw;
   width:100%;
 
 	margin:0 0px 0vw 0px;
@@ -60,24 +60,34 @@
 	background-repeat: no-repeat;
 }
 
+.bloc_info_container{
+	position: relative;
+
+	height:13.75vw;
+	width:70.28vw;
+	padding: 0vw 0vw 0vw 0vw;
+	margin:6vw 0px -13.385vw 0;
+
+	border-top-right-radius: 2vw;
+
+	background-color: white;
+	border-bottom:  .28vw solid #ffb16e;
+}
+
 
 .bloc_title{
 	position: relative;
 	font-family: "main_font";
-	color:#ff891a;
-
-	background-color: white;
+	color:#292929;
 
 	left:0;
 
 	font-size: 9vw;
 
 	padding-left: 2vw;
-	padding-bottom: 1.5vw;
+	padding-bottom: 2vw;
 
-	margin:7vw 0px -4vw 0;
-
-	border-bottom:  .5vw solid #ffb16e;
+	margin:0 0px -4vw 0;
 }
 
 .bloc_location{
@@ -88,7 +98,7 @@
 
 	font-size: 3vw;
 
-	margin:-3vw 0px 0vw 0px;
+	margin:-2.5vw 0px 0vw 0px;
 
 
 }
@@ -101,7 +111,7 @@
 
 	font-size: 3vw;
 
-	margin:-4vw 0px -13.25vw 0px;
+	margin:-4vw 0px 0vw 0px;
 }
 
 .bloc_content_selecter.{
@@ -109,8 +119,8 @@
 	font-family: "main_font";
 
 	left:70%;
-	background-color: white;
-	margin:0vw 0px 20vw 0px;
+	background-color: red;
+	margin:-2vw 0px 0vw 0px;
 	height: auto;
 	width:30%;
 }
@@ -121,8 +131,8 @@
 	left:80%;
 
 	height:0.5vw;
-	width:10.3%;
-	margin-top: 0.0vw;
+	width:10.5vw;
+	margin-top: -1.5vw;
 
 	-webkit-backface-visibility: hidden;
 }
@@ -130,42 +140,47 @@
 
 .bloc_content_selecter_titles{
 	position:relative;
-	width:100%;
-	margin-bottom:12.5vw;
+	left:70%;
+	width:30%;
+	-webkit-backface-visibility: hidden;
+	height:13.5vw;
+}
+
+.bloc_blog{
+	position: absolute;
+	background-color: white;
+	color:#d9d9d9;
+	height:auto;
+	left:0%;
+	width:50%;
+	text-align: center;
+	font-size: 6vw;
+
+	padding: 3vw 0vw 3vw 0vw;
+	border-top-left-radius: 2vw;
+	border-top-right-radius: 2vw;
+
+	/*border-right: .5vw solid #ffb16e;*/
+	border-left: .28vw solid #ffb16e;
+
 	-webkit-backface-visibility: hidden;
 
 }
 
 .bloc_media{
-	position: absolute;
-	background-color: white;
-	color:#d9d9d9;
-	height:auto;
-	left:80%;
-	width:10%;
-	text-align: center;
-	font-size: 6vw;
-
-	padding: 3vw 0vw 3vw 0vw;
-	border-right: .5vw solid #ffb16e;
-	border-left: .5vw solid #ffb16e;
-
-	-webkit-backface-visibility: hidden;
-
-}
-
-.bloc_blog{
 	position:absolute;
 	background-color: white;
 	color:#d9d9d9;
-	left: 90%;
-	width:10%;
+	left: 50%;
+	width:50%;
 	text-align: center;
 	font-size: 6vw;
 
+	border-top-left-radius: 2vw;
 
+	margin-bottom: -0.28vw;
 	padding: 3vw 0vw 3vw 0vw;
-	border-left: .5vw solid #ffb16e;
+	border-left: .28vw solid #ffb16e;
 	-webkit-backface-visibility: hidden;
 
 }
@@ -178,10 +193,10 @@
 	position:relative;
 	background-color: #ffb16e;
 	bottom:auto;
-	left:90%;
-	height:0.5vw;
-	width:10.3%;
-
+	left:70%;
+	height:0.28vw;
+	width:15.28vw;
+	margin-top: -0.385vw;
 	-webkit-backface-visibility: hidden;
 }
 
@@ -189,21 +204,20 @@
 .bloc_container{
 	position: relative;
 	background-color: white;
+	text-align: center;
 
 	width: 100%;
-	height:80vw;
+	height:100vw;
 	-webkit-backface-visibility: hidden;
-
-	overflow-x: hidden;
 }
 
 .bloc_media_container{
 	position:absolute;
 	background-color: white;
 	width:100%;
+	height: 100%;
 	left:0;
 	-webkit-backface-visibility: hidden;
-
 }
 
 .bloc_blog_container{
@@ -212,24 +226,63 @@
 	width:100%;
 	left:100%;
 	-webkit-backface-visibility: hidden;
+
 }
 
 .bloc_content_slide_tab{
 	position: absolute;
-	left:92%;
+	height:100vw;
+	bottom:0;
+	right:-8%;
 	width:16%;
-	height:80vw;
 }
 
 .bloc_content{
 	position:relative;
-	text-align: center;
 	color: #d9d9d9;
 	font-size: 6vw;
-	padding-top: 10vw;
 	width:100%;
+	height: 100vw;
+	overflow-y: scroll;
+  overflow-x: hidden;
 }
 
+.bloc_photo_row{
+	position: relative;
+	height:50vw;
+	width:100vw;
+}
+
+.bloc_photo_container{
+	position: absolute;
+	height:50vw;
+	width:32vw;
+	vertical-align:middle;
+}
+
+.c1{
+	left:0vw;
+}
+
+.c2{
+	left:34vw;
+}
+
+.c3{
+	left:68vw;
+}
+
+.bloc_photo{
+	position: relative;
+	top: 50%;
+  -webkit-transform: translateY(-50%);
+	height:auto;
+	width:32vw;
+	margin: 0;
+	vertical-align: middle;
+	-webkit-backface-visibility: hidden;
+
+}
 
 @font-face {
   font-family: "main_font";

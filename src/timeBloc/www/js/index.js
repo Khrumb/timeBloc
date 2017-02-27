@@ -180,8 +180,17 @@ var dataManager = {
 
 
 		//tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (<seq#>, <uid>, <bid>, <imagedata>)');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (1, 3, 1, "img/1_bloc_bg.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (1, 3, 0, "img/1_bloc_bg.jpg")');
 		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (2, 3, 1, "img/2_bloc_bg.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (3, 3, 0, "img/bloc_1_4.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (4, 3, 0, "img/bloc_1_1.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (5, 3, 0, "img/bloc_1_5.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (6, 3, 0, "img/bloc_1_5.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (7, 3, 0, "img/bloc_1_6.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (8, 3, 0, "img/bloc_1_4.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (9, 3, 0, "img/bloc_1_5.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (10, 3, 0, "img/bloc_1_2.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (11, 3, 0, "img/bloc_1_3.jpg")');
 
 
 
@@ -1073,10 +1082,8 @@ var bloc = {
 
 	setup:function(id) {
 		uiControl.turnCurrentItemOff();
-
-		db.transaction(bloc.getSetupInfo, dataManager.errorCB);
 		bloc.id = id;
-
+		db.transaction(bloc.getSetupInfo, dataManager.errorCB);
 	},
 
 	getSetupInfo:function(tx) {
@@ -1088,11 +1095,40 @@ var bloc = {
 		document.getElementById("bloc_title").textContent = bloc.c_bloc.title;
 		document.getElementById("bloc_location").textContent = bloc.c_bloc.location
 
-		tx.executeSql('SELECT * FROM picture where pid = '+ bloc.c_bloc.pid, [], bloc.setupPictures, dataManager.errorCB);
+		tx.executeSql('SELECT * FROM picture where bid = '+ bloc.c_bloc.bid, [], bloc.setupPictures, dataManager.errorCB);
 	},
 
 	setupPictures:function(tx, results) {
-		document.getElementById("bloc_bg").style['background-image'] = "url('"+results.rows.item(0).data+"')";
+		var pictures = "";
+		var piccounter = 0;
+		for(var i = 0; i < results.rows.length; i++){
+			if(results.rows.item(i).pid == bloc.c_bloc.pid){
+				document.getElementById("bloc_bg").style['background-image'] = "url('"+results.rows.item(i).data+"')";
+			} else {
+				switch(piccounter%3){
+					case 0:
+						pictures += "<div class='bloc_photo_row'>"+
+													"<div class='bloc_photo_container c1'>"+
+														"<img class='bloc_photo' src='"+ results.rows.item(i).data +"' />" +
+													"</div>";
+						break;
+					case 1:
+						pictures += "<div class='bloc_photo_container c2'>"+
+														"<img class='bloc_photo' src='"+ results.rows.item(i).data +"' />" +
+													"</div>";
+						break;
+					case 2:
+					pictures += "<div class='bloc_photo_container c3'>"+
+													"<img class='bloc_photo' src='"+ results.rows.item(i).data +"' />" +
+												"</div>"+
+											"</div>";
+						break;
+
+				}
+				piccounter++;
+			}
+		}
+		document.getElementById("bloc_media_content").innerHTML = pictures;
 		tx.executeSql('SELECT * FROM user where uid = '+ bloc.c_bloc.uid, [], bloc.setupUserInfo, dataManager.errorCB);
 	},
 
@@ -1129,8 +1165,7 @@ var bloc = {
 		document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+(touches.pageX-width))+ "px)";
 		document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + (touches.pageX-width)+ "px)";
 		document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + (touches.pageX-width)+ "px)";
-		document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + ((0-(touches.pageX-width))/10)+ "px)";
-		document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + ((touches.pageX-width)/10)+ "px)";
+		document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (-(3*(touches.pageX-width))/20)+ "px)";
 	},
 
 	onTabSlide:function() {
@@ -1139,7 +1174,6 @@ var bloc = {
 
 	onTabTouchEnd:function() {
 		bloc.c_pos  = touches.pageX -width;
-		//uiControl.updateDebugger("xPos", (bloc.c_pos  >= -width*0.4))
 
 		clearInterval(bloc.container_animation);
 		if(bloc.c_pos  >= -width*0.5){
@@ -1157,15 +1191,13 @@ var bloc = {
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+bloc.c_pos)+ "px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
 			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
-			document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + ((0-bloc.c_pos)/10)+ "px)";
-			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (bloc.c_pos/10)+ "px)";
+			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (-(3*bloc.c_pos)/20)+ "px)";
 		} else {
 			clearInterval(bloc.slide_animation);
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + width+ "px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + -width+ "px)";
 			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + -width+ "px)";
-			document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + (width/10)+ "px)";
-			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" +  (-width/10) + "px)";
+			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" +  ((3*width)/20) + "px)";
 			document.getElementById("bloc_blog").classList.add("active");
 			document.getElementById("bloc_media").classList.remove("active");
 		}
@@ -1177,15 +1209,13 @@ var bloc = {
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+bloc.c_pos)+ "px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
 			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
-			document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(" + ((0-bloc.c_pos)/10)+ "px)";
-			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (bloc.c_pos/10)+ "px)";
+			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (-(3*bloc.c_pos)/20)+ "px)";
 		} else{
 			clearInterval(bloc.slide_animation);
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(0px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(0px)";
 			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(0px)";
-			document.getElementById("bloc_top_line").style["-webkit-transform"] = "translateX(0px)";
-			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(0px)";
+			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(0)";
 			document.getElementById("bloc_media").classList.add("active");
 			document.getElementById("bloc_blog").classList.remove("active");
 		}

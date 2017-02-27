@@ -146,35 +146,37 @@
 
 		 <div data-anchor="bloc"  id="bloc" class="bloc">
 			 <img id="bloc_bg" class="bloc_bg" alt="" />
-			 <div id="bloc_title" class="bloc_title"></div>
-			 <div id="bloc_location" class="bloc_location"></div>
-       <div id="bloc_creater" class="bloc_creater"></div>
-
+			 <div class="bloc_info_container">
+				 <div id="bloc_title" class="bloc_title"></div>
+				 <div id="bloc_location" class="bloc_location"></div>
+	       <div id="bloc_creater" class="bloc_creater"></div>
+			 </div>
 			 <div class="bloc_content_selecter">
-				 <div id="bloc_top_line" class="bloc_top_line"></div>
+
 				 <div class="bloc_content_selecter_titles"  ontouchend="bloc.toggleOut();">
+					 <div id="bloc_blog" class="bloc_blog">
+					  B
+					 </div>
 					 <div id="bloc_media" class="bloc_media active">
 						M
 					 </div>
-					 <div id="bloc_blog" class="bloc_blog">
-						B
-				   </div>
 				 </div>
 			 </div>
 			 <div id="bloc_bottom_line" class="bloc_bottom_line"></div>
 			 <div class="bloc_container">
 				 <div id="bloc_media_container" class="bloc_media_container">
 					 <div id="bloc_media_content" class="bloc_content">
-						 No Media Found :(
- 					 </div>
+						 
+					 </div>
 				 </div>
-				 <div id="bloc_content_slide_tab" class="bloc_content_slide_tab" ontouchstart="bloc.onTabTouch();" ontouchmove="bloc.onTabSlide();" ontouchend="bloc.onTabTouchEnd();"></div>
 				 <div id="bloc_blog_container" class="bloc_blog_container">
 					 <div id="bloc_blog_content" class="bloc_content">
 					 	No Posts Yet :(
 					 </div>
 				 </div>
 			 </div>
+			 <div id="bloc_content_slide_tab" class="bloc_content_slide_tab" ontouchstart="bloc.onTabTouch();" ontouchmove="bloc.onTabSlide();" ontouchend="bloc.onTabTouchEnd();"></div>
+
 		 </div>
 
 		 <div id="dialog" class="dialog">

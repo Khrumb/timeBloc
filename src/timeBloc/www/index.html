@@ -158,17 +158,18 @@
 				 </div>
 				 <div class="bloc_content_selecter">
   				 <div class="bloc_content_selecter_titles"  ontouchend="bloc.toggleOut();">
-  					 <div id="bloc_blog" class="bloc_blog">
-  					  B
+  					 <div class="bloc_blog">
+  					  <img id="bloc_blog" class="selecter_icon" src="assets/delete_message.png" />
   					 </div>
-  					 <div id="bloc_media" class="bloc_media active">
-  						M
+  					 <div  class="bloc_media ">
+							 <img id="bloc_media" class="selecter_icon active" src="assets/media_tab.png" />
   					 </div>
   				 </div>
   			 </div>
   			 <div id="bloc_bottom_line" class="bloc_bottom_line"></div>
   			 <div class="bloc_container">
   				 <div id="bloc_media_container" class="bloc_media_container">
+						 <div id="bloc_content_slide_tab_left" class="bloc_content_slide_tab left_half" ontouchstart="bloc.onTabTouch();" ontouchmove="bloc.onTabSlide();" ontouchend="bloc.onTabTouchEnd();"></div>
   					 <div id="bloc_media_content" class="bloc_content">
   						 <div class="bloc_empty_content">
   						 	No Posts Yet :(
@@ -176,6 +177,7 @@
   					 </div>
   				 </div>
   				 <div id="bloc_blog_container" class="bloc_blog_container">
+						 <div id="bloc_content_slide_tab_right" class="bloc_content_slide_tab right_half" ontouchstart="bloc.onTabTouch();" ontouchmove="bloc.onTabSlide();" ontouchend="bloc.onTabTouchEnd();"></div>
   					 <div id="bloc_blog_content" class="bloc_content">
   						 <div class="bloc_empty_content">
   						 	No Posts Yet :(
@@ -184,8 +186,6 @@
   				 </div>
   			 </div>
 			 </div>
-			 <div id="bloc_content_slide_tab" class="bloc_content_slide_tab" ontouchstart="bloc.onTabTouch();" ontouchmove="bloc.onTabSlide();" ontouchend="bloc.onTabTouchEnd();"></div>
-
 		 </div>
 
      <div data-anchor="founders"  id="founders" class="founders">

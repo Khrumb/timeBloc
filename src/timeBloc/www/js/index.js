@@ -19,7 +19,7 @@ var sidebar_isOn = false;
 var blocFeed_bloc_on = false;
 var isFollowing = false;
 
-var version = "0.54.1";
+var version = "0.54.5";
 var db;
 
 var app = {
@@ -100,6 +100,10 @@ var app = {
 								alert("PAGE_SETUP_UNHANDLED: "+id);
 						}
 					}
+				} else {
+					if(confirm("Are you sure you want to exit?")){
+						navigator.app.exitApp();
+					}
 				}
 			},
 
@@ -130,8 +134,8 @@ var dataManager = {
 		width = screen.availWidth;
 		uiControl.updateDebugger("build", "pre-alpha");
 		uiControl.updateDebugger("version", version);
-		uiControl.updateDebugger("screenX", height);
-		uiControl.updateDebugger("screenY", width);
+		//uiControl.updateDebugger("screenX", height);
+		//uiControl.updateDebugger("screenY", width);
 		//document.body.style.height = height + "px";
 		//document.body.style.width = width + "px";
     db = window.openDatabase("timeBloc", "0.1", "dmgr", 20000000);
@@ -213,10 +217,21 @@ var dataManager = {
 		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (15, 3, 1, "img/bloc_1_13.jpg")');
 		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (16, 3, 1, "img/bloc_1_14.jpg")');
 		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (17, 3, 1, "img/bloc_1_15.jpg")');
-
-
-
-
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (18, 3, 1, "img/bloc_1_1.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (19, 3, 1, "img/bloc_1_2.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (20, 3, 1, "img/bloc_1_3.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (21, 3, 1, "img/bloc_1_4.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (22, 3, 1, "img/bloc_1_5.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (23, 3, 1, "img/bloc_1_6.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (24, 3, 1, "img/bloc_1_7.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (25, 3, 1, "img/bloc_1_8.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (26, 3, 1, "img/bloc_1_9.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (27, 3, 1, "img/bloc_1_10.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (28, 3, 1, "img/bloc_1_11.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (29, 3, 1, "img/bloc_1_12.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (30, 3, 1, "img/bloc_1_13.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (31, 3, 1, "img/bloc_1_14.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (32, 3, 1, "img/bloc_1_15.jpg")');
 
 		//tx.executeSql('INSERT INTO permission_list(pl_id, uid, bid, date_added) VALUES (<seq#>, <uid>, <bid>, <permission_level>, <current_data>)');
 		tx.executeSql('INSERT INTO permission_list(plid, uid, bid, permission_level, date_added) VALUES (0, 3, 0, 5 ,"-Null-")');
@@ -1156,11 +1171,10 @@ var bloc = {
 	slide_step:0,
 	container_animation: null,
 	scrollAnimation: null,
-	hightListener:null,
+	heightListener:null,
 	scrollHeight: null,
 	scrollThreshhold:0,
 	scrollLimit:0,
-	scrollStep:0,
 	containerPosition:0,
 
 	setup:function(id) {
@@ -1168,9 +1182,12 @@ var bloc = {
 			bloc.id = parseInt(id);
 			page_log_bid.push(bloc.id);
 
-			bloc.scrollThreshhold = 2*(width*0.5876);
-			bloc.scrollLimit = (width*0.435);
-			bloc.scrollStep = (width*0.025);
+			bloc.scrollThreshhold = Math.floor(2*(width*0.5876));
+			bloc.scrollLimit = Math.floor(width*0.444444444444444444);
+			document.getElementById("bloc_content_slide_tab_left").style.height = (width+bloc.scrollLimit) + "px";
+			document.getElementById("bloc_content_slide_tab_right").style.height = (width+bloc.scrollLimit) + "px";
+			document.getElementById("bloc_media_content").style.height = (width+bloc.scrollLimit) + "px";
+			document.getElementById("bloc_blog_content").style.height = (width+bloc.scrollLimit) + "px";
 
 			db.transaction(bloc.getSetupInfo, dataManager.errorCB);
 		}
@@ -1179,8 +1196,7 @@ var bloc = {
 
 	setupCallBack:function(){
 		uiControl.turnCurrentItemOff();
-		bloc.hightListener = setInterval(bloc.scrollListener, 30);
-		bloc.scrollAnimation = setInterval(bloc.scrollExpand, 10);
+		bloc.heightListener = setInterval(bloc.scrollListener, 5);
 
 		document.getElementById("bloc").style.display = "block";
 		document.getElementById("bloc").style['z-index'] = 1;
@@ -1249,8 +1265,10 @@ var bloc = {
 		if(!bloc.mediaIsOut){
 			bloc.toggleOut();
 		}
-		clearInterval(bloc.hightListener);
+		clearInterval(bloc.heightListener);
 		clearInterval(bloc.scrollAnimation);
+		bloc.heightListener == null;
+		bloc.scrollAnimation == null;
 		setTimeout(function () {
 			bloc.id = null;
 			document.getElementById("bloc_media_content").scrollTop =  0;
@@ -1271,7 +1289,6 @@ var bloc = {
 	tabUpdater:function() {
 		document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+(touches.pageX-width))+ "px)";
 		document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + (touches.pageX-width)+ "px)";
-		document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + (touches.pageX-width)+ "px)";
 		document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (-(3*(touches.pageX-width))/20)+ "px)";
 	},
 
@@ -1296,16 +1313,15 @@ var bloc = {
 		if(bloc.c_pos  > -width){
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+bloc.c_pos)+ "px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
-			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
 			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (-(3*bloc.c_pos)/20)+ "px)";
 		} else {
 			clearInterval(bloc.slide_animation);
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + width+ "px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + -width+ "px)";
-			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + -width+ "px)";
 			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" +  ((3*width)/20) + "px)";
 			document.getElementById("bloc_blog").classList.add("active");
 			document.getElementById("bloc_media").classList.remove("active");
+			bloc.mediaIsOut = false;
 		}
 	},
 
@@ -1314,14 +1330,11 @@ var bloc = {
 		if(bloc.c_pos < 0){
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(" + (0+bloc.c_pos)+ "px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
-			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
 			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (-(3*bloc.c_pos)/20)+ "px)";
-			bloc.mediaIsOut = false;
 		} else{
 			clearInterval(bloc.slide_animation);
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(0px)";
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(0px)";
-			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(0px)";
 			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(0)";
 			document.getElementById("bloc_media").classList.add("active");
 			document.getElementById("bloc_blog").classList.remove("active");
@@ -1344,23 +1357,39 @@ var bloc = {
 		}
 	},
 
+	last_state: true,
+	c_scroll_top:0,
 	scrollListener:function() {
-		if(bloc.mediaIsOut){
-			bloc.scrollHeight =	document.getElementById("bloc_media_content").scrollTop;
+		if(bloc.last_state != bloc.mediaIsOut){
+			bloc.c_scroll_top = bloc.scrollHeight;
 		} else {
-			bloc.scrollHeight =	document.getElementById("bloc_blog_content").scrollTop;
+			if(bloc.mediaIsOut){
+				bloc.scrollHeight =	document.getElementById("bloc_media_content").scrollTop;
+			} else {
+				bloc.scrollHeight =	document.getElementById("bloc_blog_content").scrollTop;
+			}
+		}
+
+		if(bloc.scrollHeight >= bloc.scrollThreshhold){
+			if(bloc.scrollAnimation == null){
+				bloc.scrollAnimation = setInterval(bloc.scrollExpand, 5);
+			}
+		} else {
+			clearInterval(bloc.scrollAnimation);
+			document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY(0px)";
+			bloc.scrollAnimation = null;
 		}
 	},
 
 	scrollExpand:function() {
-		if(bloc.scrollHeight >= bloc.scrollThreshhold){
+			bloc.containerPosition = bloc.scrollHeight - bloc.scrollThreshhold;
 			if(bloc.containerPosition <= bloc.scrollLimit){
-					bloc.containerPosition = bloc.scrollHeight - bloc.scrollThreshhold;
 					document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY("+-bloc.containerPosition+"px)";
-					document.getElementById("bloc_media_content").style.height = (width+bloc.containerPosition) + "px";
-					document.getElementById("bloc_blog_content").style.height = (width+bloc.containerPosition) + "px";
+			} else{
+				clearInterval(bloc.scrollAnimation);
+				document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY("+-bloc.scrollLimit+"px)";
+				bloc.scrollAnimation = null;
 			}
-		}
 	}
 
 };

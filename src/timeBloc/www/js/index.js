@@ -7,7 +7,7 @@ var movement;
 
 var page_log = [];
 var page_log_uid = [];
-var uid = 1;
+var uid = 3;
 
 var timer;
 
@@ -61,6 +61,9 @@ var app = {
 							break;
 						case 'personalPage':
 							personalPage.taredown();
+							break;
+						case 'dialog':
+							uiControl.select(-2);
 							break;
 						default:
 							uiControl.turnCurrentItemOff();
@@ -218,6 +221,7 @@ var uiControl = {
 
 		metrics: [],
 		values: [],
+		callback: [],
 
 		setDebugger:function() {
 			var htmlinsert = "";
@@ -287,12 +291,17 @@ var uiControl = {
     },
 
     turnItemOn:function(id){
-      if(page_log[page_log.length-1] != id){
+			if(page_log[page_log.length-1]=='personalPage' && id != 'dialog'){
+				personalPage.taredown();
+				page_log.pop();
+			}
+		 if(page_log[page_log.length-1] != id){
         page_log.push(id);
       }
       if(document.getElementById(id).classList.contains("off")){
         document.getElementById(id).classList.remove('off');
       }
+
       document.getElementById(id).classList.add('on');
     },
 
@@ -303,14 +312,43 @@ var uiControl = {
       document.getElementById(id).classList.add('off');
     },
 
-		dialog:function(id, title, options) {
-				switch(id){
-					case 1:
-						break;
-					default:
-						break;
+		dialog:function(options, cbk) {
+			uiControl.callback = cbk;
+			var option;
+			var dialog = "";
+			for(var i = options.length-1; i >= 0; i--){
+				option = "";
+				if(i == options.length-1){
+					option += "<div class='option top' ontouchend='uiControl.select("+(i)+");'>";
+				} else if(i == 0){
+					option += "<div class='option bottom' ontouchend='uiControl.select("+(i)+");'>";
+				} else {
+					option += "<div class='option' ontouchend='uiControl.select("+(i)+");'>";
 				}
+				option += options[i]+ "</div>";
+				dialog += option;
+			}
+			dialog += "<div class='option cancel' ontouchend='uiControl.select(-1);'>Cancel</div>";
+			document.getElementById('option_container').innerHTML = dialog;
+			document.getElementById("dialog").style['z-index'] = page_log.length+5;
+
+			uiControl.turnItemOn("dialog");
+
 		},
+
+		select:function(id) {
+			if(id >= 0){
+				var temp  = uiControl.callback[id];
+				temp.call();
+			} else if(id == -1)  {
+				page_log.pop();
+			}
+			uiControl.turnItemOff("dialog");
+			setTimeout(function () {
+				document.getElementById("dialog").style['z-index'] = 0;
+			}, 200);
+
+		}
 
 };
 
@@ -495,7 +533,7 @@ var userBloc = {
 			userBloc.c_user = user;
       page_log_uid.push(user.uid);
 			document.getElementById('userBloc').style.backgroundImage = "url("+ user.profileBackground+")";
-      document.getElementById('user_Profile_Picture').src = "img/"+ user.uid +"_profile_picture.jpg";
+      document.getElementById('user_Profile_Picture').src = user.profilePicture;
       document.getElementById('user_Display_Name').textContent = user.display_name;
       document.getElementById('user_Handle').textContent = "@" + user.username;
 			document.getElementById('user_Info').textContent = user.birthday + " | " + user.location;
@@ -741,80 +779,139 @@ var userBloc = {
 
 var personalPage = {
 
-	image: "",
-	t_window: "",
+	imageP: null,
+	imageB: null,
+	callback: null,
+
 
 	setup:function() {
 		//document.getElementById("user_Display_Name").prop('readonly', false);
-		document.getElementById("user_Display_Name").style['z-index'] = page_log.length+2;
+		uiControl.setTheme("editing");
+		document.getElementById("user_Profile_Picture").style['z-index'] = page_log.length+4;
+		document.getElementById("current_userPP").style['z-index'] = page_log.length+5;
+		document.getElementById("bgselect").style['z-index'] = page_log.length+5;
+		document.getElementById("finished_profile").style['z-index'] = page_log.length+5;
+
+		document.getElementById("bio_edit").style.display = "block";
+		document.getElementById("bio_edit").value = userBloc.c_user.bio;
+
+		document.getElementById("username_edit").style.display = "block";
+		document.getElementById("username_edit").value = userBloc.c_user.display_name;
+
+		document.getElementById("location_swap").style.display = "block";
+		document.getElementById("location_swap").textContent = userBloc.c_user.location;
+
+		document.getElementById("bg_overlay").style.display = "block";
+		document.getElementById("bottom_line").style.display = "block";
+		document.getElementById("finished_profile").style.display = "block";
+		document.getElementById("current_userPP").style.display = "block";
+		document.getElementById("bgselect").style.display = "block";
+
+
+		document.getElementById("user_Follow_Status").style.display = "none";
+		document.getElementById("user_Profile_breakdown_container").style.display = "none";
+
+		personalPage.temp_user = userBloc.c_user;
 		personalPage.setupCallBack();
 	},
 
 	setupCallBack:function(){
-		document.getElementById("personalPage").style['z-index'] = page_log.length+2;
+		document.getElementById("personalPage").style['z-index'] = page_log.length;
 		uiControl.turnItemOn("personalPage");
 	},
 
 	taredown:function() {
 		uiControl.turnItemOff("personalPage");
+		document.getElementById("user_Profile_breakdown_container").style.display = "block";
+		document.getElementById("user_Follow_Status").style.display = "block";
+		document.getElementById("current_userPP").style.display = "none";
+		document.getElementById("bgselect").style.display = "none";
+
 		setTimeout(function () {
 			document.getElementById("personalPage").style['z-index'] = 0;
+			document.getElementById("location_swap").style.display = "none";
+			document.getElementById("bio_edit").style.display = "none";
+			document.getElementById("username_edit").style.display = "none";
+			document.getElementById("bg_overlay").style.display = "none";
+			document.getElementById("finished_profile").style.display = "none";
+			document.getElementById("bottom_line").style.display = "none";
+			uiControl.setTheme(userBloc.c_user.theme);
 		}, 200);
 	},
 
-	selectPictureSource:function() {
-		//keyboard.show();
-		uiControl.updateDebugger("conf", Keyboard );
-		//navigator.notification.prompt('Select Source',personalPage.selectSource,'Picture',["Camera", "PhotoLibrary"," WUT" , "Cancel"]);
+	getGeoLocation:function() {
+		 navigator.geolocation.getCurrentPosition(onSuccess, onError);
 	},
 
-	selectSource:function(results) {
-		uiControl.updateDebugger("conf", results);
+	onSuccess:function(position) {
+			var element = document.getElementById('geolocation');
+			element.innerHTML = 'Latitude: '          + position.coords.latitude         + '<br />' +
+													'Longitude: '         + position.coords.longitude        + '<br />' +
+													'Altitude: '          + position.coords.altitude         + '<br />' +
+													'Accuracy: '          + position.coords.accuracy         + '<br />' +
+													'Altitude Accuracy: ' + position.coords.altitudeAccuracy + '<br />' +
+													'Heading: '           + position.coords.heading          + '<br />' +
+													'Speed: '             + position.coords.speed            + '<br />' +
+													'Timestamp: '         + position.timestamp               + '<br />';
 	},
 
-	selectCameraAlbum:function(){
+	onError:function(error) {
+            alert('code: '    + error.code    + '\n' +
+                  'message: ' + error.message + '\n');
+  },
+
+	selectPictureSource:function(type) {
+		if(type == "background"){
+			personalPage.callback = personalPage.encodeBackground;
+		} else if(type == "profilePicture"){
+			personalPage.callback = personalPage.encodeProfilePicture;
+		} else {
+		}
+		uiControl.dialog(["Photo Library", "Camera"],[personalPage.selectPhotoAlbum, personalPage.selectCamera]);
+	},
+
+	selectPhotoAlbum:function(){
 		var camera = navigator.camera;
-	 	camera.getPicture(this.encodeProfile, this.error, { quality: 50, sourceType: Camera.PictureSourceType.SAVEDPHOTOALBUM,destinationType: Camera.DestinationType.DATA_URL});
+	 	camera.getPicture(personalPage.callback, this.error, { quality: 50, sourceType: Camera.PictureSourceType.SAVEDPHOTOALBUM,destinationType: Camera.DestinationType.DATA_URL});
 	},
 
-  selectPhotoAlbum:function(){
+  selectCamera:function(){
 		var camera = navigator.camera;
-	 	camera.getPicture(this.encodeBackground, this.error, { quality: 50, sourceType: Camera.PictureSourceType.CAMERA,destinationType: Camera.DestinationType.DATA_URL});
+	 	camera.getPicture(personalPage.callback, this.error, { quality: 50, sourceType: Camera.PictureSourceType.CAMERA,destinationType: Camera.DestinationType.DATA_URL});
 	},
 
   encodeBackground:function(imageData) {
 		if(imageData != null){
-			personalPage.image = "data:image/jpeg;base64," + imageData;
-			db.transaction(personalPage.setBackground, dataManager.errorCB);
+			personalPage.imageB = "data:image/jpeg;base64," + imageData;
+			document.getElementById('userBloc').style.backgroundImage = "url("+ personalPage.imageB +")";
 		}
   },
 
 	encodeProfilePicture:function(imageData) {
 		if(imageData != null){
-			personalPage.image = "data:image/jpeg;base64," + imageData;
-			db.transaction(personalPage.setBackground, dataManager.errorCB);
+			personalPage.imageP = "data:image/jpeg;base64," + imageData;
+			document.getElementById('user_Profile_Picture').src = personalPage.imageP;
 		}
 	},
 
-	setBackground:function(tx) {
-		  tx.executeSql('UPDATE user SET profileBackground = "' + personalPage.image + '" where uid = ' + userBloc.c_user.uid);
-			tx.executeSql('UPDATE user SET theme = "' + dataManager.getTheme(personalPage.image) + '" where uid = ' + userBloc.c_user.uid);
-			//document.getElementById('userBloc_background').src = personalPage.image;
-			document.getElementById('userBloc_background').src = personalPage.image;
-			personalPage.image = "";
+	finalize:function() {
+		db.transaction(personalPage.gatherInfo, dataManager.errorCB);
+		personalPage.taredown();
+		page_log.pop();
+		//app.onBackKeyDown();
 	},
 
-	setProfilePicture:function(tx) {
-		  tx.executeSql('UPDATE user SET profilePicture = "' + personalPage.image + '" where uid = ' + userBloc.c_user.uid);
-			//document.getElementById('userBloc_background').src = personalPage.image;
-			document.getElementById('user_Profile_Picture').src = personalPage.image;
-			personalPage.image = "";
-	},
-
-	resize:function() {
-		uiControl.updateDebugger("screenX", screen.height);
-		uiControl.updateDebugger("screenY", screen.width);
-		//window.resizeTo(height, width);
+	gatherInfo:function (tx) {
+		if( personalPage.imageP != null){
+			tx.executeSql('UPDATE user SET profilePicture = "' + personalPage.imageP + '" where uid = ' + userBloc.c_user.uid);
+		}
+		if( personalPage.imageB != null){
+			tx.executeSql('UPDATE user SET profileBackground = "' + personalPage.imageB + '" where uid = ' + userBloc.c_user.uid);
+		}
+		tx.executeSql('UPDATE user SET display_name = "' + document.getElementById("username_edit").value + '" where uid = ' + userBloc.c_user.uid);
+		tx.executeSql('UPDATE user SET bio = "' + document.getElementById("bio_edit").value + '" where uid = ' + userBloc.c_user.uid);
+		personalPage.imageP = null;
+		personalPage.imageB = null;
 	},
 
   error:function() {

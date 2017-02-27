@@ -1,19 +1,20 @@
 .personalPage {
   background-attachment:fixed;
 
-  position:fixed;
+  position:absolute;
 
 	display:block;
 
-  top:7.5%;
+  top:0;
   left:0vw;
 
-  height:92.5%;
+  height:100%;
   width:100vw;
+
+  font-family: "main_font";
 
   margin:0px;
   padding:0px;
-  z-index:0;
 
   overflow: hidden;
 }
@@ -26,92 +27,157 @@
 
 .personalPage.off{
 	-webkit-backface-visibility: hidden;
-  -webkit-animation: fade_off 300ms ;
+  -webkit-animation: fade_off 200ms ;
 }
 
 
 .current_userPP{
   position:absolute;
-  top:33vh;
+  top:70vw;
   left:50vw;
 	width: 18vw;
-  height:10vh;
+  height:10vw;
 
   margin: -5vh 0px 0px -9vw;
-  display:block;
+  display:none;
 
 	height:auto;
-  z-index: 202;
 
-  border-radius:50%;
 }
 
 
-.set_username{
-	background-color: #f2f2f2;
-	left:30vw;
-	top: 5%;
-
-	width:25vw;
-
-	color: #b3b3b3;
-	text-align: left;
-	font-size: 3vh;
-
-	border-top: none;
-	border-left: none;
-	border-right: none;
-	border-bottom-color:  #b3b3b3;
-	border-bottom-width: thin;
+.username_edit{
   position:absolute;
-	z-index:201;
+  text-align: left;
+  background-color: transparent;
+
+	left:4.25%;
+	top: 70.5%;
+
+  height:auto;
+
+  padding-bottom: -6vw;
+
+	min-width:25vw;
+  max-width:60vw;
+
+	font-family: "main_font";
+	color: white;
+	text-align : left;
+	font-size: 7vw;
+  border: none;
+
+  display:none;
 }
 
 .bg_overlay {
 	background-color: black;
-	opacity: 0.5;
+	opacity: 0.25;
 	position:relative;
-	top:50%;
+	top:0%;
 	left: 0%;
 	width: 100vw;
 	color:#b3b3b3;
 
-	height:47%;
+	height:100%;
 
 	padding: 0vh 0px 1vh 0px;
-	z-index: 201;
-
-	text-align: center;
+  display:none;
 	font-size: 3.5vh;
 }
 
+.bio_edit {
+  position: absolute;
+  text-align: left;
+  background-color: transparent ;
+  white-space: pre-wrap;
+  top: 80.75%;
+  left:10%;
+  height: auto;
+	padding: 0vh 0vh 0 0vh;
+  font-size: 4vw;
+  width: 81%;
 
+	font-family: "main_font";
+  color:white;
+  border:none;
 
-.current_background{
-  position:absolute;
-	background-size: contain;
-  left:0%;
-	top:0%;
-  height:100%;
-  width:100vw;
+  display: none;
+}
+
+.location_swap{
+	position: absolute;
+	text-align: left;
+	white-space: pre-wrap;
+	top: 77.65%;
+	left:25.05%;
+	height: auto;
+	padding: 0vh 0vh 0 0vh;
+	font-size: 3.25vw;
+	font-style: italic;
+	width: auto;
+
+	color:white;
+	border:none;
+
+	display: none;
 }
 
 
-.bottom_text {
-	background-color: #f2f2f2;
+.bottom_line {
+  position:absolute;
+  background-color:white;
+  height:0.5vw;
+  left:10%;
+  bottom:10%;
+  width: 80%;
+  opacity: 0.4;
+  display: none;
+}
+
+.finished_profile{
+	font-family: "main_font";
 	position:absolute;
-	bottom:0%;
-	left: 0%;
-	width: 100vw;
-	color:#b3b3b3;
 
+  top:71.1%;
+  right:3.5%;
+  width:25%;
+
+	margin:0px;
+  padding:1.75vw 1.25vw 0.75vw 2.0vw;
+  text-align: center;
+  font-size: 5.75vw;
+  border-right: 1.4vw solid white;
+  border-bottom: 1.4vw solid white;
+
+  border-bottom-left-radius:0.8vw;
+  border-top-right-radius:0.8vw;
+
+	/*background-color: white/*bfbfbf*/;
+	color:white;
+	display:none;
+
+	/*text-shadow: 0vw 0vw .1vw #b4cf17;*/
+	/*box-shadow: -0.3vw 0.3vw .85vw #a6a6a6;*/
+	white-space: nowrap;
+}
+
+textarea:focus, input:focus{
+  outline: none;
+}
+
+@font-face {
+  font-family: "main_font";
+  src:url(../res/Nova-Plain.ttf);
+}
+
+.bgselect{
+	position:absolute;
 	height:auto;
-
-	padding: 2vh 0px 2vh 0px;
-	z-index: 201;
-
-	text-align: center;
-	font-size: 2.5vh;
-
-	box-shadow: 0px -0.5vh 2vh #404040;
+	width: 20vw;
+	top:8%;
+	left:0;
+	margin:0;
+	padding: 0;
+	display:none;
 }

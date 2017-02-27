@@ -32,10 +32,21 @@
 		  </div>
 
      <div data-anchor="userBloc"  id="userBloc" class="userBloc">
-       <img id="user_Profile_Picture" class="userPP" src="img/user_profile_picture.png"/>
+			 <img id="current_userPP" class="current_userPP" src="img/camera.png" ontouchend="personalPage.selectPictureSource('profilePicture');"/>
+			 <img id="bgselect" class="bgselect" src="img/bgselect.png" ontouchend="personalPage.selectPictureSource('background');"/>
+       <div data-anchor="personalPage" id ="personalPage" class="personalPage">
+         <div id="bg_overlay" class="bg_overlay"></div>
+         <div id="bottom_line" class="bottom_line"></div>
+         <textarea id="bio_edit" class="bio_edit" rows=3 cols=40 wrap="hard" maxlength="110"></textarea>
+         <input id="username_edit" class="username_edit" type="textbox" maxlength="24"/>
+				 <div id="location_swap" class="location_swap" ontouchend="personalPage.getGeoLocation();"> </div>
+				 <div id="finished_profile" class="finished_profile" ontouchend="personalPage.finalize();">
+				 	Finish
+				 </div>
+       </div>
+			 	<img id="user_Profile_Picture" class="userPP" src="img/user_profile_picture.png"/>
 
         <div id='user_Profile_breakdown_container' class="user_Profile_breakdown_container"  ontouchstart="userBloc.onProfilePictureTouch();" ontouchmove="userBloc.onProfilePictureDrag();" ontouchend="userBloc.onProfilePictureEnd();">
-
          <svg id ="user_Profile_breakdown_0" class="user_Profile_breakdown_0" width="100%" height="70%" >
            <circle id="user_Profile_slice_0" class="user_Profile_slice_0" r="34%" cx="50%" cy="50%"/>
          </svg>
@@ -58,6 +69,7 @@
            <circle id="user_Profile_slice_6" class="user_Profile_slice_6" r="34%" cx="50%" cy="50%"/>
 				 </svg>
       	</div>
+
         <div class="userProfile">
 					<div class="userContent">
           	<div id ="user_Display_Name" class ="user_Display_Name"></div>
@@ -117,25 +129,17 @@
 		 -->
 		 </div>
 
-		 <div data-anchor="personalPage" id ="personalPage" class="personalPage">
-			 <div class="cPP_background">
-			 </div>
-			 <img id="current_Profile_Picture" class="current_userPP" src="img/camera.png" ontouchend="personalPage.selectPictureSource();"/>
-       <div  ontouchend="personalPage.selectPictrueSource();">
-       </div>
-			 <div id="bottom_text" class="bottom_box">
 
-			 </div>
-		 </div>
 
 		 <div data-anchor="bloc"  id="bloc" class="bloc">
 		 </div>
 
-		 <div class="dialog">
-		 		<div id="option_container">
-
+		 <div id="dialog" class="dialog">
+			 <div class="bgfade"></div>
+		 		<div id="option_container" class="option_container">
 				</div>
 		 </div>
+
 		 <div class="base">
 			 <img class="logo" src="img/logo.png" alt="" />
 		 </div>

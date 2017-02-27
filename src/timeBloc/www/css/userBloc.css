@@ -44,12 +44,10 @@
   background-size:cover;
   left:50vw;
 	width:51vw;
-  height:30vh;
-	top: 1vh;
-  margin:44.25% 0px 25% -25.5vw;
+  height:51vw;
+	top: 1.25vw;
+  margin:44.25% 0px 25.42% -25.5vw;
   display:block;
-  z-index: 201;
-
   border-radius:50%;
 }
 
@@ -63,18 +61,16 @@
 	left:16.85vw;
 	width:63vw;
 	text-align: center;
-	z-index: 202;
 }
 
 .user_Profile_breakdown_container{
 	position: absolute;
-	top:6.5vh;
+	top:11vw;
 	left:0;
   width:100%;
   height:100%;
-	margin:0 0 -48vh 0;
+	margin:0 0 -48% 0;
 	padding:0px;
-	z-index:200;
 	transform-origin: 50% 35%;
 	-webkit-backface-visibility: hidden;
   overflow: hidden;
@@ -224,13 +220,12 @@
 .userProfile{
   position:relative;
 
-  height:29.50vh;
+  height:50.3vw;
   width:100vw;
   margin:0px;
   padding:0px;
 	color:white;
 
-  z-index: 201;
 }
 
 .userContent{
@@ -251,15 +246,14 @@
   min-width:25%;
 
 	margin:0px;
-  padding:1vh 1.25vw .75vh 1.25vw;
+  padding:1.75vw 1.25vw 1.25vw 1.25vw;
   text-align: center;
-  font-size: 3vh;
-  border: .8vh dashed #bfbfbf;
-  border-radius:0.5vh;
+  font-size: 5.5vw;
+  border: 1.3vw dashed #bfbfbf;
+  border-radius:0.8vw;
 
 	white-space: nowrap;
 
-  z-index:201;
 }
 
 .userFollowingStatus.light{
@@ -268,6 +262,10 @@
 
 .userFollowingStatus.dark{
 	color:#292929;
+}
+
+.userFollowingStatus.editing{
+	color:transparent;
 }
 
 
@@ -323,7 +321,7 @@
 
 	padding:0vw 0vw 0vw 1vw;
   text-align: left;
-  font-size: 4vh;
+  font-size: 7vw;
 }
 
 .user_Display_Name.light{
@@ -334,6 +332,10 @@
 	color:#ff891a;
 }
 
+.user_Display_Name.editing{
+	color:transparent;
+}
+
 .user_Handle{
   position:relative;
 	height:auto;
@@ -341,10 +343,10 @@
   width:25%;
 	white-space: nowrap;
 
-	margin:-1vh 0% 0% 0%;
+	margin:-2vw 0% 0% 0%;
   padding:0 0 0 2vw;
   text-align: left;
-  font-size: 2.50vh;
+  font-size: 4vw;
 }
 
 .user_Handle.light{
@@ -355,6 +357,10 @@
 	color: #292929;
 }
 
+.user_Handle.editing{
+	color: transparent;
+}
+
 .user_Info{
   position:relative;
 
@@ -363,10 +369,10 @@
   min-width:45%;
 	white-space: nowrap;
 
-  margin:-0.5vh 0% 0% 0%;
+  margin:-0.5vw 0% 0% 0%;
   padding:0 0  0 2vw;
   text-align: left;
-  font-size: 1.75vh;
+  font-size: 3.25vw;
 	font-style: italic;
 }
 
@@ -376,6 +382,10 @@
 
 .user_Info.dark{
 	color: #292929;
+}
+
+.user_Info.editing{
+	color: transparent;
 }
 
 .page_break{
@@ -388,7 +398,7 @@
   opacity:0.20;
 
 	padding: 0px;
-	margin: .50% 0px 0.75% 0px;
+	margin: .50% 0px 1.75% 0px;
 }
 
 .page_break.light{
@@ -401,17 +411,23 @@
 	opacity: 0.30;
 }
 
+.page_break.editing{
+	border-color: white;
+	opacity: 0.40;
+}
+
 .userBloc_bio{
   position: relative;
   text-align: left;
 
+
 /*white-space: nowrap;*/
-	line-height: 3vh;
+	line-height: 3vw;
   left:10vw;
-  height: 8vh;
+  height: 14vw;
 	padding: 0vh 0vh 0 0vh;
-  font-size: 2.5vh;
-  max-width: 75vw;
+  font-size: 4vw;
+  max-width: 82vw;
 }
 
 
@@ -423,9 +439,13 @@
 	color: #292929;
 }
 
+.userBloc_bio.editing{
+	color: transparent;
+}
+
 .content_box{
 	position:absolute;
-	bottom: 2vh;
+	bottom: 3vw;
 
 
 	height:6vh;
@@ -439,7 +459,7 @@
 	border-radius: 5px;
 
 	text-align: center;
-	font-size: 3.25vh;
+	font-size: 5.5vw;
 }
 
 .weeks{
@@ -466,6 +486,10 @@
 	color: #292929;
 }
 
+.weeks.editing{
+	color: transparent;
+}
+
 .following{
   position:absolute;
   height:auto;
@@ -489,6 +513,10 @@
 	color: #292929;
 }
 
+.following.editing{
+	color: transparent;
+}
+
 .followers{
   position:absolute;
   height:auto;
@@ -508,6 +536,10 @@
 
 .followers.dark{
 	color: #292929;
+}
+
+.followers.editing{
+	color: transparent;
 }
 
 hr{

@@ -97,9 +97,9 @@
   background-size:contain;
   top:35vh;
   left:50vw;
-  width:50vw;
+  width:51vw;
   height:30vh;
-  margin:-25vw 0px 0px -25vw;
+  margin:-25.5vw 0px 0px -25.5vw;
   display:block;
 
   z-index: 200;
@@ -289,7 +289,7 @@
 .user_Display_Name{
   position:absolute;
   color: #ff9633;
-  top:-3vh;
+  top:-4vh;
   left:0;
   max-width:54vw;
 
@@ -323,7 +323,7 @@
 .user_Handle{
   position:absolute;
 
-  top:2.5vh;
+  top:1.5vh;
   left:4vw;
   width:25vw;
 

@@ -419,12 +419,14 @@ var userBloc = {
 
 		setWedges:function(tx, results) {
 			var userWedge = results.rows.item(0);
+			var replacement = [];
 			for(var i=0; i <= 6 ; i++){
 				//alert(userWedge['weight_'+ i]);
 				if(userWedge['weight_'+ i] > 0){
-					userBloc.weight[i] = userWedge['weight_'+ i];
+					replacement.push(userWedge['weight_'+ i]);
 				}
 			}
+			userBloc.weight = replacement;
 			userBloc.generateSelf();
 		},
 
@@ -514,7 +516,7 @@ var userBloc = {
       var direction = Math.atan2(touches.pageY - window.innerHeight*0.35, touches.pageX - window.innerWidth*0.50);
       direction += (Math.PI);
       direction = Math.floor(direction/angle);
-      document.getElementById("user_Profile_slice_" +direction).style['stroke-width'] = 90;
+      document.getElementById("user_Profile_slice_" +direction).style['stroke-width'] = 22 + '%';
       document.getElementById("user_Profile_breakdown_" +direction).style.opacity= 1.0;
       if(direction != userBloc.last_slice){
       document.getElementById("user_Profile_slice_" +userBloc.last_slice).style['stroke-width'] = 18*userBloc.weight[userBloc.last_slice] + '%';

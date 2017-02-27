@@ -1,11 +1,10 @@
 var touches = [];
 var sidebar;
-var width;
 
 var navbar = {
   initialize(){
-    width = document.body.clientWidth *0.38;
     sidebar = document.getElementById('sidebar');
+
     sidebar_button = document.getElementById('sidebar_button');
 
     sidebar_button.addEventListener('touchstart', function(event) {
@@ -21,20 +20,18 @@ var navbar = {
     sidebar.addEventListener('touchmove', function(event) {
       touches = event.touches;
       console.log(touches[0].pageX);
-      if(touches[0].pageX < width){
-        sidebar.style.left = -width+touches[0].pageX + 'px';
+      if(touches[0].pageX <= 150){
+        sidebar.style.left = -150+touches[0].pageX + 'px';
       }
 
     }, false);
 
     sidebar.addEventListener('touchend', function(event) {
       console.log('Touch End.');
-      console.log('pgX: ' + touches[0].pageX);
-      console.log('dw: ' + width);
-      if(touches[0].pageX < width)
+      if(touches[0].pageX <= 150)
       {
         sidebar.className = 'sidebar_in';
-        setTimeout(function(){sidebar.style.left = -38+'%';}, 200)
+        setTimeout(function(){sidebar.style.left = -150+'px';}, 200)
       }
     }, false);
   }

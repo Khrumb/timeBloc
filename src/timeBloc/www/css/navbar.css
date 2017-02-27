@@ -12,7 +12,7 @@
   position:absolute;
   left:0%;
   top:0%;
-  height: 8%;
+  height: 50px;
   width: 100%;
 }
 
@@ -21,7 +21,7 @@
     position:absolute;
     bottom:0%;
     left:0%;
-    height:8%;
+    height: 50px;
     width: 100%;
   }
 
@@ -32,16 +32,16 @@
     text-align:center;
     z-index: 0;
     left:50%;
-    top:50%
-    height:80%;
+    top:50%;
+    height:40px;
     width:40%;
-    margin: 0px 0px 0px -20%;
+    margin:-20px 0px 0px -20%;
   }
 
-.sidebar_in{
+.sidebar.in{
   background-color: #FF92FF;
   position:absolute;
-  width:25%;
+  width:150px;
   height:100%;
   left:0%
   top:0%;
@@ -55,7 +55,7 @@
 .sidebar_out{
   background-color: #FF92FF;
   position:absolute;
-  width:38%;
+  width:150px;
   height:100%;
   left:0%;
   top:0%;
@@ -69,28 +69,28 @@
 .slidebar_button{
   background-color: #FFFFFF;
   position:absolute;
-  width:12%;
-  height:80%;
+  width:40px;
+  height:40px;
   left:1%;
   top:10%;
 }
 
 @keyframes slideout{
-  from {left:-35%; top: 0px}
+  from {left:-150px; top: 0px}
   to {left:0px; top: 0px}
 }
 
 @-webkit-keyframes slideout{
-  from {left:-35%; top: 0px}
+  from {left:-150px; top: 0px}
   to {left:0px; top: 0px}
 }
 
 @keyframes slidein{
   from {top: 0px}
-  to {left:-25%; top: 0px}
+  to {left:-150px; top: 0px}
 }
 
 @-webkit-keyframes slidein{
   from {top: 0px}
-  to {left:-25%; top: 0px}
+  to {left:-150px; top: 0px}
 }

@@ -1,0 +1,96 @@
+
+* {
+    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+}
+
+.navbar{
+    -webkit-user-drag: none;
+ }
+
+.top_bar{
+  background-color: #FF9200;
+  position:absolute;
+  left:0%;
+  top:0%;
+  height: 8%;
+  width: 100%;
+}
+
+.bottom_bar{
+    background-color: #FF9200;
+    position:absolute;
+    bottom:0%;
+    left:0%;
+    height:8%;
+    width: 100%;
+  }
+
+.logo{
+    background:url(../img/topbar.png) no-repeat center top;
+    position:absolute;
+    background-size: contain;
+    text-align:center;
+    z-index: 0;
+    left:50%;
+    top:50%
+    height:80%;
+    width:40%;
+    margin: 0px 0px 0px -20%;
+  }
+
+.sidebar_in{
+  background-color: #FF92FF;
+  position:absolute;
+  width:25%;
+  height:100%;
+  left:0%
+  top:0%;
+  z-index:1;
+  animation: slidein 200ms;
+  animation-timing-function: ease-out;
+  -webkit-animation:slidein 200ms;
+  -webkit-animation-timing-function: ease-out;
+}
+
+.sidebar_out{
+  background-color: #FF92FF;
+  position:absolute;
+  width:38%;
+  height:100%;
+  left:0%;
+  top:0%;
+  z-index: 1;
+  animation: slideout 200ms;
+  animation-timing-function: ease-out;
+  -webkit-animation:slideout 200ms;
+  -webkit-animation-timing-function: ease-out;
+}
+
+.slidebar_button{
+  background-color: #FFFFFF;
+  position:absolute;
+  width:12%;
+  height:80%;
+  left:1%;
+  top:10%;
+}
+
+@keyframes slideout{
+  from {left:-35%; top: 0px}
+  to {left:0px; top: 0px}
+}
+
+@-webkit-keyframes slideout{
+  from {left:-35%; top: 0px}
+  to {left:0px; top: 0px}
+}
+
+@keyframes slidein{
+  from {top: 0px}
+  to {left:-25%; top: 0px}
+}
+
+@-webkit-keyframes slidein{
+  from {top: 0px}
+  to {left:-25%; top: 0px}
+}

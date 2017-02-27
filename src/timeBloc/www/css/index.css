@@ -1,0 +1,43 @@
+* {
+    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+}
+
+body {
+  background-image:linear-gradient(top, #A7A7A7 0%, #E4E4E4 51%);
+  background-image:-webkit-linear-gradient(top, #A7A7A7 0%, #E4E4E4 51%);
+  background-image:-ms-linear-gradient(top, #A7A7A7 0%, #E4E4E4 51%);
+  background-image:-webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      color-stop(0, #A7A7A7),
+      color-stop(0.51, #E4E4E4)
+  );
+  background-attachment:fixed;
+  height:100%;
+  width:100%;
+  margin:0px;
+  padding:0px;
+}
+
+
+.full_frame{
+  -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
+  -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  /*background-color: #FF9200;*/
+  position:absolute;
+  background-attachment:fixed;
+  height: 100%;
+  width: 100%;
+  margin:0px;
+  padding:0px;
+  left:0px;
+  top:0px;
+  border:none;
+}
+
+.app_frame{
+  display:none;
+}

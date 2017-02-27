@@ -1,0 +1,75 @@
+.loader{
+  -webkit-user-drag: none;
+}
+
+.load.ltext{
+  background: none;
+  position: absolute;
+  top:44%;
+  left:62%;
+  height:70px;
+  width:70px;
+  font-family:'ourFont';
+  font-size: 15px;
+  text-align: right;
+  color: #FF9200;
+
+
+  animation: slidein_load 2000ms;
+  animation-timing-function: ease-out;
+  -webkit-animation:slidein_load 2000ms;
+  -webkit-animation-timing-function: ease-out;
+}
+
+.load.icon_border{
+  background-color: #B56800;
+  position:absolute;            /* position in the center of the screen */
+  left:50%;
+  top:50%;
+  height:80px;                   /* text area height */
+  width:80px;                   /* text area width */
+  text-align:center;
+  color: white;
+  margin:-40px 0px 0px -40px;  /* offset vertical: half of image height and text area height */
+  border-width: thin;
+  border-radius: 40px;
+  display:block;
+  animation:fade 3000ms infinite;
+  -webkit-animation:fade 3000ms infinite;
+}
+
+.load.icon{
+  background:url(../img/logo.png) no-repeat center top; /* 170px x 200px */
+  position:absolute;            /* position in the center of the screen */
+  background-size: contain;
+  left:50%;
+  top:50%;
+  height:74px;                   /* text area height */
+  width:74px;                   /* text area width */
+  text-align:center;
+  color: white;
+  margin:-37px 0px 0px -37px;  /* offset vertical: half of image height and text area height */
+  border-width: thin;
+  border-radius: 40px;
+  -webkit-border-radius:40px;
+  display:block;
+}
+
+@font-face{
+  font-family: 'ourFont';
+  src: url('../res/Lantinghei-TC.ttf');
+}
+
+@keyframes slidein_load{
+  from { opacity: 0.0; left:50%; top: 44%}
+  25% { opacity: 0.0; left:50%; top: 44%}
+  75% { opacity: 1.0; left:62%; top: 44%}
+  to { opacity: 1.0; left:62%; top: 44%}
+}
+
+@-webkit-keyframes slidein_load{
+  from { opacity: 0.0; left:50%; top: 44%}
+  25% { opacity: 0.0; left:50%; top: 44%}
+  75% { opacity: 1.0; left:62%; top: 44%}
+  to { opacity: 1.0; left:62%; top: 44%}
+}

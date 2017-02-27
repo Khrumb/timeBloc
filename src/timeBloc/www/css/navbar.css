@@ -122,6 +122,16 @@ body {
 	-webkit-backface-visibility: hidden;
 }
 
+.easterEgg{
+  position:absolute;
+  background-color: black;
+  opacity:0.01;
+  right:20vw;
+  bottom: 15vw;
+  width:5vw;
+  height:5vw;
+}
+
 .sidebar.off{
   animation:nav_drawer_slide_in 250ms ease;
   -webkit-animation:nav_drawer_slide_in 250ms ease;

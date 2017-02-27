@@ -9,8 +9,9 @@
 				<link rel="stylesheet" type="text/css" href="css/base.css" />
 				<link rel="stylesheet" type="text/css" href="css/bloc.css" />
 				<link rel="stylesheet" type="text/css" href="css/dialog.css" />
-				<link rel="stylesheet" type="text/css" href="css/navbar.css" />
-				<link rel="stylesheet" type="text/css" href="css/calander.css" />
+        <link rel="stylesheet" type="text/css" href="css/navbar.css" />
+        <link rel="stylesheet" type="text/css" href="css/founders.css" />
+        <link rel="stylesheet" type="text/css" href="css/calander.css" />
         <link rel="stylesheet" type="text/css" href="css/userBloc.css" />
         <link rel="stylesheet" type="text/css" href="css/blocFeed.css" />
 				<link rel="stylesheet" type="text/css" href="css/personalPage.css" />
@@ -23,9 +24,12 @@
         <ul>
 					<li ontouchstart="sidebar.slide();" ontouchend="userBloc.setup(3);">Active Profile</li>
           <li ontouchstart="sidebar.slide();" ontouchend="blocFeed.setup();">blocFeed</li>
-					<li ontouchstart="sidebar.slide();" ontouchend="bloc.setup(1);">Kanye Bloc</li>
+					<li ontouchstart="sidebar.slide();" ontouchend="bloc.setup(1);">Test Bloc</li>
 					<li ontouchstart="sidebar.slide();" ontouchend="dataManager.setUser();">Set User</li>
+          <li ontouchstart="sidebar.slide();" ontouchend="dataManager.resetUserData();">Reset User Data</li>
         </ul>
+        <div class="easterEgg" ontouchstart="sidebar.slide();" ontouchend="founders.setup();">
+        </div>
        </div>
        <div class="navbar top">
          <div class="navbar top menu" ontouchstart="sidebar.slide();">
@@ -144,45 +148,79 @@
 		 -->
 		 </div>
 
-
-
 		 <div data-anchor="bloc"  id="bloc" class="bloc">
 			 <img id="bloc_bg" class="bloc_bg" alt="" />
-			 <div class="bloc_info_container">
-				 <div id="bloc_title" class="bloc_title"></div>
-				 <div id="bloc_location" class="bloc_location"></div>
-	       <div id="bloc_creater" class="bloc_creater"></div>
-			 </div>
-			 <div class="bloc_content_selecter">
-				 <div class="bloc_content_selecter_titles"  ontouchend="bloc.toggleOut();">
-					 <div id="bloc_blog" class="bloc_blog">
-					  B
-					 </div>
-					 <div id="bloc_media" class="bloc_media active">
-						M
-					 </div>
+			 <div id="bloc_content_container">
+				 <div class="bloc_info_container">
+				 	<div id="bloc_title" class="bloc_title"></div>
+				 	<div id="bloc_location" class="bloc_location"></div>
+	       	<div id="bloc_creater" class="bloc_creater"></div>
 				 </div>
-			 </div>
-			 <div id="bloc_bottom_line" class="bloc_bottom_line"></div>
-			 <div class="bloc_container">
-				 <div id="bloc_media_container" class="bloc_media_container">
-					 <div id="bloc_media_content" class="bloc_content">
-						 <div class="bloc_empty_content">
-						 	No Posts Yet :(
-						 </div>
-					 </div>
-				 </div>
-				 <div id="bloc_blog_container" class="bloc_blog_container">
-					 <div id="bloc_blog_content" class="bloc_content">
-						 <div class="bloc_empty_content">
-						 	No Posts Yet :(
-						 </div>
-					 </div>
-				 </div>
+				 <div class="bloc_content_selecter">
+  				 <div class="bloc_content_selecter_titles"  ontouchend="bloc.toggleOut();">
+  					 <div id="bloc_blog" class="bloc_blog">
+  					  B
+  					 </div>
+  					 <div id="bloc_media" class="bloc_media active">
+  						M
+  					 </div>
+  				 </div>
+  			 </div>
+  			 <div id="bloc_bottom_line" class="bloc_bottom_line"></div>
+  			 <div class="bloc_container">
+  				 <div id="bloc_media_container" class="bloc_media_container">
+  					 <div id="bloc_media_content" class="bloc_content">
+  						 <div class="bloc_empty_content">
+  						 	No Posts Yet :(
+  						 </div>
+  					 </div>
+  				 </div>
+  				 <div id="bloc_blog_container" class="bloc_blog_container">
+  					 <div id="bloc_blog_content" class="bloc_content">
+  						 <div class="bloc_empty_content">
+  						 	No Posts Yet :(
+  						 </div>
+  					 </div>
+  				 </div>
+  			 </div>
 			 </div>
 			 <div id="bloc_content_slide_tab" class="bloc_content_slide_tab" ontouchstart="bloc.onTabTouch();" ontouchmove="bloc.onTabSlide();" ontouchend="bloc.onTabTouchEnd();"></div>
 
 		 </div>
+
+     <div data-anchor="founders"  id="founders" class="founders">
+       <div class="founders_title">
+         Founders
+       </div>
+       <div id="founders_faces" class="founders_faces">
+         <div id="founder_face_1" class="founder_face upper">
+         </div>
+         <div id="founder_face_2" class="founder_face right">
+         </div>
+         <div id="founder_face_3" class="founder_face left">
+         </div>
+       </div>
+       <img class="founders_logo" src="assets/logo.png" ontouchend="founders.reverseDirection()" />
+
+       <div class="founders_names">
+         <div class="founders_name" style="color:#ffb16e; text-decoration:underline;">
+           timeBloc is brought to you by:
+         </div>
+         <div class="founders_name" ontouchend="userBloc.setup(1);">
+           John Gregg
+         </div>
+         <div class="founders_name" ontouchend="userBloc.setup(2);">
+           Connor Thomas
+         </div>
+         <div class="founders_name" ontouchend="userBloc.setup(3);">
+           Brane Pantovic
+         </div>
+       </div>
+       <div class="founders_message">
+         Realize the value of your Time.
+       </div>
+
+     </div>
 
 		 <div id="dialog" class="dialog">
 			 <div class="bgfade"></div>

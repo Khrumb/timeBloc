@@ -19,7 +19,7 @@ var sidebar_isOn = false;
 var blocFeed_bloc_on = false;
 var isFollowing = false;
 
-var version = "0.53.6";
+var version = "0.54.1";
 var db;
 
 var app = {
@@ -72,6 +72,10 @@ var app = {
 							personalPage.taredown();
 							current_page = null;
 							break;
+						case "dialog":
+							uiControl.select(-2);
+							current_page = null;
+							break;
 						default:
 						var id = page_log[page_log.length-1];
 						switch (id) {
@@ -88,6 +92,9 @@ var app = {
 									break;
 							case 'bloc':
 									bloc.setup(page_log_bid.pop());
+									break;
+							case 'founders':
+									founders.setup();
 									break;
 							default:
 								alert("PAGE_SETUP_UNHANDLED: "+id);
@@ -123,13 +130,17 @@ var dataManager = {
 		width = screen.availWidth;
 		uiControl.updateDebugger("build", "pre-alpha");
 		uiControl.updateDebugger("version", version);
-		//uiControl.updateDebugger("screenX", height);
-		//uiControl.updateDebugger("screenY", width);
+		uiControl.updateDebugger("screenX", height);
+		uiControl.updateDebugger("screenY", width);
 		//document.body.style.height = height + "px";
 		//document.body.style.width = width + "px";
     db = window.openDatabase("timeBloc", "0.1", "dmgr", 20000000);
-    //db.transaction(dataManager.populateDB, dataManager.errorCB);
+    db.transaction(dataManager.populateDB, dataManager.errorCB);
   },
+
+	resetUserData:function() {
+		db.transaction(dataManager.populateDB, dataManager.errorCB);
+	},
 
   //user (uid, username, display_name, date_joined)
   //bloc (bid, uid , message);
@@ -193,9 +204,17 @@ var dataManager = {
 		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (6, 3, 1, "img/bloc_1_4.jpg")');
 		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (7, 3, 1, "img/bloc_1_5.jpg")');
 		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (8, 3, 1, "img/bloc_1_6.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (9, 3, 1, "img/bloc_1_2.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (10, 3, 1, "img/bloc_1_4.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (11, 3, 1, "img/bloc_1_6.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (9, 3, 1, "img/bloc_1_7.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (10, 3, 1, "img/bloc_1_8.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (11, 3, 1, "img/bloc_1_9.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (12, 3, 1, "img/bloc_1_10.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (13, 3, 1, "img/bloc_1_11.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (14, 3, 1, "img/bloc_1_12.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (15, 3, 1, "img/bloc_1_13.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (16, 3, 1, "img/bloc_1_14.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (17, 3, 1, "img/bloc_1_15.jpg")');
+
+
 
 
 
@@ -204,7 +223,7 @@ var dataManager = {
 
 		//tx.executeSql('INSERT INTO bloc(bid, uid, pl_id, title, pid, location, date) VALUES (<seq#>, <uid>, <pl_id>, "<title>",  <pid>, <location>, <current_date> )');
 		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, pid, location) VALUES (0, 0, 0, "Default Bloc",  0, "NA - USA" )');
-		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, pid, location) VALUES (1, 3, 0, "Yeezus Tour",  1, "CO - USA" )');
+		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, pid, location) VALUES (1, 3, 0, "Brane Test",  1, "CO - USA" )');
 
     //template for regex: tx.executeSql('INSERT INTO bloc(bid, userID, message) VALUES (<bid>, "<username>", "<message>")');
     tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (0, 0, "Link to UID_0 - Default")');
@@ -336,12 +355,16 @@ var uiControl = {
 						break;
 					case 'personalPage':
 						personalPage.taredown();
+						userBloc.taredown();
 						break;
 					case 'bloc':
 						bloc.taredown();
 						break;
 					case 'dialog':
-						uiControl.select(-2);
+						uiControl.select(-3);
+						break;
+					case 'founders':
+						founders.taredown();
 						break;
 					default:
 						alert("Unhandled Page: " + id);
@@ -406,9 +429,9 @@ var uiControl = {
 			}
 			dialog += "<div class='option cancel' ontouchend='uiControl.select(-1);'>Cancel</div>";
 			document.getElementById('option_container').innerHTML = dialog;
+			document.getElementById("dialog").style.display ="block";
 			document.getElementById("dialog").style['z-index'] = page_log.length+5;
 			uiControl.turnItemOn("dialog");
-
 		},
 
 		select:function(id) {
@@ -419,12 +442,17 @@ var uiControl = {
 				} else {
 					temp.call();
 				}
-			} else if(id == -1)  {
+			}
+			if(id  >= -1){
 				page_log.pop();
+			}
+			if(id == -3){
+				page_log.pop();
+				uiControl.turnCurrentItemOff()
 			}
 			uiControl.turnItemOff("dialog");
 			setTimeout(function () {
-				document.getElementById("dialog").style['z-index'] = 0;
+				document.getElementById("dialog").style.display ="none";
 			}, 200);
 		}
 };
@@ -1122,15 +1150,28 @@ var bloc = {
 
 	id: null,
 	c_bloc: null,
+	mediaIsOut: true,
 
 	c_pos:0,
 	slide_step:0,
 	container_animation: null,
+	scrollAnimation: null,
+	hightListener:null,
+	scrollHeight: null,
+	scrollThreshhold:0,
+	scrollLimit:0,
+	scrollStep:0,
+	containerPosition:0,
 
 	setup:function(id) {
 		if(bloc.id != parseInt(id)){
 			bloc.id = parseInt(id);
 			page_log_bid.push(bloc.id);
+
+			bloc.scrollThreshhold = 2*(width*0.5876);
+			bloc.scrollLimit = (width*0.435);
+			bloc.scrollStep = (width*0.025);
+
 			db.transaction(bloc.getSetupInfo, dataManager.errorCB);
 		}
 	},
@@ -1138,6 +1179,9 @@ var bloc = {
 
 	setupCallBack:function(){
 		uiControl.turnCurrentItemOff();
+		bloc.hightListener = setInterval(bloc.scrollListener, 30);
+		bloc.scrollAnimation = setInterval(bloc.scrollExpand, 10);
+
 		document.getElementById("bloc").style.display = "block";
 		document.getElementById("bloc").style['z-index'] = 1;
 		uiControl.turnItemOn("bloc");
@@ -1202,6 +1246,11 @@ var bloc = {
 
 	taredown:function() {
 		uiControl.turnItemOff("bloc");
+		if(!bloc.mediaIsOut){
+			bloc.toggleOut();
+		}
+		clearInterval(bloc.hightListener);
+		clearInterval(bloc.scrollAnimation);
 		setTimeout(function () {
 			bloc.id = null;
 			document.getElementById("bloc_media_content").scrollTop =  0;
@@ -1267,6 +1316,7 @@ var bloc = {
 			document.getElementById("bloc_blog_container").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
 			document.getElementById("bloc_content_slide_tab").style["-webkit-transform"] = "translateX(" + bloc.c_pos+ "px)";
 			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(" + (-(3*bloc.c_pos)/20)+ "px)";
+			bloc.mediaIsOut = false;
 		} else{
 			clearInterval(bloc.slide_animation);
 			document.getElementById("bloc_media_container").style["-webkit-transform"] = "translateX(0px)";
@@ -1275,6 +1325,7 @@ var bloc = {
 			document.getElementById("bloc_bottom_line").style["-webkit-transform"] = "translateX(0)";
 			document.getElementById("bloc_media").classList.add("active");
 			document.getElementById("bloc_blog").classList.remove("active");
+			bloc.mediaIsOut = true;
 		}
 	},
 
@@ -1291,6 +1342,66 @@ var bloc = {
 			bloc.slide_step = width/18;
 			bloc.container_animation = setInterval(bloc.blogOut, 6);
 		}
+	},
+
+	scrollListener:function() {
+		if(bloc.mediaIsOut){
+			bloc.scrollHeight =	document.getElementById("bloc_media_content").scrollTop;
+		} else {
+			bloc.scrollHeight =	document.getElementById("bloc_blog_content").scrollTop;
+		}
+	},
+
+	scrollExpand:function() {
+		if(bloc.scrollHeight >= bloc.scrollThreshhold){
+			if(bloc.containerPosition <= bloc.scrollLimit){
+					bloc.containerPosition = bloc.scrollHeight - bloc.scrollThreshhold;
+					document.getElementById("bloc_content_container").style["-webkit-transform"]="translateY("+-bloc.containerPosition+"px)";
+					document.getElementById("bloc_media_content").style.height = (width+bloc.containerPosition) + "px";
+					document.getElementById("bloc_blog_content").style.height = (width+bloc.containerPosition) + "px";
+			}
+		}
 	}
 
+};
+
+var founders ={
+
+	reversed: false,
+
+	setup:function() {
+		founders.setupCallBack();
+	},
+
+
+	setupCallBack:function(){
+		uiControl.turnCurrentItemOff();
+		document.getElementById("founders").style.display = "block";
+		document.getElementById("founders").style['z-index'] = 1;
+		uiControl.turnItemOn("founders");
+	},
+
+	taredown:function() {
+		uiControl.turnItemOff("founders");
+		setTimeout(function () {
+			document.getElementById("founders").style.display = "none";
+			document.getElementById("founders").style['z-index'] = 0;
+		}, 200);
+	},
+
+	reverseDirection:function() {
+		if(founders.reversed){
+			document.getElementById("founders_faces").style['-webkit-animation'] = "rotate_ccw 3000ms linear infinite";
+			document.getElementById("founder_face_1").style['-webkit-animation'] = "rotate_cw 3000ms linear infinite";
+			document.getElementById("founder_face_2").style['-webkit-animation'] = "rotate_cw 3000ms linear infinite";
+			document.getElementById("founder_face_3").style['-webkit-animation'] = "rotate_cw 3000ms linear infinite";
+			founders.reversed = false;
+		} else {
+			document.getElementById("founders_faces").style['-webkit-animation'] = "rotate_cw 3000ms linear infinite";
+			document.getElementById("founder_face_1").style['-webkit-animation'] = "rotate_ccw 3000ms linear infinite";
+			document.getElementById("founder_face_2").style['-webkit-animation'] = "rotate_ccw 3000ms linear infinite";
+			document.getElementById("founder_face_3").style['-webkit-animation'] = "rotate_ccw 3000ms linear infinite";
+			founders.reversed = true;
+		}
+	}
 };

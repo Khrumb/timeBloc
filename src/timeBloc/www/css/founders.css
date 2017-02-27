@@ -1,0 +1,156 @@
+.founders{
+  background-color: white;
+  background-attachment: fixed;
+  position:absolute;
+  height:100%;
+  width:100%;
+
+  left:0;
+  top:0%;
+  padding: 0;
+  margin: 0;
+
+  overflow-x: hidden;
+  display: none;
+
+  -webkit-backface-visibility: hidden;
+}
+
+.founders.on{
+	-webkit-backface-visibility: hidden;
+  -webkit-animation: fade_on 200ms;
+
+}
+
+@-webkit-keyframes fade_on {
+  from {opacity: 0.0}
+  to {opacity: 1.0}
+}
+
+.founders.off{
+	-webkit-backface-visibility: hidden;
+  -webkit-animation: fade_off 200ms ;
+}
+
+@-webkit-keyframes fade_off {
+  from {opacity: 1.0}
+  to {opacity: 0.0}
+}
+
+  .founders_title{
+    position: absolute;
+    top:15vw;
+    width:100%;
+
+
+    color:#ffb16e;
+    text-align: center;
+    font-size: 9vw;
+    font-family: "main_font";
+  }
+
+.founders_message{
+  position: absolute;
+  bottom:2vw;
+  width:100%;
+
+
+  color:rgba(128, 128, 128, 0.8);
+  text-align: center;
+  font-size: 3vw;
+  /*text-shadow: 0vw 0vw 0.05vw rgba(128, 128, 128, 0.8);;*/
+  font-family: "main_font";
+}
+
+.founders_names{
+  position: absolute;
+  height:28vw;
+  bottom: 8vw;
+  width: 100%;
+}
+
+.founders_name{
+  color:#cc7300;
+  text-align: center;
+  font-size: 6vw;
+  font-family: "main_font";
+}
+
+.founders_faces{
+  position: absolute;
+  height:50%;
+  top: 45%;
+  left:50%;
+  margin: -40% 0 0 -40%;
+  width: 80%;
+  -webkit-transform: scale(0.5, 0.5);
+  -webkit-animation :rotate_ccw 3000ms linear infinite;
+}
+
+.founder_face{
+  position:absolute;
+  background-size: contain;
+
+  height: 30vw;
+  width:30vw;
+  -webkit-animation:rotate_cw 3000ms linear infinite;
+}
+
+.upper{
+  background: url(../assets/john-head.png) no-repeat center top;
+  background-size: contain;
+  left:50%;
+  top:0;
+  margin-left: -10vw;
+}
+
+.right{
+  background: url(../assets/brane-head.png) no-repeat center top;
+  background-size: contain;
+
+  bottom:15%;
+  left:0%;
+}
+
+.left{
+  background: url(../assets/connor-head.png)  no-repeat center top;
+  background-size: contain;
+
+  bottom:15%;
+  right:0%;
+}
+
+.founders_logo{
+	position:absolute;
+
+
+	left:50%;
+	top:45%;
+
+	height:12%;
+	width:20%;
+
+  margin:-10% 0 0 -10%;
+	padding:0px;
+
+}
+
+.founders_logo:active{
+  -webkit-transform:scale(0.95, 0.95);
+}
+
+
+@-webkit-keyframes rotate_ccw {
+  from {-webkit-transform:rotate(0deg);}
+  to {-webkit-transform:rotate(-360deg);}
+}
+
+@-webkit-keyframes rotate_cw {
+  from {-webkit-transform:rotate(0deg);}
+  to {-webkit-transform:rotate(360deg);}
+}
+
+@font-face {
+  font-family: "main_font";
+  src:url(../res/Nova-Plain.ttf);
+}

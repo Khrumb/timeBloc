@@ -5,17 +5,27 @@ var width;
 var height;
 var movement;
 
-var currentPage;
-var lastPage;
 var page_log = [];
-var page_lod_uid = [];
+var page_log_uid = [];
 var uid = 1;
 
+var online = false;
 var sidebar_isOn = false;
 var blocFeed_bloc_on = false;
 var isFollowing = false;
 
 var db;
+
+var network = {
+  ftp:21,
+
+  initialize:function() {
+    //alert("Server Attempt:");
+    //var server = new WebSocket("ws://echo.websocket.org ", "80");
+    //alert("Server Attempt: " + server.readyState);
+  }
+
+};
 
 var dataManager = {
 
@@ -31,16 +41,21 @@ var dataManager = {
   populateDB:function(tx) {
 
     //remove after live host server
+    tx.executeSql('DROP TABLE IF EXISTS personal');
     tx.executeSql('DROP TABLE IF EXISTS user');
     tx.executeSql('DROP TABLE IF EXISTS bloc');
     tx.executeSql('DROP TABLE IF EXISTS follower_list');
 
+    tx.executeSql('CREATE TABLE IF NOT EXISTS personal (session_key Primary Key ASC, uid Refrences USER uid)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS user (uid Primary Key ASC, username, display_name, date_joined)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS bloc (bid Primary Key ASC, uid Refrences USER uid, message)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS follower_list (uid Refrences USER uid, fuid Refrences USER uid, date_followed)');
 
 
     //temp inserts
+    //template for regex: tx.executeSql('INSERT INTO personal(session_key, uid) VALUES (<session_id>, <uid>)');
+    tx.executeSql('INSERT INTO personal(session_key, uid) VALUES (1, 0)');
+
     //template for regex: tx.executeSql('INSERT INTO User(uid, username, display_name, date_joined) VALUES (<uid>, "<username>", "<display_name>", "<date_joined>")');
     tx.executeSql('INSERT INTO User(uid, username, display_name, date_joined) VALUES (1, "hyte", "John", "<date_joined>")');
     tx.executeSql('INSERT INTO User(uid, username, display_name, date_joined) VALUES (2, "condor", "Connor", "<date_joined>")');
@@ -128,15 +143,49 @@ var uiControl = {
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
         document.addEventListener('backbutton', this.onBackKeyDown, false);
+        document.addEventListener('online', this.onlineCheck, false);
+        document.addEventListener('offline', this.offlineCheck, false);
     },
 
     onDeviceReady: function() {
         //alert("DEVICE READY");
         dataManager.initialize();
         //alert("DB INITILIZED");
+        network.initialize();
         uiControl.populate();
-        blocFeed.requestData();
-        uiControl.setPage('blocFeed');
+        blocFeed.setup();
+    },
+
+    onBackKeyDown: function() {
+      if(sidebar_isOn){
+        sidebar.slide();
+      } else if(page_log.length > 1){
+        if(page_log[page_log.length-1] == 'userBloc'){
+          page_log_uid.pop();
+        }
+        uiControl.turnCurrentItemOff();
+        switch (page_log.pop()) {
+          case 'userBloc':
+            break;
+          default:
+            blocFeed.taredown();
+        }
+        switch (page_log.pop()) {
+          case 'userBloc':
+              userBloc.setup(page_log_uid.pop());
+            break;
+          default:
+            blocFeed.setup();
+        }
+      }
+    },
+
+    onlineCheck:function(){
+      online = true;
+    },
+
+    offlineCheck:function(){
+      online = false;
     },
 
     populate: function() {
@@ -153,37 +202,31 @@ var uiControl = {
       //====================================
     },
 
-    setPage: function(id) {
-      lastPage = document.getElementById(page_log[page_log.length-1]);
-      if(lastPage){
-        lastPage.classList.remove('on');
-        lastPage.classList.add('off');
+    turnCurrentItemOff:function(){
+      if(page_log.length > 1){
+        var id = page_log[page_log.length-1];
+        document.getElementById(id).classList.remove('on');
+        document.getElementById(id).classList.add('off');
       }
-      currentPage = document.getElementById(id);
-      currentPage.classList.remove('off');
-      currentPage.classList.add('on');
-      page_log.push(id);
     },
 
-    onBackKeyDown: function() {
-      //alert(page_log[page_log.length-2]
-      if(sidebar_isOn){
-        sidebar.slide();
-      } else if(page_log.length > 1){
-        var lastSet = page_log.pop();
-        var nextSet = page_log.pop();
-        page_log.push(lastSet);
-        if(nextSet == 'userBloc'){
-          uid.pop();
-          blocFeed.setup(uid.pop());
-        }
-        uiControl.setPage(nextSet);
-        nextSet = page_log.pop();
-        page_log.pop();
-        page_log.push(nextSet);
+    turnItemOn:function(id){
+      if(page_log[page_log.length-1] != id){
+        page_log.push(id);
       }
-      //alert(page_log.toString());
+      if(document.getElementById(id).classList.contains("off")){
+        document.getElementById(id).classList.remove('off');
+      }
+      document.getElementById(id).classList.add('on');
+    },
+
+    turnItemOff:function(id) {
+      if(document.getElementById(id).classList.contains("on")){
+        document.getElementById(id).classList.remove('on');
+      }
+      document.getElementById(id).classList.add('off');
     }
+
 };
 
 var sidebar = {
@@ -203,17 +246,21 @@ var sidebar = {
   },
 
   slideOn: function(){
-    document.getElementById('sidebar').classList.remove('off');
-    document.getElementById('sidebar').classList.add('on');
-    document.getElementById('sidebar').style.left = 0 +'%';
-    sidebar_isOn = true;
+    if(!sidebar_isOn){
+      document.getElementById('sidebar').classList.remove('off');
+      document.getElementById('sidebar').classList.add('on');
+      document.getElementById('sidebar').style.left = 0 +'%';
+      sidebar_isOn = true;
+    }
   },
 
   slideOff: function(){
-    document.getElementById('sidebar').classList.remove('on');
-    document.getElementById('sidebar').classList.add('off');
-    document.getElementById('sidebar').style.left = -70 +'%';
-    sidebar_isOn = false;
+    if(sidebar_isOn){
+      document.getElementById('sidebar').classList.remove('on');
+      document.getElementById('sidebar').classList.add('off');
+      document.getElementById('sidebar').style.left = -70 +'%';
+      sidebar_isOn = false;
+    }
   },
 
   move: function() {
@@ -236,6 +283,16 @@ var sidebar = {
 
 var blocFeed ={
 
+  setup:function() {
+    this.requestData();
+    uiControl.turnCurrentItemOff();
+    uiControl.turnItemOff("blocFeed");
+    uiControl.turnItemOn("blocFeed");
+  },
+
+  taredown:function() {
+  },
+
   requestData:function() {
     db.transaction(blocFeed.getBlocs, dataManager.errorCB);
   },
@@ -245,7 +302,7 @@ var blocFeed ={
   },
 
   generateFeed:function(tx, results) {
-    var bf = document.getElementById('blocFeed');
+    var bf = document.getElementById('blocFeed_slideable');
     var full_bloc = "";
     for(var i = results.rows.length-1; i >=0 ; i--){
       full_bloc += blocFeed.generateBloc(results.rows.item(i));
@@ -256,7 +313,7 @@ var blocFeed ={
   generateBloc:function(b){
     var basic_template = "<div class='blocFeed_container'>"+
                               "<div class='blocFeed_bloc_top'>" +
-                              "<a href='#userBloc' ontouchend='sidebar.slideOff();uiControl.setPage(\"userBloc\");userBloc.setup(<username>);'>" +
+                              "<a href='#userBloc' ontouchend='sidebar.slideOff();userBloc.setup(<username>);'>" +
                               "<img id='bloc_<bloc_id>_pic' class='blocFeed_bloc_picture' src='img/<username>_profile_picture_icon.jpg'/>" +
                               "</a>" +
                               "<div class='blocFeed_bloc_username' id='bloc_<bloc_id>_name'>" +
@@ -302,10 +359,15 @@ var userBloc = {
     id: 0,
 
     setup:function(id) {
-      userBloc.id = id;
+      userBloc.id = parseInt(id);
       db.transaction(userBloc.getUserInfo, dataManager.errorCB);
       db.transaction(userBloc.getBlocs, dataManager.errorCB);
       db.transaction(userBloc.getOtherInfo, dataManager.errorCB);
+      setTimeout(function () {
+        uiControl.turnCurrentItemOff();
+        uiControl.turnItemOff("userBloc");
+        uiControl.turnItemOn("userBloc");
+      }, 100);
     },
 
     getUserInfo:function(tx){
@@ -324,7 +386,7 @@ var userBloc = {
 
     setupUserElements: function(tx,results) {
       var user = results.rows.item(0);
-      page_lod_uid.push(user.uid);
+      page_log_uid.push(user.uid);
       document.getElementById('user_Profile_Picture').src = "img/"+ user.uid +"_profile_picture.jpg";
       document.getElementById('userBloc_background').src = "img/"+ user.uid +"_profile_background.jpg";
       document.getElementById('user_Display_Name').innerHTML = user.display_name;

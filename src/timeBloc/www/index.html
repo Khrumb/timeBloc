@@ -13,12 +13,11 @@
     </head>
     <body>
       <div id="navbar">
-
         <div id='sidebar' class="sidebar" ontouchstart="sidebar.init();" ontouchmove="sidebar.move();" ontouchend="sidebar.rubberband();">
-          <h1 class="mastHead" ><a href="#blocfeed" ontouchend="sidebar.slideOff();uiControl.setPage('blocFeed');blocFeed.setup('user');">timeBloc</a></h1>
+          <h1 class="mastHead" ><a href="#blocfeed" ontouchend="sidebar.slideOff();blocFeed.setup();">timeBloc</a></h1>
           <ul>
-            <li id="link_blocFeed"><a href="#blocFeed" ontouchend="sidebar.slideOff();uiControl.setPage('blocFeed');">blocFeed</a></li>
-            <li id="link_userBloc"><a href="#userBloc" ontouchend="sidebar.slideOff();uiControl.setPage('userBloc');userBloc.setup('0');">Personal Bloc</a></li>
+            <li id="link_blocFeed"><a href="#blocFeed" ontouchend="sidebar.slideOff();blocFeed.setup();">blocFeed</a></li>
+            <li id="link_userBloc"><a href="#userBloc" ontouchend="sidebar.slideOff();userBloc.setup(0);">Personal Bloc</a></li>
           </ul>
         </div>
         <div class="navbar top">
@@ -28,6 +27,12 @@
       </div>
 
       <div data-anchor="blocFeed" id="blocFeed" class="blocFeed">
+        <div id="blocFeed_actionbar" class="blocFeed_actionbar">
+          Post Action Bar
+        </div>
+        <div id="blocFeed_slideable" class="blocFeed_slideable">
+
+        </div>
         <!--
         <div class='blocFeed_container'>\
           <div class='blocFeed_bloc_top'>\
@@ -48,10 +53,10 @@
       </div>
 
      <div data-anchor="userBloc"  id="userBloc" class="userBloc">
-      <img  id="userBloc_background" class="userBloc_background" src="img/user_background_picture.jpg"/>
+       <img  id="userBloc_background" class="userBloc_background" src="img/user_background_picture.jpg"/>
        <div id="filter" class="filter">
+         <img id="user_Profile_Picture" class="userPP" src="img/user_profile_picture.png" />
         <div class="userProfile">
-          <img id="user_Profile_Picture" class="userPP" src="img/user_profile_picture.png" />
           <div id="user_Display_Name" class="userDisplayName"></div>
           <div id="user_Handle" class="userHandle"></div>
           <div id="user_Follow_Status" class="userFollowingStatus" onTouchEnd="userBloc.toggleFollow();">Follow</div>
@@ -73,7 +78,7 @@
               <p id='day3_date' class="day">N/A</p>
             <hr>
             </div>
-          <div id='day4' class="calendar day5">
+            <div id='day4' class="calendar day5">
               <p id='day4_date' class="day">N/A</p>
               <hr>
             </div>
@@ -93,7 +98,7 @@
             </div>
             <div class="content_box followers">
               <div id="followers" >- -</div>
-              
+
               Followers
             </div>
             <div class="content_box following">

@@ -9,6 +9,8 @@ var page_log = [];
 var page_log_uid = [];
 var uid = 1;
 
+var timer;
+
 var online = false;
 var sidebar_isOn = false;
 var blocFeed_bloc_on = false;
@@ -159,8 +161,8 @@ var uiControl = {
         //alert("DB INITILIZED");
         network.initialize();
         //uiControl.populate();
-        //blocFeed.setup();
-        userBloc.setup(3);
+        blocFeed.setup();
+        //userBloc.setup(3);
     },
 
     onBackKeyDown: function() {
@@ -374,12 +376,16 @@ var blocFeed ={
 var userBloc = {
 
     id: 0,
+		weight:[0, 0.166, 0.166, 0.166, 0.166, 0.166, 0.166],
     last_slice: 0,
-		c_angle: 0,
-		position_list: [0,1,2,3,4,5,6],
-    weight:[0, 0.166, 0.166, 0.166, 0.166, 0.166, 0.166],
+		current_angle: 0,
+    start_angle: 0,
+    delta_a: 0,
+		position_list: [],
 		c_user: null,
-    currentPercent: 0,
+    animation: null,
+		animation_2: null,
+		velocity: 0,
 
     setup:function(id) {
       userBloc.id = parseInt(id);
@@ -393,6 +399,7 @@ var userBloc = {
 		},
 
 		taredown:function() {
+			clearInterval(userBloc.animation);
 			uiControl.turnItemOff("userBloc");
 			setTimeout(function () {
 				document.getElementById("userBloc").style['z-index'] = 0;
@@ -481,77 +488,105 @@ var userBloc = {
 		},
 
     generateSelf:function() {
-			userBloc.c_angle = 360/(userBloc.weight.length);
-			var begin_angle = (userBloc.c_angle/2);
+			var wedge_angle = 360/(userBloc.weight.length);
+      var s_angle = -90 + (wedge_angle/2);
 			var dasharray = (205/(userBloc.weight.length)) + "%" + " 195%";
       for(var i = 0; i < 7; i++){
 			  if(userBloc.position_list[i] != null){
-        	document.getElementById("user_Profile_breakdown_" + userBloc.position_list[i]).style.transform= "rotate(" + (begin_angle+(userBloc.c_angle*(i-1))) + "deg)";
+          document.getElementById("user_Profile_slice_" + userBloc.position_list[i]).style.display = "block";
+        	document.getElementById("user_Profile_breakdown_" + userBloc.position_list[i]).style['-webkit-transform'] = "rotate(" + (s_angle+(wedge_angle*(i-1))) + "deg)";
         	document.getElementById("user_Profile_slice_" + userBloc.position_list[i]).style['stroke-dasharray']= dasharray;
 					document.getElementById("user_Profile_slice_" + userBloc.position_list[i]).style['stroke-width'] = 16 + '%';
 					document.getElementById("user_Profile_breakdown_" + userBloc.position_list[i]).style.opacity = 0.50;
         	//begin_angle += userBloc.c_angle;
 				} else {
-					document.getElementById("user_Profile_slice_" + i).style['stroke-width'] = 0;
+					document.getElementById("user_Profile_slice_" + i).style.display = "none";
 					//document.getElementById("user_Profile_slice_"  + userBloc.last_slice).style['stroke-width'] = 23 + '%';
 				}
 			}
+			document.getElementById('user_Profile_breakdown_container').style['-webkit-transform'] = "rotate(0deg)";
+			userBloc.current_angle = 0;
     },
 
     onProfilePictureTouch:function(){
       touches = event.touches[0];
 			var direction = Math.atan2(touches.pageY -  window.innerHeight*0.43, touches.pageX - window.innerWidth*0.50) + Math.PI;
-			userBloc.c_angle = 360*(direction/(2*Math.PI));
-      var bdc = document.getElementById('user_Profile_breakdown_container');
-      //bdc.classList.toggle("active");
-      bdc.style.WebkitAnimationPlayState = "initial";
-      //bdc.style.WebkitAnimationPlayState = "paused";
-      //bdc.style.animation = "rotate_0 2000ms linear";
+			userBloc.start_angle = 360*(direction/(2*Math.PI));
+			if(userBloc.animation == null){
+				userBloc.animation = setInterval(this.translateCircle,10);
+			} else {
+				clearInterval(userBloc.animation);
+				userBloc.animation = setInterval(this.translateCircle,10);
+			}
+			userBloc.sw = 16;
+			userBloc.op = 0.5;
+      document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = 0.5;
+			document.getElementById("user_Profile_slice_" + userBloc.position_list[0]).style['stroke-width'] = 16 + '%';
+			timer = performance.now();
 		},
 
     onProfilePictureDrag:function() {
       touches = event.touches[0];
-      var direction = Math.atan2(touches.pageY -  window.innerHeight*0.43, touches.pageX - window.innerWidth*0.50)+Math.PI;
-			var dt = 360*(direction/(2*Math.PI));
-			var step = dt -  userBloc.c_angle;
-      var bdc = document.getElementById('user_Profile_breakdown_container');
-      document.getElementById('user_bio').innerHTML = step + " : " + userBloc.c_angle;
-      document.getElementById('weeks').innerHTML = dt.toPrecision(3);
-      var current_direction = "";
-      if(step < 0){
-				if(bdc.classList.length)
-        bdc.classList.toggle("cw");
-        current_direction = "cw";
-        //bdc.style.WebkitAnimationPlayState = "running";
-      } else if (step > 0){
-        bdc.classList.toggle("ccw");
-        current_direction = "ccw";
-        //bdc.style.WebkitAnimationPlayState = "paused";
-      } else {
-        bdc.classList.toggle(current_direction);
-				current_direction = "";
-				bdc.classList.style.transform = "rotate("+ dt +")";
-        bdc.style.WebkitAnimationPlayState = "paused";
-
-      }
-      if(Math.abs(step) > 30){
-        userBloc.c_angle = dt;
-      }
+      userBloc.current_angle = userBloc.current_angle%360;
+      var cd = 360*((Math.atan2(touches.pageY -  window.innerHeight*0.43, touches.pageX - window.innerWidth*0.50)+Math.PI)/(2*Math.PI));
+      userBloc.delta_a = userBloc.start_angle-cd;
+      userBloc.start_angle = cd;
     },
 
     onProfilePictureEnd:function() {
-      var bdc = document.getElementById('user_Profile_breakdown_container');
-      //bdc.style.WebkitAnimationPlayState = "running";
-      var animation = document.styleSheets[1].cssRules[document.styleSheets[1].cssRules.length-1];
-      //animation.deleteRule("0");
-      //animation.deleteRule("1");
-      //animation.appendRule("0% {transform: rotate(0deg)}");
-      //animation.appendRule("100% {transform: rotate(180deg)}");
-      //bdc.style.transform = "rotate("+ ((userBloc.c_angle + 360*userBloc.currentPercent/10)%360) +"deg)";
-      //userBLoc.c_angle = ((userBloc.c_angle + 360*(userBloc.currentPercent/10))%360);
-      bdc.style.WebkitAnimationPlayState = "paused";
-      bdc.classList.toggle("active");
+      clearInterval(userBloc.animation);
+      var wedge_angle = 360/(userBloc.weight.length);
+			document.getElementById("weeks").innerHTML = ((performance.now() - timer)/1000).toPrecision(3);
+
+			var i = (Math.round(userBloc.current_angle/wedge_angle)-userBloc.last_slice)%userBloc.weight.length;
+			while(i != 0){
+				if(i > 0){
+					userBloc.position_list.unshift(userBloc.position_list.pop());
+					i--;
+				} else if(i < 0) {
+					userBloc.position_list.push(userBloc.position_list.shift());
+					i++;
+				}
+			}
+      userBloc.last_slice = Math.round(userBloc.current_angle/wedge_angle);
+			userBloc.start_angle = userBloc.current_angle;
+      userBloc.current_angle = userBloc.last_slice * wedge_angle;
+			userBloc.delta_a = userBloc.current_angle - userBloc.start_angle;
+			userBloc.animation = setInterval(userBloc.snapTo, 6);
     },
+
+    translateCircle:function() {
+      userBloc.current_angle -= userBloc.delta_a;
+      document.getElementById('user_Profile_breakdown_container').style['-webkit-transform'] = "rotate("+(userBloc.current_angle)+"deg)";
+    },
+
+		op:0.5,
+		sw:16,
+		snapTo:function() {
+			var step = 1/10;
+			userBloc.op += 0.5*step;
+			userBloc.sw += 2*step;
+			if(userBloc.delta_a > 0){
+				userBloc.delta_a -= userBloc.delta_a*step;
+				if(userBloc.delta_a <= 1){
+					document.getElementById('user_Profile_breakdown_container').style['-webkit-transform'] = "rotate("+ userBloc.current_angle +"deg)";
+					clearInterval(userBloc.animation);
+				}
+			} else {
+				userBloc.delta_a -= userBloc.delta_a*step;
+				if(userBloc.delta_a >= -1){
+					document.getElementById('user_Profile_breakdown_container').style['-webkit-transform'] = "rotate("+ userBloc.current_angle +"deg)";
+					clearInterval(userBloc.animation);
+					//userBloc.animation = setInterval(userBloc.extendPreview, 5);
+				}
+			}
+			document.getElementById('user_Profile_breakdown_container').style['-webkit-transform'] = "rotate("+(userBloc.current_angle - userBloc.delta_a)+"deg)";
+			document.getElementById("user_Profile_breakdown_" + userBloc.position_list[0]).style.opacity = userBloc.op;
+		},
+
+		extendPreview:function() {
+
+		},
 
     toBeImplemented:function(ev) {
       alert('To be Implemented');

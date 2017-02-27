@@ -14,6 +14,8 @@
   z-index:0;
 
   overflow: hidden;
+
+	-webkit-backface-visibility: hidden;
 }
 
 .userBloc.on{
@@ -82,14 +84,28 @@
   background-size:contain;
   top:35vh;
   left:50vw;
-  width:51vw;
+	width:51vw;
   height:30vh;
+
   margin:-25.5vw 0px 0px -25.5vw;
   display:block;
 
   z-index: 201;
 
-  border-radius:400px;
+  border-radius:50%;
+}
+
+.userBloc_preview{
+	position:absolute;
+	background-color: #ff8787;
+
+	top:2vh;
+	height:13.5vh;
+
+	left:16.85vw;
+	width:63vw;
+	text-align: center;
+	z-index: 202;
 }
 
 .user_Profile_breakdown_container{
@@ -102,24 +118,12 @@
 	padding:0px;
 	z-index:200;
 	transform-origin: 50% 35%;
-  -webkit-transform: translateZ(0);
+	-webkit-backface-visibility: hidden;
 }
 
-.user_Profile_breakdown_container.cw{
-  -webkit-animation: rotate_cw 2000ms infinite linear;
-}
-
-@-webkit-keyframes rotate_cw {
-  from {transform: rotate(0deg)}
-  to {transform: rotate(360deg)}
-}
-.user_Profile_breakdown_container.ccw{
-  -webkit-animation: rotate_ccw 2000ms infinite linear;
-}
-
-@-webkit-keyframes rotate_ccw {
-  from {transform: rotate(360deg)}
-  to {transform: rotate(0deg)}
+.user_Profile_breakdown_container.spin{
+  -webkit-backface-visibility: hidden;
+  -webkit-animation: rotate_0 400ms linear;
 }
 
 .user_Profile_breakdown_0{
@@ -127,7 +131,8 @@
   background-size:contain;
   left:0;
   top:0;
-  opacity: 0.50;
+
+	-webkit-backface-visibility: hidden;
 }
 
 .user_Profile_slice_0{
@@ -135,15 +140,16 @@
   stroke: #ff8787;
   stroke-width: 2vw;
   stroke-dasharray: 29.5vw 195vw;
+	-webkit-backface-visibility: hidden;
 }
 
 .user_Profile_breakdown_1{
   position:absolute;
   background-size:contain;
-
   left:0px;
 	top:0vw;
   opacity: 0.5;
+	-webkit-backface-visibility: hidden;
 }
 
 .user_Profile_slice_1{
@@ -151,16 +157,16 @@
   stroke: #fff891;
   stroke-width:60 ;
   stroke-dasharray: 29.5vw 195vw;
+	-webkit-backface-visibility: hidden;
 }
 
 .user_Profile_breakdown_2{
   position:absolute;
   background-size:contain;
-
   left:0px;
   top:0vw;
-
   opacity: 0.50;
+	-webkit-backface-visibility: hidden;
 }
 
 .user_Profile_slice_2{
@@ -168,15 +174,16 @@
   stroke: #82ffd1;
   stroke-width: 60;
 	stroke-dasharray: 29.5vw 195vw;
+	-webkit-backface-visibility: hidden;
 }
 
 .user_Profile_breakdown_3{
   position:absolute;
   background-size:contain;
-
   left:0px;
   top:0vw;
   opacity: 0.50;
+	-webkit-backface-visibility: hidden;
 }
 
 .user_Profile_slice_3{
@@ -184,6 +191,7 @@
   stroke: #ff9eea;
   stroke-width: 60;
 	stroke-dasharray: 29.5vw 195vw;
+	-webkit-backface-visibility: hidden;
 }
 
 .user_Profile_breakdown_4{
@@ -193,6 +201,7 @@
   left:0px;
   top:0vw;
   opacity: 0.50;
+	-webkit-backface-visibility: hidden;
 }
 
 .user_Profile_slice_4{
@@ -200,15 +209,16 @@
   stroke: #6369ff;
   stroke-width: 60;
 	stroke-dasharray: 29.5vw 195vw;
+	-webkit-backface-visibility: hidden;
 }
 
 .user_Profile_breakdown_5{
   position:absolute;
   background-size:contain;
-
   left:0px;
   top:0vw;
   opacity: 0.50;
+	-webkit-backface-visibility: hidden;
 }
 
 .user_Profile_slice_5{
@@ -216,15 +226,16 @@
   stroke: #C69BFF;
   stroke-width: 60;
 	stroke-dasharray: 29.5vw 195vw;
+	-webkit-backface-visibility: hidden;
 }
 
 .user_Profile_breakdown_6{
   position:absolute;
   background-size:contain;
-
   left:0px;
   top:0vw;
   opacity: 0.50;
+	-webkit-backface-visibility: hidden;
 }
 
 .user_Profile_slice_6{
@@ -232,6 +243,7 @@
   stroke: #b5fff9;
   stroke-width: 60;
   stroke-dasharray: 29.5vw 195vw;
+	-webkit-backface-visibility: hidden;
 }
 
 
@@ -280,7 +292,7 @@
 	height:1.5vh;
 
 
-   left:-1.025vw;
+  left:-1.025vw;
 	width:.6vw;
 
   display:none;
@@ -518,4 +530,9 @@
 hr{
   padding: 0px;
   margin: 0px;
+}
+
+@-webkit-keyframes rotate_0 {
+  from {transform: rotate(0deg)}
+  to {transform: rotate(0deg)}
 }

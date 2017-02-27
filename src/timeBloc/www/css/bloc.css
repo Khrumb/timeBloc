@@ -254,7 +254,7 @@
 
 .bloc_photo_row{
 	position: relative;
-	height:58.66vw;
+	height:58.67vw;
 	margin: 0.35vw 0vw 0vw 0vw;
 	width:100vw;
 	-webkit-backface-visibility: hidden;
@@ -262,7 +262,7 @@
 
 .bloc_photo_container{
 	position: absolute;
-	height:58.66vw;
+	height:58.67vw;
 	width:33vw;
 	vertical-align:middle;
 	-webkit-backface-visibility: hidden;
@@ -278,7 +278,7 @@
 
 .c3{
 	/*DONT FUCKING ASK*/
-	right:-1px;
+	right:0px;
 }
 
 .bloc_photo{

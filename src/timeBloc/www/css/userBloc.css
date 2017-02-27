@@ -1,4 +1,5 @@
 .userBloc {
+  background-size: contain;
   background-attachment:fixed;
   background-size:100% 100%;
 
@@ -13,7 +14,7 @@
   margin:0px;
   padding:0px;
   z-index:0;
-  overflow-x: hidden;
+  overflow: hidden;
 
 	-webkit-backface-visibility: hidden;
 }
@@ -58,7 +59,7 @@
   left:50vw;
 	width:51vw;
   height:51vw;
-	top: 1.25vw;
+	top: 0.75vw;
   margin:44.25% 0px 25.42% -25.5vw;
   display:block;
   border-radius:50%;
@@ -80,13 +81,14 @@
 	position: absolute;
 	top:11vw;
 	left:0;
-  width:100%;
-  height:100%;
-	margin:0 0 -48% 0;
+  width:100vw;
+  height:170vw;
+	margin:0 0 -90vw 0;
 	padding:0px;
 	transform-origin: 50% 35%;
 	-webkit-backface-visibility: hidden;
   overflow: hidden;
+  clip: rect(8vw, 100vw, 110vw, 0);
 }
 
 .darken{
@@ -262,7 +264,7 @@
   padding:1.75vw 1.25vw 1.25vw 1.25vw;
   text-align: center;
   font-size: 5.5vw;
-  border: 1.3vw dashed #bfbfbf;
+  border: 0.8vw dashed #bfbfbf;
   border-radius:0.8vw;
 
 	white-space: nowrap;
@@ -285,31 +287,31 @@
 .userFollowingStatus_fbarrow{
   position:absolute;
   background-color:#e68800;
-	bottom:-0.2vw;
-	height:1.5vw;
+	bottom:-0.3vw;
+	height:2vw;
 
 
-  left:-1.025vw;
-	width:.6vw;
+  left:-1.15vw;
+	width:0.6vw;
 
   display:none;
 
-  transform: rotate(-25deg);
+  transform: rotate(-30deg);
 	border-radius: 2vw;
 }
 
 .userFollowingStatus_farrow{
   position:absolute;
   background-color:#ffcb80;
-  top:-0.2vh;
-	height: 1.5vh;
+  top:-0.25vw;
+	height: 2vw;
 
-  right:-1.025vw;
-  width:.6vw;
+  right:-1.05vw;
+  width:0.6vw;
 
   display:none;
 
-  transform: rotate(155deg);
+  transform: rotate(150deg);
 
 	border-radius: 2vw;
 }

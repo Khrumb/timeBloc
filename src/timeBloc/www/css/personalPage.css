@@ -9,7 +9,7 @@
   left:0vw;
 
   height:100%;
-  width:100vw;
+  width:100%;
 
   font-family: "main_font";
 
@@ -43,7 +43,7 @@
 
 .current_userPP{
   position:absolute;
-  top:67.5vw;
+  top:69.5vw;
   left:50vw;
 	width: 18vw;
   height:10vw;
@@ -189,9 +189,7 @@ textarea:focus, input:focus{
 
 	height:100%;
 
-	padding: 0vh 0px 1vh 0px;
   display:none;
-	font-size: 3.5vh;
 }
 
 @font-face {

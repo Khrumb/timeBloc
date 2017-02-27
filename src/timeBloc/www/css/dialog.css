@@ -63,6 +63,10 @@
 	margin-bottom: 1%;
 }
 
+.option.top.title{
+	color:black;
+}
+
 .option.cancel{
 	color:red;
 	margin-top: 2%;

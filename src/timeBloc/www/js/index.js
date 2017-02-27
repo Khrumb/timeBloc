@@ -105,8 +105,10 @@ var dataManager = {
   initialize:function() {
 		height = window.innerHeight;
 		width = screen.availWidth;
-		uiControl.updateDebugger("screenX", height);
-		uiControl.updateDebugger("screenY", width);
+		uiControl.updateDebugger("build", "pre-alpha");
+		uiControl.updateDebugger("version", "0.49");
+		//uiControl.updateDebugger("screenX", height);
+		//uiControl.updateDebugger("screenY", width);
 		document.body.style.height = height + "px";
 		document.body.style.width = width + "px";
     db = window.openDatabase("timeBloc", "0.1", "dmgr", 20000000);
@@ -168,7 +170,7 @@ var dataManager = {
 
 		//tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (<seq#>, <uid>, <bid>, <imagedata>)');
 		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (1, 3, 1, "img/1_bloc_bg.jpg")');
-		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (2, 3, 0, "img/2_bloc_bg.jpg")');
+		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (0, 3, 0, "img/2_bloc_bg.jpg")');
 		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (3, 3, 1, "img/bloc_1_1.jpg")');
 		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (4, 3, 1, "img/bloc_1_2.jpg")');
 		tx.executeSql('INSERT INTO picture(pid, uid, bid, data) VALUES (5, 3, 1, "img/bloc_1_3.jpg")');
@@ -185,31 +187,14 @@ var dataManager = {
 		tx.executeSql('INSERT INTO permission_list(plid, uid, bid, permission_level, date_added) VALUES (0, 3, 0, 5 ,"-Null-")');
 
 		//tx.executeSql('INSERT INTO bloc(bid, uid, pl_id, title, pid, location, date) VALUES (<seq#>, <uid>, <pl_id>, "<title>",  <pid>, <location>, <current_date> )');
-		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, pid, location) VALUES (0, 0, 0, "Default Bloc",  2, "NA - USA" )');
+		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, pid, location) VALUES (0, 0, 0, "Default Bloc",  0, "NA - USA" )');
 		tx.executeSql('INSERT INTO bloc(bid, uid, plid, title, pid, location) VALUES (1, 3, 0, "Yeezus Tour",  1, "CO - USA" )');
 
     //template for regex: tx.executeSql('INSERT INTO bloc(bid, userID, message) VALUES (<bid>, "<username>", "<message>")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (0, 0, "Oldest")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (1, 0, "Max Length is 23 Characters")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (2, 0, "PlaceHolder")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (3, 1, "This works somtimes")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (4, 0, "PlaceHolder")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (5, 3, "That moment when...")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (6, 2, "BYU eats dicks!")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (7, 2, "We also drank Grape Juice")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (8, 2, "I made a thing")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (9, 3, "Butt Empire")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (10, 2, "BYU eats BIG dicks!")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (11, 3, "~something in serbian~")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (12, 1, "Max Length is 23 Characters")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (13, 0, "PlaceHolder")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (14, 1, "I am a post.")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (15, 3, "Posts Dont exist?")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (16, 1, "I have to write 20...")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (17, 2, "HOT Mormom Singles!")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (18, 3, "Vroom Vroom")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (19, 2, "Insightful Questions?")');
-    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (20, 1, "This works somtimes")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (0, 0, "Link to UID_0 - Default")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (1, 1, "Link to UID_1 - John")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (2, 2, "Link to UID_2 - Connor")');
+    tx.executeSql('INSERT INTO bloc_temp(bid, uid, message) VALUES (3, 3, "Link to UID_3 - Brane")');
 
   },
 
@@ -258,7 +243,11 @@ var uiControl = {
 			var htmlinsert = "";
 			var template = "";
 			for(var i = 0;i < uiControl.metrics.length; i++){
-				template = "<div class='dbg_item'>" +	uiControl.metrics[i] + " | " + uiControl.values[i] + "</div>";
+				if(uiControl.metrics[i] == "build" || uiControl.metrics[i] == "version" || uiControl.metrics[i] == "msg"){
+					template = "<div class='dbg_item'>" + uiControl.values[i] + "</div>";
+				} else {
+					template = "<div class='dbg_item'>" +	uiControl.metrics[i] + "|" + uiControl.values[i] + "</div>";
+				}
 				htmlinsert += template;
 			}
 			document.getElementById('debug').innerHTML = htmlinsert;
@@ -372,7 +361,11 @@ var uiControl = {
 			for(var i = options.length-1; i >= 0; i--){
 				option = "";
 				if(i == options.length-1){
-					option += "<div class='option top' ontouchend='uiControl.select("+(i)+");'>";
+					if(i == 0){
+						option += "<div class='option top bottom' ontouchend='uiControl.select("+(i)+");'>";
+					} else {
+						option += "<div class='option top' ontouchend='uiControl.select("+(i)+");'>";
+					}
 				} else if(i == 0){
 					option += "<div class='option bottom' ontouchend='uiControl.select("+(i)+");'>";
 				} else {
@@ -396,7 +389,6 @@ var uiControl = {
 					uiControl.toBeImplemented()
 				} else {
 					temp.call();
-
 				}
 			} else if(id == -1)  {
 				page_log.pop();
@@ -405,9 +397,7 @@ var uiControl = {
 			setTimeout(function () {
 				document.getElementById("dialog").style['z-index'] = 0;
 			}, 200);
-
 		}
-
 };
 
 var sidebar = {
@@ -823,10 +813,13 @@ var userBloc = {
     toggleFollow:function() {
       if(!isFollowing){
         db.transaction(userBloc.setFollow, dataManager.errorCB);
-      } else if(confirm("Are you sure you want to unfollow?")){
-        db.transaction(userBloc.setUnfollow, dataManager.errorCB);
+				db.transaction(userBloc.getOtherInfo, dataManager.errorCB);
+      } else {
+				uiControl.dialog(["Unfollow"],[function() {
+					db.transaction(userBloc.setUnfollow, dataManager.errorCB);
+					db.transaction(userBloc.getOtherInfo, dataManager.errorCB);
+				}]);
       }
-      db.transaction(userBloc.getOtherInfo, dataManager.errorCB);
     },
 
     followBack:function() {
@@ -988,7 +981,6 @@ var personalPage = {
 		db.transaction(personalPage.gatherInfo, dataManager.errorCB);
 		personalPage.taredown();
 		page_log.pop();
-		//app.onBackKeyDown();
 	},
 
 	gatherInfo:function (tx) {
@@ -1002,8 +994,9 @@ var personalPage = {
 		tx.executeSql('UPDATE user SET bio = "' + document.getElementById("bio_edit").value + '" where uid = ' + userBloc.c_user.uid);
 		personalPage.imageP = null;
 		personalPage.imageB = null;
-		document.getElementById("user_Display_Name").value = document.getElementById("username_edit").value;
-		document.getElementById("user_bio").value = document.getElementById("bio_edit").value;
+		document.getElementById("user_Display_Name").textContent = document.getElementById("username_edit").value;
+		document.getElementById("user_bio").textContent = document.getElementById("bio_edit").value;
+
 	},
 
   error:function() {
@@ -1181,6 +1174,7 @@ var bloc = {
 	taredown:function() {
 		uiControl.turnItemOff("bloc");
 		setTimeout(function () {
+			document.getElementById("bloc_media_content").scrollTop =  0;
 			document.getElementById("bloc").style.display = "none";
 			document.getElementById("bloc").style['z-index'] = 0;
 		}, 200);

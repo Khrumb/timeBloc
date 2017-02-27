@@ -47,7 +47,7 @@ var dataManager = {
 	  tx.executeSql('DROP TABLE IF EXISTS weight_list');
 
     tx.executeSql('CREATE TABLE IF NOT EXISTS personal (session_key Primary Key ASC, uid Refrences USER uid)');
-    tx.executeSql('CREATE TABLE IF NOT EXISTS user (uid Primary Key ASC, username, display_name, bio, theme,  date_joined)');
+    tx.executeSql('CREATE TABLE IF NOT EXISTS user (uid Primary Key ASC, username, display_name, bio, theme, birthday, date_joined)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS bloc (bid Primary Key ASC, uid Refrences USER uid, message, posted_time)');
     tx.executeSql('CREATE TABLE IF NOT EXISTS follower_list (uid Refrences USER uid, fuid Refrences USER uid, date_followed)');
 		tx.executeSql('CREATE TABLE IF NOT EXISTS weight_list (uid Refrences USER uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6)');
@@ -62,11 +62,11 @@ var dataManager = {
 		tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (2, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, -1)');
 		tx.executeSql('INSERT INTO weight_list(uid, weight_0, weight_1, weight_2, weight_3, weight_4, weight_5, weight_6) VALUES (3, 0.5, 0.25, 0.75, 1, -1, -1, -1)');
 
-    //template for regex: tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, date_joined) VALUES (<uid>, "<username>", "<display_name>", "<bio>", "<theme>", "<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, date_joined) VALUES (1, "hyte", "John Gregg", "I am the Lead Programmer on timeBloc.", "dark" , "<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, date_joined) VALUES (2, "the_reelist_condor", "Connor Thomas", "BYU<br>Also a noob.", "dark" ,"<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, date_joined) VALUES (3, "serbian_slayer", "Brane Pantovic", "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ab.", "light", "<date_joined>")');
-    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, date_joined) VALUES (0, "user", "default_user", "<message>", "light", "<date_joined>")');
+    //template for regex: tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, date_joined) VALUES (<uid>, "<username>", "<display_name>", "<bio>", "<theme>", "<birthday>", "<date_joined>")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, date_joined) VALUES (1, "hyte", "John Gregg", "I am the Lead Programmer on timeBloc.", "dark", "1/5", "<date_joined>")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, date_joined) VALUES (2, "the_reelist_condor", "Connor Thomas", "BYU<br>Also a noob.", "dark", "12/4","<date_joined>")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, date_joined) VALUES (3, "serbian_slayer", "Brane Pantovic", "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.", "light", "3/14", "<date_joined>")');
+    tx.executeSql('INSERT INTO User(uid, username, display_name, bio, theme, birthday, date_joined) VALUES (0, "user", "default_user", "<message>", "light", "0/00", "<date_joined>")');
 
     //template for regex: tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES (<uid>, <fuid>, "<date_joined>")');
     tx.executeSql('INSERT INTO follower_list( uid, fuid, date_followed) VALUES ( 1, 2, "<date_joined>")');
@@ -370,14 +370,13 @@ var userBloc = {
 
     id: 0,
     last_slice: 0,
-    weight:[0.1, 0.5, 0.8, 0.6, 0.4, 0.8, 0.6],
+    weight:[1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
 
     setup:function(id) {
       userBloc.id = parseInt(id);
       db.transaction(userBloc.getUserInfo, dataManager.errorCB);
-      db.transaction(userBloc.getWeights, dataManager.errorCB);
       db.transaction(userBloc.getOtherInfo, dataManager.errorCB);
-      userBloc.generateSelf();
+		  db.transaction(userBloc.getWeights, dataManager.errorCB);
       setTimeout(function () {
         uiControl.turnCurrentItemOff();
         uiControl.turnItemOff("userBloc");
@@ -398,7 +397,7 @@ var userBloc = {
     },
 
     getWeights:function(tx){
-      tx.executeSql('SELECT * FROM weight_list where uid = ' + userBloc.id, [], userBloc.setWedges, dataManager.errorCB);
+      tx.executeSql('SELECT * FROM weight_list where uid = ' + userBloc.id, [], userBloc.setWedges, dataManager.errorCB );
     },
 
     getOtherInfo:function(tx){
@@ -420,8 +419,13 @@ var userBloc = {
 
 		setWedges:function(tx, results) {
 			var userWedge = results.rows.item(0);
-			for(var i = 1; i < 7; i++){
+			for(var i=0; i <= 6 ; i++){
+				//alert(userWedge['weight_'+ i]);
+				if(userWedge['weight_'+ i] > 0){
+					userBloc.weight[i] = userWedge['weight_'+ i];
+				}
 			}
+			userBloc.generateSelf();
 		},
 
     generateSelf:function() {
@@ -432,7 +436,7 @@ var userBloc = {
       for(i = 0; (current_angle+angle) <= 185; i++){
         document.getElementById("user_Profile_breakdown_" + i).style.transform= "rotate(" + current_angle + "deg)";
         document.getElementById("user_Profile_slice_" + i).style['stroke-dasharray']= dasharray;
-				document.getElementById("user_Profile_slice_" + i).style['stroke-width'] = 60*userBloc.weight[i];
+				document.getElementById("user_Profile_slice_" + i).style['stroke-width'] = 18*userBloc.weight[i]+ '%';
         current_angle += angle;
       }
 			for(i=i ; i <= 6; i++){
@@ -513,7 +517,7 @@ var userBloc = {
       document.getElementById("user_Profile_slice_" +direction).style['stroke-width'] = 90;
       document.getElementById("user_Profile_breakdown_" +direction).style.opacity= 1.0;
       if(direction != userBloc.last_slice){
-      document.getElementById("user_Profile_slice_" +userBloc.last_slice).style['stroke-width'] = 60*userBloc.weight[userBloc.last_slice];
+      document.getElementById("user_Profile_slice_" +userBloc.last_slice).style['stroke-width'] = 18*userBloc.weight[userBloc.last_slice] + '%';
       document.getElementById("user_Profile_breakdown_" +userBloc.last_slice).style.opacity= 0.5;
       }
       userBloc.last_slice = direction;
@@ -551,7 +555,7 @@ var userBloc = {
       document.getElementById('user_Follow_Status').style['border-top-color'] = "#e68800";
       document.getElementById('user_Follow_Status').style['border-left-style'] = "solid";
       document.getElementById('user_Follow_Status').style['border-left-color'] = "#e68800";
-      document.getElementById('userFollowingStatus_fbarrow').style.display = "block";
+      //document.getElementById('userFollowingStatus_fbarrow').style.display = "block";
     },
 
     setFollow: function(tx) {
@@ -564,7 +568,7 @@ var userBloc = {
       document.getElementById('user_Follow_Status').style['border-bottom-color'] = "#ffcb80";
       document.getElementById('user_Follow_Status').style['border-right-style'] = "solid";
       document.getElementById('user_Follow_Status').style['border-right-color'] = "#ffcb80";
-      document.getElementById('userFollowingStatus_farrow').style.display = "block";
+      //document.getElementById('userFollowingStatus_farrow').style.display = "block";
       document.getElementById('user_Follow_Status').innerHTML = "Following";
       isFollowing = true;
     },

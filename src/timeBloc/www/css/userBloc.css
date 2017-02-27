@@ -5,11 +5,11 @@
 
   position:absolute;
 
-  top:7.5%;
-  left:-100%;
+  top:7.5vh;
+  left:-100vw;
 
-  height:92.5%;
-  width:100%;
+  height:92.5vh;
+  width:100vw;
 
   margin:0px;
   padding:0px;
@@ -19,7 +19,7 @@
 }
 
 .userBloc.on{
-	left:0%;
+	left:0vw;
   -webkit-animation: fade_on 200ms;
 
 }
@@ -30,7 +30,7 @@
 }
 
 .userBloc.off{
-	left:0%;
+	left:0vh;
   -webkit-animation: fade_off 200ms ;
 }
 
@@ -44,17 +44,17 @@
   from {-webkit-backface-visibility: hidden;
         -webkit-transform: translate(0,0);}
   to {-webkit-backface-visibility: hidden;
-      -webkit-transform: translate(100%,0);}
+      -webkit-transform: translate(100vw,0);}
 
 }
 
 
 .userBloc_background{
   position:absolute;
-  left:0%;
+  left:0vh;
 
-  height:100%;
-  width:100%;
+  height:100vh;
+  width:100vw;
 }
 
 .userBloc_background.on{
@@ -68,12 +68,12 @@
 .filter{
 /*  background:url(../img/gradient.png) no-repeat center; /* 170px x 200px */
   background-attachment:fixed;
-  background-size:100% 100%;
+  background-size:100vw 100vw;
 
   position:absolute;
-  left:0%;
-  height:100%;
-  width:100%;
+  left:0vw;
+  height:100vh;
+  width:100vw;
   margin:0px;
   padding:0px;
 
@@ -84,9 +84,9 @@
 .userProfile{
   position:absolute;
   background-size: contain;
-  left:0%;
-  height:100%;
-  width:100%;
+  left:0vw;
+  height:100vh;
+  width:100vw;
   margin:0px;
   padding:0px;
 	color:white;
@@ -95,11 +95,11 @@
 .userPP{
   position:absolute;
   background-size:contain;
-  top:35%;
-  left:50%;
-  width:50%;
-  height:31%;
-  margin:-25% 0px 0px -25%;
+  top:35vh;
+  left:50vw;
+  width:50vw;
+  height:30vh;
+  margin:-25vw 0px 0px -25vw;
   display:block;
 
   z-index: 200;
@@ -109,31 +109,32 @@
 
 
 .user_Profile_breakdown_container{
-  width:100%;
-  height:70%;
+  width:100vw;
+  height:65vh;
 }
 
 /*150.8*/
 .user_Profile_breakdown_0{
   position:absolute;
   background-size:contain;
-  left:0px;
-  top:0%;
+  left:0;
+  top:0;
   opacity: 0.50;
 }
 
 .user_Profile_slice_0{
   fill: none;
   stroke: #ff8787;
-  stroke-width: 60;
-  stroke-dasharray: 29.5% 195%;
+  stroke-width: 2vw;
+  stroke-dasharray: 29.5vw 195vw;
 }
 
 .user_Profile_breakdown_1{
   position:absolute;
   background-size:contain;
 
-  left:0px;  top:0%;
+  left:0px;
+	top:0vw;
   opacity: 0.5;
 }
 
@@ -141,7 +142,7 @@
   fill: none;
   stroke: #fff891;
   stroke-width:60 ;
-  stroke-dasharray: 29.5% 195%;
+  stroke-dasharray: 29.5vw 195vw;
 }
 
 .user_Profile_breakdown_2{
@@ -149,7 +150,7 @@
   background-size:contain;
 
   left:0px;
-  top:0%;
+  top:0vw;
 
   opacity: 0.50;
 }
@@ -158,7 +159,7 @@
   fill: none;
   stroke: #82ffd1;
   stroke-width: 60;
-stroke-dasharray: 29.5% 195%;
+	stroke-dasharray: 29.5vw 195vw;
 }
 
 .user_Profile_breakdown_3{
@@ -166,7 +167,7 @@ stroke-dasharray: 29.5% 195%;
   background-size:contain;
 
   left:0px;
-  top:0%;
+  top:0vw;
   opacity: 0.50;
 }
 
@@ -174,7 +175,7 @@ stroke-dasharray: 29.5% 195%;
   fill: none;
   stroke: #ff9eea;
   stroke-width: 60;
-	stroke-dasharray: 29.5% 195%;
+	stroke-dasharray: 29.5vw 195vw;
 }
 
 .user_Profile_breakdown_4{
@@ -182,7 +183,7 @@ stroke-dasharray: 29.5% 195%;
   background-size:contain;
 
   left:0px;
-  top:0%;
+  top:0vw;
   opacity: 0.50;
 }
 
@@ -190,7 +191,7 @@ stroke-dasharray: 29.5% 195%;
   fill: none;
   stroke: #6369ff;
   stroke-width: 60;
-	stroke-dasharray: 29.5% 195%;
+	stroke-dasharray: 29.5vw 195vw;
 }
 
 .user_Profile_breakdown_5{
@@ -198,7 +199,7 @@ stroke-dasharray: 29.5% 195%;
   background-size:contain;
 
   left:0px;
-  top:0%;
+  top:0vw;
   opacity: 0.50;
 }
 
@@ -206,7 +207,7 @@ stroke-dasharray: 29.5% 195%;
   fill: none;
   stroke: #C69BFF;
   stroke-width: 60;
-	stroke-dasharray: 29.5% 195%;
+	stroke-dasharray: 29.5vw 195vw;
 }
 
 .user_Profile_breakdown_6{
@@ -214,7 +215,7 @@ stroke-dasharray: 29.5% 195%;
   background-size:contain;
 
   left:0px;
-  top:0%;
+  top:0vw;
   opacity: 0.50;
 }
 
@@ -222,19 +223,19 @@ stroke-dasharray: 29.5% 195%;
   fill: none;
   stroke: #b5fff9;
   stroke-width: 60;
-  stroke-dasharray: 29.5% 195%;
+  stroke-dasharray: 29.5vw 195vw;
 }
 
 .userFollowingStatus{
   position:absolute;
 
-  top:-1.5%;
-  left:63%;
-  width:25%;
+  top:-1.5vh;
+  left:63vw;
+  width:25vw;
 
   z-index:105;
 
-  padding:2%;
+  padding:2vw;
   text-align: center;
   font-size: 6vw;
   border: .8vw dashed #bfbfbf;
@@ -253,10 +254,10 @@ stroke-dasharray: 29.5% 195%;
 .userFollowingStatus_fbarrow{
   position:absolute;
   background-color:#e68800;
-  top:4.25%;
-  left:62.5%;
-  width:0.5%;
-  height: 1%;
+  top:4vh;
+  left:62.6vw;
+  width:0.5vw;
+  height: .5vh;
   z-index:104;
   display:none;
 
@@ -267,10 +268,11 @@ stroke-dasharray: 29.5% 195%;
 .userFollowingStatus_farrow{
   position:absolute;
   background-color:#ffcb80;
-  top:-1.5%;
-  left:92.75%;
-  width:0.5%;
-  height: 1%;
+  top:-1.4vh;
+	height: 1vh;
+
+  left:92.75vw;
+  width:0.5vw;
   z-index:104;
   display:none;
 
@@ -287,15 +289,17 @@ stroke-dasharray: 29.5% 195%;
 .user_Display_Name{
   position:absolute;
   color: #ff9633;
-  top:-3%;
+  top:-3vh;
   left:0;
-  width:100%;
+  max-width:54vw;
 
-  padding:0% 0% 6% 5%;
-  margin: 0% 0% 0% 0%;
+	whitespace: nowrap;
+
+  padding:3vh 0vw 3vh 6vw;
+  margin: 0vw 0vw 0vw 0vw;
 
   text-align: left;
-  font-size: 9vw;
+  font-size: 6vw;
 
   z-index:100;
 }
@@ -305,25 +309,25 @@ stroke-dasharray: 29.5% 195%;
 }
 
 .user_Display_Name.dark{
-	color:#292929;
+	color:#ff9633;
 }
 
 .page_break{
   position:absolute;
-  top:7%;
+  top:6vh;
   left:0px;
-  width:100%;
+  width:100vw;
   opacity:0.20;
 }
 
 .user_Handle{
   position:absolute;
 
-  top:2.5%;
-  left:4%;
-  width:25%;
+  top:2.5vh;
+  left:4vw;
+  width:25vw;
 
-  padding:0% 0% 0% 2%;
+  padding:0vw 0vw 0vw 2vw;
   text-align: left;
   z-index:100;
   font-size: 4.5vw;
@@ -338,30 +342,13 @@ stroke-dasharray: 29.5% 195%;
 }
 
 
-.userblocFeed{
-  position:absolute;
-
-  width:100%;
-  height:48.5%;
-
-  top:23%;
-  left:0%;
-
-  margin:0px;
-  padding:0px;
-
-
-  -webkit-backface-visibility: hidden;
-  overflow-y: scroll;
-  overflow-x: hidden;
-}
 
 .content_box{
 	position:absolute;
 	/*background-color: white;*/
-	top:6.75%;
-	height:40%;
-	width:100%;
+	/*top:6.75vh;*/
+	height:40vh;
+	width:100vw;
 	margin:0px;
 
 	border-radius: 5px;
@@ -373,8 +360,8 @@ stroke-dasharray: 29.5% 195%;
 .userBloc_bio{
     text-align: left;
     font-size: 4.25vw;
-    width: 80%;
-    padding:4% 5% 0% 12%;
+    width: 80vw;
+    padding:9vh 5vw 0vh 12vw;
 }
 
 .userBloc_bio.light{
@@ -388,18 +375,17 @@ stroke-dasharray: 29.5% 195%;
 .weeks{
 	position:absolute;
   /*background-color: white;*/
-  top:6.75%;
-  height:40%;
-  width:100%;
+  top:18vh;
+  height:40vh;
+  width:100vw;
   margin:0px;
 
   border-radius: 5px;
 
   text-align: center;
   font-size: 6vw;
-  top:33%;
-  left:35%;
-  width:30%;
+  left:35vw;
+  width:30vw;
 }
 
 .weeks.light{
@@ -413,18 +399,17 @@ stroke-dasharray: 29.5% 195%;
 .following{
 	position:absolute;
   /*background-color: white;*/
-  top:6.75%;
-  height:40%;
-  width:100%;
+  top:18vh;
+  height:40vw;
+  width:100vw;
   margin:0px;
 
   border-radius: 5px;
 
   text-align: center;
   font-size: 6vw;
-  top:33%;
-  left:63%;
-  width:30%;
+  left:63vw;
+  width:30vw;
 }
 
 .following.light{
@@ -438,18 +423,17 @@ stroke-dasharray: 29.5% 195%;
 .followers{
 	position:absolute;
   /*background-color: white;*/
-  top:6.75%;
-  height:40%;
-  width:100%;
+  top:18vh;
+  height:40vw;
+  width:100vw;
   margin:0px;
 
   border-radius: 5px;
 
   text-align: center;
   font-size: 6vw;
-  top:33%;
-  left:7%;
-  width:30%;
+  left:7vw;
+  width:30vw;
 }
 
 .followers.light{
